@@ -11,8 +11,8 @@ import { validateBody } from "../../decorators/index.js";
 const quizesRouter = express.Router();
 
 quizesRouter.get("/", quizesController.getAll);
-
-quizesRouter.get("/:id", quizesController.getById);
+quizesRouter.get('/1', quizesController.getAllByRating);
+quizesRouter.get('/:id', quizesController.getQuizeById);
 
 quizesRouter.post(
   "/",
