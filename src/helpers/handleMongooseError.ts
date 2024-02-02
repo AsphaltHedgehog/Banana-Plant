@@ -2,7 +2,7 @@ import { Error as MongooseError } from "mongoose";
 import { NextFunction } from "express";
 
 const handleMongooseError = (
-  error: MongooseError,
+  error: MongooseError & { code?: number, status?: number },
   data: any,
   next: NextFunction
 ): void => {
