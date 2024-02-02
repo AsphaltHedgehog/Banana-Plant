@@ -6,7 +6,7 @@ import { isEmptyBody } from "../../middlewares/index.js";
 
 import { validateBody } from "../../decorators/index.js";
 
-import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
+// import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 
 const quizesRouter = express.Router();
 
@@ -17,14 +17,14 @@ quizesRouter.get("/:id", quizesController.getById);
 quizesRouter.post(
   "/",
   isEmptyBody,
-  validateBody(quizAddSchema),
+  // validateBody(quizAddSchema),
   quizesController.add
 );
 
 quizesRouter.put(
   "/:id",
   isEmptyBody,
-  validateBody(quizUpdateSchema),
+  // validateBody(quizUpdateSchema),
   quizesController.updateById
 );
 
