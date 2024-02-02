@@ -18,7 +18,7 @@ quizesRouter.post(
   "/",
   isEmptyBody,
   // validateBody(quizAddSchema),
-  quizesController.add
+  quizesController.addNewQuize
 );
 
 quizesRouter.put(
@@ -28,6 +28,6 @@ quizesRouter.put(
   quizesController.updateById
 );
 
-quizesRouter.delete("/:id", quizesController.deleteById);
+quizesRouter.delete('/:id', quizesController.deleteQuizeById);
 
 export default quizesRouter;

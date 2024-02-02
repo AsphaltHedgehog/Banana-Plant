@@ -45,7 +45,9 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             res.status(400).json({ error: 'Invalid quiz ID' });
             return;
         }
-        const result = yield Quiz_1.default.findOne({ _id: new mongoose_1.default.Types.ObjectId(id) });
+        const result = yield Quiz_1.default.findOne({
+            _id: new mongoose_1.default.Types.ObjectId(id),
+        });
         if (!result) {
             res.status(404).json({ error: 'Quiz not found' });
             return;
@@ -57,31 +59,58 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const result = await Quiz.create(req.body);
-    // res.status(201).json(result);
+const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Отримання даних з тіла запиту
+        const { theme, category, background, ageGroup, ratingQuantity, rating, finished, } = req.body;
+        if (!mongoose_1.default.Types.ObjectId.isValid(category)) {
+            res.status(400).json({ error: 'Invalid category ID' });
+            return;
+        }
+        const categoryObjectId = new mongoose_1.default.Types.ObjectId(category);
+        console.log(categoryObjectId);
+        const newQuiz = new Quiz_1.default({
+            theme,
+            category: categoryObjectId,
+            background,
+            ageGroup,
+            ratingQuantity,
+            rating,
+            finished,
+        });
+        const savedQuiz = yield newQuiz.save();
+        res.status(201).json(savedQuiz);
+    }
+    catch (error) {
+        console.error('Помилка при додаванні тесту:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
-const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    // const result = await Quiz.findByIdAndUpdate(id, req.body);
-    // if (!result) {
-    //   throw HttpError(404, `Quiz with id=${id} not found`);
-    // }
-    // res.json(result);
-});
-const deleteById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    // const result = await Quiz.findByIdAndDelete(id);
-    // if (!result) {
-    //   throw HttpError(404, `Quiz with id=${id} not found`);
-    // }
-    // res.json({ message: "Delete success" });
+    try {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: 'Invalid quiz ID' });
+            return;
+        }
+        const result = yield Quiz_1.default.findByIdAndDelete(id);
+        if (!result) {
+            res.status(404).json({ error: 'Quiz not found' });
+            return;
+        }
+        res.status(200).json({ message: 'Quiz deleted successfully' });
+    }
+    catch (error) {
+        console.error('Помилка при видаленні тесту:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 exports.default = {
     getAll: (0, index_1.ctrlWrapper)(getAll),
     getAllByRating: (0, index_1.ctrlWrapper)(getAllByRating),
     getQuizeById: (0, index_1.ctrlWrapper)(getQuizeById),
-    add: (0, index_1.ctrlWrapper)(add),
+    addNewQuize: (0, index_1.ctrlWrapper)(addNewQuize),
     updateById: (0, index_1.ctrlWrapper)(updateById),
-    deleteById: (0, index_1.ctrlWrapper)(deleteById),
+    deleteQuizeById: (0, index_1.ctrlWrapper)(deleteQuizeById),
 };

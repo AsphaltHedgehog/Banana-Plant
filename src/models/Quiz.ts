@@ -1,10 +1,10 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import { string } from 'joi';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface Quiz {
     theme: string;
-    category: string;
+    category: Schema.Types.ObjectId;
     ageGroup: string;
-    id: string;
     ratingQuantity: number;
     rating: number;
     finished: number;
@@ -13,18 +13,17 @@ interface Quiz {
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: { type: String, required: true },
+        category: { type: Schema.Types.ObjectId, required: true },
         ageGroup: { type: String, required: true },
-        id: { type: String, required: true },
         ratingQuantity: { type: Number, required: true },
         rating: { type: Number, required: true },
         finished: { type: Number, required: true },
     },
-    { timestamps: true }
+    { timestamps: true, versionKey: false }
 );
 
 const Quiz = mongoose.model<Quiz & Document>('quizes', quizSchema);
 
 export default Quiz;
 
-// Временная затычка
+

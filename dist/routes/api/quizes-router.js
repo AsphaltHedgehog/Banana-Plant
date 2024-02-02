@@ -13,9 +13,9 @@ quizesRouter.get('/1', quizes_controller_js_1.default.getAllByRating);
 quizesRouter.get('/:id', quizes_controller_js_1.default.getQuizeById);
 quizesRouter.post("/", index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
-quizes_controller_js_1.default.add);
+quizes_controller_js_1.default.addNewQuize);
 quizesRouter.put("/:id", index_js_1.isEmptyBody, 
 // validateBody(quizUpdateSchema),
 quizes_controller_js_1.default.updateById);
-quizesRouter.delete("/:id", quizes_controller_js_1.default.deleteById);
+quizesRouter.delete('/:id', quizes_controller_js_1.default.deleteQuizeById);
 exports.default = quizesRouter;

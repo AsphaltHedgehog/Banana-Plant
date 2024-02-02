@@ -26,13 +26,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const quizSchema = new mongoose_1.Schema({
     theme: { type: String, required: true },
-    category: { type: String, required: true },
+    category: { type: mongoose_1.Schema.Types.ObjectId, required: true },
     ageGroup: { type: String, required: true },
-    id: { type: String, required: true },
     ratingQuantity: { type: Number, required: true },
     rating: { type: Number, required: true },
     finished: { type: Number, required: true },
-}, { timestamps: true });
+}, { timestamps: true, versionKey: false });
 const Quiz = mongoose_1.default.model('quizes', quizSchema);
 exports.default = Quiz;
-// Временная затычка
