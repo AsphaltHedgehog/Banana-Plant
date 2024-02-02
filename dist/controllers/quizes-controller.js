@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Quiz_1 = __importDefault(require("../models/Quiz"));
-// import { HttpError } from "../helpers/index";
-const index_1 = require("../decorators/index");
+const index_1 = require("../helpers/index");
+const index_2 = require("../decorators/index");
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -22,8 +22,7 @@ const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(result);
     }
     catch (error) {
-        console.error('Помилка отримання даних:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ message: error.message });
     }
 });
 const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,56 +33,44 @@ const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.json(result);
     }
     catch (error) {
-        console.error('Помилка отримання даних:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(error.status || 500).json({ message: error.message });
     }
 });
 const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: 'Invalid quiz ID' });
+            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
             return;
         }
         const result = yield Quiz_1.default.findOne({
             _id: new mongoose_1.default.Types.ObjectId(id),
         });
         if (!result) {
-            res.status(404).json({ error: 'Quiz not found' });
+            throw (0, index_1.HttpError)(404, 'Quiz not found');
             return;
         }
-        res.status(200).json(result);
+        res.json(result);
     }
     catch (error) {
-        console.error('Помилка отримання даних:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ message: error.message });
     }
 });
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Отримання даних з тіла запиту
-        const { theme, category, background, ageGroup, ratingQuantity, rating, finished, } = req.body;
+        const { category } = req.body;
         if (!mongoose_1.default.Types.ObjectId.isValid(category)) {
             res.status(400).json({ error: 'Invalid category ID' });
             return;
         }
         const categoryObjectId = new mongoose_1.default.Types.ObjectId(category);
-        console.log(categoryObjectId);
-        const newQuiz = new Quiz_1.default({
-            theme,
-            category: categoryObjectId,
-            background,
-            ageGroup,
-            ratingQuantity,
-            rating,
-            finished,
-        });
-        const savedQuiz = yield newQuiz.save();
-        res.status(201).json(savedQuiz);
+        const newQuize = new Quiz_1.default(Object.assign(Object.assign({}, req.body), { category: categoryObjectId }));
+        const quize = yield newQuize.save();
+        console.log(newQuize);
+        res.status(201).json(newQuize);
     }
     catch (error) {
-        console.error('Помилка при додаванні тесту:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ message: error.message });
     }
 });
 const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
@@ -91,26 +78,25 @@ const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function
     const { id } = req.params;
     try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: 'Invalid quiz ID' });
+            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
             return;
         }
         const result = yield Quiz_1.default.findByIdAndDelete(id);
         if (!result) {
-            res.status(404).json({ error: 'Quiz not found' });
+            throw (0, index_1.HttpError)(404, 'Quiz not found');
             return;
         }
-        res.status(200).json({ message: 'Quiz deleted successfully' });
+        res.status(204).json({ message: 'Quiz deleted successfully' });
     }
     catch (error) {
-        console.error('Помилка при видаленні тесту:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ message: error.message });
     }
 });
 exports.default = {
-    getAll: (0, index_1.ctrlWrapper)(getAll),
-    getAllByRating: (0, index_1.ctrlWrapper)(getAllByRating),
-    getQuizeById: (0, index_1.ctrlWrapper)(getQuizeById),
-    addNewQuize: (0, index_1.ctrlWrapper)(addNewQuize),
-    updateById: (0, index_1.ctrlWrapper)(updateById),
-    deleteQuizeById: (0, index_1.ctrlWrapper)(deleteQuizeById),
+    getAll: (0, index_2.ctrlWrapper)(getAll),
+    getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
+    getQuizeById: (0, index_2.ctrlWrapper)(getQuizeById),
+    addNewQuize: (0, index_2.ctrlWrapper)(addNewQuize),
+    updateById: (0, index_2.ctrlWrapper)(updateById),
+    deleteQuizeById: (0, index_2.ctrlWrapper)(deleteQuizeById),
 };

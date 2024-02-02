@@ -1,4 +1,3 @@
-import { string } from 'joi';
 import mongoose, { Document, Schema, Types } from 'mongoose';
 
 interface Quiz {
@@ -25,5 +24,3 @@ const quizSchema = new Schema<Quiz & Document>(
 const Quiz = mongoose.model<Quiz & Document>('quizes', quizSchema);
 
 export default Quiz;
-
-
