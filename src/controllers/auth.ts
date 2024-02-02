@@ -60,7 +60,7 @@ const logout = async (req: Request, res: Response) => {
 };
 const resetPassword = async (req: Request, res: Response) => {};
 
-export const userControllers = {
+export const ctrl = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     logout: ctrlWrapper(logout),
