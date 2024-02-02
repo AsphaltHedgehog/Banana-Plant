@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from 'express';
 import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
@@ -6,7 +6,7 @@ import quizesRouter from "./routes/api/quizes-router.js";
 
 const app = express();
 
-const formatsLogger = app.get("env") === "development" ? "dev" : "short";
+const formatsLogger: string = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
@@ -14,11 +14,18 @@ app.use(express.json());
 
 app.use("/api/quizes", quizesRouter);
 
+// errors
+
+interface CustomError extends Error {
+  status?: number;
+  message: string;
+}
+
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
-app.use((err, req, res, next) => {
+app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
   const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
 });
