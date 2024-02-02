@@ -9,5 +9,5 @@ const middlewares_1 = require("../../middlewares");
 const router = express_1.default.Router();
 router.post('/register', auth_1.ctrl.register);
 router.post('/login', auth_1.ctrl.login);
-router.post('/logout', middlewares_1.authenticate, auth_1.ctrl.logout);
+router.patch('/logout', middlewares_1.authenticate, auth_1.ctrl.logout);
 exports.default = router;

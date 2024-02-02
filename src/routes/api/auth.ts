@@ -8,6 +8,6 @@ router.post('/register', ctrl.register);
 
 router.post('/login', ctrl.login);
 
-router.post('/logout', authenticate, ctrl.logout);
+router.patch('/logout', authenticate, ctrl.logout);
 
 export default router;
