@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -56,6 +67,23 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(500).json({ message: error.message });
     }
 });
+const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { ageGroup } = req.query;
+    let result;
+    try {
+        if (ageGroup === 'adults') {
+            const result = yield Quiz_1.default.find({ ageGroup: 'adults' });
+            res.json(result);
+        }
+        if (ageGroup === 'children') {
+            const result = yield Quiz_1.default.find({ ageGroup: 'children' });
+            res.json(result);
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { category } = req.body;
@@ -66,14 +94,33 @@ const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const categoryObjectId = new mongoose_1.default.Types.ObjectId(category);
         const newQuize = new Quiz_1.default(Object.assign(Object.assign({}, req.body), { category: categoryObjectId }));
         const quize = yield newQuize.save();
-        console.log(newQuize);
         res.status(201).json(newQuize);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
-const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: 'Invalid quiz ID' });
+            return;
+        }
+        const _a = req.body, { _id } = _a, updatedData = __rest(_a, ["_id"]);
+        const existingQuiz = yield Quiz_1.default.findByIdAndUpdate(id, updatedData, {
+            new: true,
+        });
+        if (!existingQuiz) {
+            res.status(404).json({ error: 'Quiz not found' });
+            return;
+        }
+        res.status(200).json(existingQuiz);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -96,7 +143,8 @@ exports.default = {
     getAll: (0, index_2.ctrlWrapper)(getAll),
     getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
     getQuizeById: (0, index_2.ctrlWrapper)(getQuizeById),
+    getQuizesByCategory: (0, index_2.ctrlWrapper)(getQuizesByCategory),
     addNewQuize: (0, index_2.ctrlWrapper)(addNewQuize),
-    updateById: (0, index_2.ctrlWrapper)(updateById),
+    updateQuizeById: (0, index_2.ctrlWrapper)(updateQuizeById),
     deleteQuizeById: (0, index_2.ctrlWrapper)(deleteQuizeById),
 };

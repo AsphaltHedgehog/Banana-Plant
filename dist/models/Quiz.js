@@ -27,6 +27,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const quizSchema = new mongoose_1.Schema({
     theme: { type: String, required: true },
     category: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+    background: { type: String, required: true },
     ageGroup: { type: String, required: true },
     ratingQuantity: { type: Number, required: true },
     rating: { type: Number, required: true },
