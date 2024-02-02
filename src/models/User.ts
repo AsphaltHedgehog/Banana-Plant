@@ -39,7 +39,7 @@ const userSchema = new Schema<User>(
   { versionKey: false, timestamps: true }
 );
 
-userSchema.post("save", handleMongooseError);
+// userSchema.post("save", handleMongooseError);
 
 const User: Model<User> = model<User>("user", userSchema);
 
