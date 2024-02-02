@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from "express";
 import logger from "morgan";
 import cors from "cors";
 import "dotenv/config";
@@ -6,11 +6,13 @@ import quizesRouter from "./routes/api/quizes-router.js";
 
 const app = express();
 
-const formatsLogger: string = app.get("env") === "development" ? "dev" : "short";
+const formatsLogger: string =
+  app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use("/api/quizes", quizesRouter);
 

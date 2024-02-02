@@ -10,7 +10,7 @@ const index_js_1 = require("../../middlewares/index.js");
 const quizesRouter = express_1.default.Router();
 quizesRouter.get("/", quizes_controller_js_1.default.getAll);
 quizesRouter.get("/:id", quizes_controller_js_1.default.getById);
-quizesRouter.post("/", index_js_1.isEmptyBody, 
+quizesRouter.post("/", index_js_1.upload.single("poster"), index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
 quizes_controller_js_1.default.add);
 quizesRouter.put("/:id", index_js_1.isEmptyBody, 

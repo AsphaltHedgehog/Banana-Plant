@@ -2,7 +2,7 @@ import express from "express";
 
 import quizesController from "../../controllers/quizes-controller.js";
 
-import { isEmptyBody } from "../../middlewares/index.js";
+import { isEmptyBody, upload } from "../../middlewares/index.js";
 
 import { validateBody } from "../../decorators/index.js";
 
@@ -16,6 +16,7 @@ quizesRouter.get("/:id", quizesController.getById);
 
 quizesRouter.post(
   "/",
+  upload.single("poster"),
   isEmptyBody,
   // validateBody(quizAddSchema),
   quizesController.add

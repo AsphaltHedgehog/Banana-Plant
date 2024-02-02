@@ -1,5 +1,6 @@
 "use strict";
 // import Quiz from "../models/Quiz";
+// import fs from "fs/promises";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import { HttpError } from "../helpers/index";
 const index_1 = require("../decorators/index");
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const result = await Quiz.find({}, "-createdAt -updatedAt");
@@ -33,6 +33,15 @@ const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // const result = await Quiz.create(req.body);
     // res.status(201).json(result);
 });
+// const add = async (req: Request, res: Response): Promise<void> => {
+//   const { _id: owner } = req.user;
+//   const { url: poster } = await cloudinary.uploader.upload(req.file.path, {
+//     folder: "posters",
+//   });
+//   await fs.unlink(req.file.path);
+//   const result = await Movie.create({ ...req.body, poster, owner });
+//   res.status(201).json(result);
+// };
 const updateById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     // const result = await Quiz.findByIdAndUpdate(id, req.body);
