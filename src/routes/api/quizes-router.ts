@@ -11,14 +11,14 @@ import { validateBody } from "../../decorators/index.js";
 const quizesRouter = express.Router();
 
 quizesRouter.get("/", quizesController.getAll);
-
-quizesRouter.get("/:id", quizesController.getById);
+quizesRouter.get('/rating', quizesController.getAllByRating);
+quizesRouter.get('/:id', quizesController.getQuizeById);
 
 quizesRouter.post(
   "/",
   isEmptyBody,
   // validateBody(quizAddSchema),
-  quizesController.add
+  quizesController.addNewQuize
 );
 
 quizesRouter.put(
@@ -28,6 +28,6 @@ quizesRouter.put(
   quizesController.updateById
 );
 
-quizesRouter.delete("/:id", quizesController.deleteById);
+quizesRouter.delete('/:id', quizesController.deleteQuizeById);
 
 export default quizesRouter;

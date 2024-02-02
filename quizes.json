@@ -1,0 +1,156 @@
+[
+  {
+    "theme": "Іграшки та ігри",
+    "category": {
+      "$oid": "65b9b74a0af6ce975d97ee51"
+    },
+    "background": "none",
+    "ageGroup": "children",
+    "_id": {
+      "$oid": "65b9bbe690b27011571e122f"
+    },
+    "ratingQuantity": 74,
+    "rating": 4.4,
+    "finished": 144
+  },
+  {
+    "theme": "Казки та мультфільми",
+    "category": {
+      "$oid": "65b9b74a0af6ce975d97ee4d"
+    },
+    "background": "none",
+    "ageGroup": "children",
+    "_id": {
+      "$oid": "65b9bc7c1b000b7f42bc06d1"
+    },
+    "ratingQuantity": 54,
+    "rating": 4.3,
+    "finished": 196
+  },
+  {
+    "theme": "Комікси",
+    "category": {
+      "$oid": "65b9b74a0af6ce975d97ee53"
+    },
+    "background": "none",
+    "ageGroup": "children",
+    "_id": {
+      "$oid": "65b9bc98193936430e4f2e4d"
+    },
+    "ratingQuantity": 84,
+    "rating": 3.9,
+    "finished": 165
+  },
+  {
+    "theme": "Професії",
+    "category": {
+      "$oid": "65b9b74a0af6ce975d97ee4f"
+    },
+    "background": "none",
+    "ageGroup": "children",
+    "_id": {
+      "$oid": "65b9bcad8ce630a714a30e4e"
+    },
+    "ratingQuantity": 79,
+    "rating": 4.7,
+    "finished": 118
+  },
+  {
+    "theme": "Їжа та напої",
+    "category": {
+      "$oid": "65b9b72da71ecebe372115ff"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bcc9772a0e547cd0a785"
+    },
+    "ratingQuantity": 33,
+    "rating": 3.8,
+    "finished": 68
+  },
+  {
+    "theme": "Подорожі та туризм",
+    "category": {
+      "$oid": "65b9b72da71ecebe372115fc"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bd33543179b484dde98b"
+    },
+    "ratingQuantity": 92,
+    "rating": 4.9,
+    "finished": 270
+  },
+  {
+    "theme": "Модні згадки",
+    "category": {
+      "$oid": "65b9b72da71ecebe37211600"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bd4f83b0b18a646bf127"
+    },
+    "ratingQuantity": 41,
+    "rating": 4.9,
+    "finished": 220
+  },
+  {
+    "theme": "Наука",
+    "category": {
+      "$oid": "65b9b72da71ecebe372115fa"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bdeacb97aee3b8457ce7"
+    },
+    "ratingQuantity": 81,
+    "rating": 4.5,
+    "finished": 359
+  },
+  {
+    "theme": "Визначні місця на планеті",
+    "category": {
+      "$oid": "65b9b72da71ecebe372115fc"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9be259298223f676c7b8c"
+    },
+    "ratingQuantity": 24,
+    "rating": 2.9,
+    "finished": 261
+  },
+  {
+    "theme": "Лас-Вегас",
+    "category": {
+      "$oid": "65b9b72da71ecebe372115fc"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bed00d05d379cf73598b"
+    },
+    "ratingQuantity": 22,
+    "rating": 4.1,
+    "finished": 111
+  },
+  {
+    "theme": "Спорт",
+    "category": {
+      "$oid": "65b9b72da71ecebe37211601"
+    },
+    "background": "none",
+    "ageGroup": "adults",
+    "_id": {
+      "$oid": "65b9bf0bb06e14098e8a513a"
+    },
+    "ratingQuantity": 39,
+    "rating": 3.6,
+    "finished": 86
+  }
+]

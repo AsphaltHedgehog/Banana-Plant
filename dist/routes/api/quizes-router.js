@@ -9,12 +9,13 @@ const index_js_1 = require("../../middlewares/index.js");
 // import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 const quizesRouter = express_1.default.Router();
 quizesRouter.get("/", quizes_controller_js_1.default.getAll);
-quizesRouter.get("/:id", quizes_controller_js_1.default.getById);
+quizesRouter.get('/rating', quizes_controller_js_1.default.getAllByRating);
+quizesRouter.get('/:id', quizes_controller_js_1.default.getQuizeById);
 quizesRouter.post("/", index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
-quizes_controller_js_1.default.add);
+quizes_controller_js_1.default.addNewQuize);
 quizesRouter.put("/:id", index_js_1.isEmptyBody, 
 // validateBody(quizUpdateSchema),
 quizes_controller_js_1.default.updateById);
-quizesRouter.delete("/:id", quizes_controller_js_1.default.deleteById);
+quizesRouter.delete('/:id', quizes_controller_js_1.default.deleteQuizeById);
 exports.default = quizesRouter;
