@@ -6,7 +6,7 @@ import { isEmptyBody } from "../../middlewares/index.js";
 
 import { validateBody } from "../../decorators/index.js";
 
-// import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
+import { quizAddSchema, quizUpdateSchema } from "../../models/Quiz.js";
 
 const quizesRouter = express.Router();
 

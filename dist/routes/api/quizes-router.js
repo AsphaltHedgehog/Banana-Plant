@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const quizes_controller_js_1 = __importDefault(require("../../controllers/quizes-controller.js"));
 const index_js_1 = require("../../middlewares/index.js");
-// import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 const quizesRouter = express_1.default.Router();
 quizesRouter.get("/", quizes_controller_js_1.default.getAll);
 quizesRouter.get("/:id", quizes_controller_js_1.default.getById);

@@ -7,7 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const app_js_1 = __importDefault(require("./app.js"));
 require("dotenv/config");
 const conf_1 = require("./conf");
-mongoose_1.default.set('strictQuery', true);
+mongoose_1.default.set("strictQuery", true);
 if (!conf_1.envConfs.dbHost) {
     console.error("АЛО!!! ГДЕ dbHost в envConfs!!!!");
     process.exit(1);

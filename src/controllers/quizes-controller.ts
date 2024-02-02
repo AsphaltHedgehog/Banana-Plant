@@ -1,18 +1,17 @@
-// import Quiz from "../models/Quiz";
+import Quiz from "../models/Quiz.js";
 
-import { Request, Response } from 'express';
+import { Request, Response } from "express";
 
-// import { HttpError } from "../helpers/index";
+import { HttpError } from "../helpers/index";
 
 import { ctrlWrapper } from "../decorators/index";
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
   // const result = await Quiz.find({}, "-createdAt -updatedAt");
-
   // res.json(result);
 };
 
-const getAllByRating = async (req: Request, res: Response): Promise<void>=> {
+const getAllByRating = async (req: Request, res: Response): Promise<void> => {
   // Прописать тоже самое что и в Алл, толлько методом сорт по рейтингу!
   // const result = await Quiz.Sort();
   // res.json(result);
@@ -29,9 +28,9 @@ const getById = async (req: Request, res: Response): Promise<void> => {
 };
 
 const add = async (req: Request, res: Response): Promise<void> => {
-  // const result = await Quiz.create(req.body);
-
-  // res.status(201).json(result);
+  console.log(req.body);
+  const result = await Quiz.create(req.body);
+  res.status(201).json(result);
 };
 
 const updateById = async (req: Request, res: Response): Promise<void> => {
