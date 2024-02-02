@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import app from './app.js';
 import 'dotenv/config';
-import { envsConfig } from './conf/envConfs';
+import envsConfig from './conf/envConfs';
 
 mongoose.set('strictQuery', true);
 if (!envsConfig.dbHost) {
