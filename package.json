@@ -8,11 +8,13 @@
     "start": "cross-env NODE_ENV=production node ./dist/server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon ./dist/server.js --port=1488",
     "start:all": "concurrently \"npm run start:dev --port=1488\" \"npm run tsc:w\"",
+    "start:prod": "concurrently \"npm run tsc:w\" \"npm start\"",
     "lint:fix": "eslint --fix **/*.js"
   },
   "dependencies": {
     "@types/express": "^4.17.21",
     "@types/mongoose": "^5.11.97",
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "cross-env": "7.0.3",
     "dotenv": "^16.4.1",
@@ -24,7 +26,6 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/morgan": "^1.9.9",
-    "concurrently": "^8.2.2",
     "eslint": "7.19.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "16.0.3",
