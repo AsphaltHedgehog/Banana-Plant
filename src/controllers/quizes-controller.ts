@@ -2,7 +2,7 @@ import Quiz from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -76,14 +76,14 @@ const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { ageGroup } = req.query;
+    const { category } = req.query;
     let result;
     try {
-        if (ageGroup === 'adults') {
-            const result = await Quiz.find({ ageGroup: 'adults' });
+        if (category === 'adults') {
+            result = await Quiz.find({ ageGroup: 'adults' });
         }
-        if (ageGroup === 'children') {
-            const result = await Quiz.find({ ageGroup: 'children' });
+        if (category === 'children') {
+            result = await Quiz.find({ ageGroup: 'children' });
         }
         res.json(result);
     } catch (error: any) {
@@ -92,19 +92,19 @@ const getQuizesByCategory = async (
 };
 
 const addNewQuize = async (req: Request, res: Response): Promise<void> => {
-  
     try {
-        const quizTitle: string = req.body.theme;
+        const { theme, ageGroup }: { theme: string; ageGroup: string } =
+            req.body;
+        const result = await Quiz.find({ ageGroup: ageGroup });
 
-        const defaultBackground: string | null = null;
+        const arrQuizesCategory: ObjectId[] = result.map(q => q.category);
 
         const quizInfo = new Quiz({
-            theme: quizTitle,
-            ageGroup: '',
-            category: '',
-            background: '',
+            theme: theme,
+            ageGroup: ageGroup,
+            category: arrQuizesCategory,
+            background: 'none',
         });
-        const quize = await newQuize.save();
 
         res.status(201).json(quizInfo);
     } catch (error: any) {
@@ -120,8 +120,8 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
             res.status(400).json({ error: 'Invalid quiz ID' });
             return;
         }
-      
-      const { _id, ...updatedData } = req.body;
+
+        const { _id, ...updatedData } = req.body;
 
         const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
             new: true,
@@ -130,7 +130,7 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
             res.status(404).json({ error: 'Quiz not found' });
             return;
         }
-      
+
         res.status(200).json(existingQuiz);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

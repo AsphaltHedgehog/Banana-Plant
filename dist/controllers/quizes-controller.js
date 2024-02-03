@@ -86,95 +86,84 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 //         res.status(500).json({ message: error.message });
 //     }
 // };
+const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { category } = req.query;
+    let result;
+    try {
+        if (category === 'adults') {
+            result = yield Quiz_1.default.find({ ageGroup: 'adults' });
+        }
+        if (category === 'children') {
+            result = yield Quiz_1.default.find({ ageGroup: 'children' });
+        }
+        res.json(result);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-  try {
-    const quizTitle = req.body.theme;
-    const defaultBackground = null;
-    const quizInfo = new Quiz_1.default({
-      theme: quizTitle,
-      ageGroup: '',
-      category: '',
-      background: '',
-    });
-    res.status(201).json(quizInfo);
-    const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-      const { ageGroup } = req.query;
-      let result;
-      try {
-        if (ageGroup === 'adults') {
-          const result = yield Quiz_1.default.find({ ageGroup: 'adults' });
-          res.json(result);
-        }
-        if (ageGroup === 'children') {
-          const result = yield Quiz_1.default.find({ ageGroup: 'children' });
-          res.json(result);
-        }
-      }
-      catch (error) {
+    try {
+        const { theme, ageGroup } = req.body;
+        const result = yield Quiz_1.default.find({ ageGroup: ageGroup });
+        const arrQuizesCategory = result.map(q => q.category);
+        const quizInfo = new Quiz_1.default({
+            theme: theme,
+            ageGroup: ageGroup,
+            category: arrQuizesCategory,
+            background: 'none',
+        });
+        res.status(201).json(quizInfo);
+    }
+    catch (error) {
         res.status(500).json({ message: error.message });
-      }
-    });
-    const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-      try {
-        const { category } = req.body;
-        if (!mongoose_1.default.Types.ObjectId.isValid(category)) {
-          res.status(400).json({ error: 'Invalid category ID' });
-          return;
-        }
-        const categoryObjectId = new mongoose_1.default.Types.ObjectId(category);
-        const newQuize = new Quiz_1.default(Object.assign(Object.assign({}, req.body), { category: categoryObjectId }));
-        const quize = yield newQuize.save();
-        res.status(201).json(newQuize);
-      }
-      catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    });
-    const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-      try {
+    }
+});
+const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
         const { id } = req.params;
         if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
-          res.status(400).json({ error: 'Invalid quiz ID' });
-          return;
+            res.status(400).json({ error: 'Invalid quiz ID' });
+            return;
         }
         const _a = req.body, { _id } = _a, updatedData = __rest(_a, ["_id"]);
         const existingQuiz = yield Quiz_1.default.findByIdAndUpdate(id, updatedData, {
-          new: true,
+            new: true,
         });
         if (!existingQuiz) {
-          res.status(404).json({ error: 'Quiz not found' });
-          return;
+            res.status(404).json({ error: 'Quiz not found' });
+            return;
         }
         res.status(200).json(existingQuiz);
-      }
-      catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: error.message });
-      }
-    });
-    const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-      const { id } = req.params;
-      try {
+    }
+});
+const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-          throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
-          return;
+            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+            return;
         }
         const result = yield Quiz_1.default.findByIdAndDelete(id);
         if (!result) {
-          throw (0, index_1.HttpError)(404, 'Quiz not found');
-          return;
+            throw (0, index_1.HttpError)(404, 'Quiz not found');
+            return;
         }
         res.status(204).json({ message: 'Quiz deleted successfully' });
-      }
-      catch (error) {
+    }
+    catch (error) {
         res.status(500).json({ message: error.message });
-      }
-    });
-    exports.default = {
-      getAll: (0, index_2.ctrlWrapper)(getAll),
-      getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
-      getQuizeById: (0, index_2.ctrlWrapper)(getQuizeById),
-      getQuizesByCategory: (0, index_2.ctrlWrapper)(getQuizesByCategory),
-      addNewQuize: (0, index_2.ctrlWrapper)(addNewQuize),
-      updateQuizeById: (0, index_2.ctrlWrapper)(updateQuizeById),
-      deleteQuizeById: (0, index_2.ctrlWrapper)(deleteQuizeById),
-    };
+    }
+});
+exports.default = {
+    getAll: (0, index_2.ctrlWrapper)(getAll),
+    getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
+    getQuizeById: (0, index_2.ctrlWrapper)(getQuizeById),
+    getQuizesByCategory: (0, index_2.ctrlWrapper)(getQuizesByCategory),
+    addNewQuize: (0, index_2.ctrlWrapper)(addNewQuize),
+    updateQuizeById: (0, index_2.ctrlWrapper)(updateQuizeById),
+    deleteQuizeById: (0, index_2.ctrlWrapper)(deleteQuizeById),
+};
