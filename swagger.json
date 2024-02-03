@@ -51,7 +51,7 @@
         },
         "responses": {
           "201": {
-            "description": "### Succsessful registration\n**name** - string, user name.\n**email** - string, user email.\n",
+            "description": "### Successful registration\n**name** - string, user name.\n**email** - string, user email.\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -65,13 +65,59 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/errorBadRequesResponse"
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
                 }
               }
             }
           },
           "409": {
             "description": "User with such email already exists"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Sign in existing user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "# Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "### Created session for existing user\n**token** - string, token is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Incorrect email or password"
           }
         },
         "tags": [
@@ -100,7 +146,7 @@
           }
         },
         "required": [
-          "username",
+          "name",
           "email",
           "password"
         ]
@@ -110,7 +156,7 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Username",
+            "description": "User name",
             "example": "Alex"
           },
           "email": {
@@ -119,7 +165,36 @@
           }
         }
       },
-      "errorBadRequesResponse": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "alex@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "alex"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "errorBadRequestResponse": {
         "type": "object",
         "properties": {
           "status": {
