@@ -42,27 +42,27 @@ quizSchema.pre("findOneAndUpdate", addUpdateSetting);
 
 quizSchema.post("findOneAndUpdate", handleSaveError);
 
-export const quizAddSchema = Joi.object({
-  theme: Joi.string().required(),
-  category: Joi.string().required(),
-  background: Joi.string(),
-  ageGroup: Joi.string().required(),
-  ratingQuantity: Joi.number().required(),
-  rating: Joi.number().required(),
-  finished: Joi.number().required(),
-});
+// export const quizAddSchema = Joi.object({
+//   theme: Joi.string().required(),
+//   category: Joi.string().required(),
+//   background: Joi.string(),
+//   ageGroup: Joi.string().required(),
+//   ratingQuantity: Joi.number().required(),
+//   rating: Joi.number().required(),
+//   finished: Joi.number().required(),
+// });
 
-export const quizUpdateSchema = Joi.object({
-  theme: Joi.string(),
-  category: Joi.string(),
-  background: Joi.string(),
-  ageGroup: Joi.string(),
-  ratingQuantity: Joi.number(),
-  rating: Joi.number(),
-  finished: Joi.number(),
-});
+// export const quizUpdateSchema = Joi.object({
+//   theme: Joi.string(),
+//   category: Joi.string(),
+//   background: Joi.string(),
+//   ageGroup: Joi.string(),
+//   ratingQuantity: Joi.number(),
+//   rating: Joi.number(),
+//   finished: Joi.number(),
+// });
 
-export const quizUpdateFavoriteSchema = Joi.object({});
+// export const quizUpdateFavoriteSchema = Joi.object({});
 
 const Quiz = model("quizes", quizSchema);
 

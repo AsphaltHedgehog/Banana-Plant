@@ -1,11 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.quizUpdateFavoriteSchema = exports.quizUpdateSchema = exports.quizAddSchema = void 0;
 const mongoose_1 = require("mongoose");
-const joi_1 = __importDefault(require("joi"));
 const hooks_js_1 = require("./hooks.js");
 const quizSchema = new mongoose_1.Schema({
     theme: {
@@ -39,24 +34,24 @@ const quizSchema = new mongoose_1.Schema({
 quizSchema.post("save", hooks_js_1.handleSaveError);
 quizSchema.pre("findOneAndUpdate", hooks_js_1.addUpdateSetting);
 quizSchema.post("findOneAndUpdate", hooks_js_1.handleSaveError);
-exports.quizAddSchema = joi_1.default.object({
-    theme: joi_1.default.string().required(),
-    category: joi_1.default.string().required(),
-    background: joi_1.default.string(),
-    ageGroup: joi_1.default.string().required(),
-    ratingQuantity: joi_1.default.number().required(),
-    rating: joi_1.default.number().required(),
-    finished: joi_1.default.number().required(),
-});
-exports.quizUpdateSchema = joi_1.default.object({
-    theme: joi_1.default.string(),
-    category: joi_1.default.string(),
-    background: joi_1.default.string(),
-    ageGroup: joi_1.default.string(),
-    ratingQuantity: joi_1.default.number(),
-    rating: joi_1.default.number(),
-    finished: joi_1.default.number(),
-});
-exports.quizUpdateFavoriteSchema = joi_1.default.object({});
+// export const quizAddSchema = Joi.object({
+//   theme: Joi.string().required(),
+//   category: Joi.string().required(),
+//   background: Joi.string(),
+//   ageGroup: Joi.string().required(),
+//   ratingQuantity: Joi.number().required(),
+//   rating: Joi.number().required(),
+//   finished: Joi.number().required(),
+// });
+// export const quizUpdateSchema = Joi.object({
+//   theme: Joi.string(),
+//   category: Joi.string(),
+//   background: Joi.string(),
+//   ageGroup: Joi.string(),
+//   ratingQuantity: Joi.number(),
+//   rating: Joi.number(),
+//   finished: Joi.number(),
+// });
+// export const quizUpdateFavoriteSchema = Joi.object({});
 const Quiz = (0, mongoose_1.model)("quizes", quizSchema);
 exports.default = Quiz;

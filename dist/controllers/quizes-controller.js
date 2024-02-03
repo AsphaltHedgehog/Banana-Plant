@@ -32,7 +32,6 @@ const getById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // res.json(result);
 });
 const add = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     const result = yield Quiz_js_1.default.create(req.body);
     res.status(201).json(result);
 });

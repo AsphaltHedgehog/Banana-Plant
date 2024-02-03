@@ -28,7 +28,6 @@ const getById = async (req: Request, res: Response): Promise<void> => {
 };
 
 const add = async (req: Request, res: Response): Promise<void> => {
-  console.log(req.body);
   const result = await Quiz.create(req.body);
   res.status(201).json(result);
 };
