@@ -21,9 +21,11 @@ app.use((req, res, next) => {
 app.use((0, morgan_1.default)(formatsLogger));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.use(express_1.default.static('public'));
 app.use('/api/quizes', quizes_router_js_1.default);
 app.use('/api/auth', auth_js_1.default);
 app.use('/api/user', user_js_1.default);
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });
 });

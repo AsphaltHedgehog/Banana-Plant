@@ -1,8 +1,10 @@
 import Quiz from '../models/Quiz';
 import { Request, Response } from 'express';
-import { HttpError } from '../helpers/index';
+import { HttpError, cloudinary } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import mongoose from 'mongoose';
+import fs from 'fs/promises';
+import mongoose, { ObjectId } from 'mongoose';
+
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -49,18 +51,41 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+// const addNewQuize = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         const { category } = req.body;
+
+//         if (!mongoose.Types.ObjectId.isValid(category)) {
+//             res.status(400).json({ error: 'Invalid category ID' });
+//             return;
+//         }
+//         const categoryObjectId = new mongoose.Types.ObjectId(category);
+
+//         const newQuize = new Quiz({
+//             ...req.body,
+//             category: categoryObjectId,
+//         });
+//         const quize = await newQuize.save();
+//         console.log(newQuize);
+
+//         res.status(201).json(newQuize);
+//     } catch (error: any) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
 const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { ageGroup } = req.query;
+    const { category } = req.query;
     let result;
     try {
-        if (ageGroup === 'adults') {
-            const result = await Quiz.find({ ageGroup: 'adults' });
+        if (category === 'adults') {
+            result = await Quiz.find({ ageGroup: 'adults' });
         }
-        if (ageGroup === 'children') {
-            const result = await Quiz.find({ ageGroup: 'children' });
+        if (category === 'children') {
+            result = await Quiz.find({ ageGroup: 'children' });
         }
         res.json(result);
     } catch (error: any) {
@@ -70,21 +95,36 @@ const getQuizesByCategory = async (
 
 const addNewQuize = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { category } = req.body;
 
-        if (!mongoose.Types.ObjectId.isValid(category)) {
-            res.status(400).json({ error: 'Invalid category ID' });
-            return;
-        }
-        const categoryObjectId = new mongoose.Types.ObjectId(category);
+//Добавление фотки не в квиз должно быть, а в вопрос квиза
+//         const { category } = req.body;
+//         if (!req.file || !req.file.path) {
+//             res.status(400).json({ error: 'No file uploaded' });
+//             return;
+//         }
+//         const { url: poster } = await cloudinary.uploader.upload(
+//             req.file.path,
+//             {
+//                 folder: 'posters',
+//             }
+//         );
+//         await fs.unlink(req.file.path);
 
-        const newQuize = new Quiz({
-            ...req.body,
-            category: categoryObjectId,
+        const { theme, ageGroup }: { theme: string; ageGroup: string } =
+            req.body;
+        const result = await Quiz.find({ ageGroup: ageGroup });
+
+        const arrQuizesCategory: ObjectId[] = result.map(q => q.category);
+
+        const quizInfo = new Quiz({
+            theme: theme,
+            ageGroup: ageGroup,
+            category: arrQuizesCategory,
+            background: 'none',
         });
-        const quize = await newQuize.save();
 
-        res.status(201).json(newQuize);
+
+        res.status(201).json(quizInfo);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -92,14 +132,22 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
 
 const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;
+//         const { id } = req.params;
 
-        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: 'Invalid quiz ID' });
-            return;
-        }
-      
-      const { _id, ...updatedData } = req.body;
+//         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+//             res.status(400).json({ error: 'Invalid quiz ID' });
+//             return;
+//         }
+
+// точно так же, обновление должно быть не напрямую в Квиз, а в Вопросы квиза
+//         const newQuize = new Quiz({
+//             ...req.body,
+//             category: categoryObjectId,
+//             poster,
+//         });
+//         const quize = await newQuize.save();
+
+        const { _id, ...updatedData } = req.body;
 
         const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
             new: true,
@@ -108,7 +156,7 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
             res.status(404).json({ error: 'Quiz not found' });
             return;
         }
-      
+
         res.status(200).json(existingQuiz);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

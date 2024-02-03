@@ -13,7 +13,7 @@ interface Quiz {
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: { type: Schema.Types.ObjectId, required: true },
+        category: [{ type: Schema.Types.ObjectId, required: true }],
         background: { type: String, required: true },
         ageGroup: { type: String, required: true },
         ratingQuantity: { type: Number, required: true },
