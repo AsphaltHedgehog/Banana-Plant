@@ -124,9 +124,55 @@
           "Auth"
         ]
       }
+    },
+    "/api/auth/logout": {
+      "patch": {
+        "operationId": "logout",
+        "summary": "Log out user",
+        "parameters": [],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User signed out"
+          },
+          "401": {
+            "description": "Bearer auth failed - invalid token. If the request does not contain a valid token or the token has already expired, the server will return a response with HTTP status code 401 Unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Description of the error."
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
       "RegisterDto": {
         "type": "object",
