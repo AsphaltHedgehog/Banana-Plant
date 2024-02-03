@@ -56,18 +56,36 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(500).json({ message: error.message });
     }
 });
+// const addNewQuize = async (req: Request, res: Response): Promise<void> => {
+//     try {
+//         const { category } = req.body;
+//         if (!mongoose.Types.ObjectId.isValid(category)) {
+//             res.status(400).json({ error: 'Invalid category ID' });
+//             return;
+//         }
+//         const categoryObjectId = new mongoose.Types.ObjectId(category);
+//         const newQuize = new Quiz({
+//             ...req.body,
+//             category: categoryObjectId,
+//         });
+//         const quize = await newQuize.save();
+//         console.log(newQuize);
+//         res.status(201).json(newQuize);
+//     } catch (error: any) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { category } = req.body;
-        if (!mongoose_1.default.Types.ObjectId.isValid(category)) {
-            res.status(400).json({ error: 'Invalid category ID' });
-            return;
-        }
-        const categoryObjectId = new mongoose_1.default.Types.ObjectId(category);
-        const newQuize = new Quiz_1.default(Object.assign(Object.assign({}, req.body), { category: categoryObjectId }));
-        const quize = yield newQuize.save();
-        console.log(newQuize);
-        res.status(201).json(newQuize);
+        const quizTitle = req.body.theme;
+        const defaultBackground = null;
+        const quizInfo = new Quiz_1.default({
+            theme: quizTitle,
+            ageGroup: '',
+            category: '',
+            background: '',
+        });
+        res.status(201).json(quizInfo);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
