@@ -12,7 +12,9 @@ const quizesRouter = express.Router();
 
 quizesRouter.get("/", quizesController.getAll);
 quizesRouter.get('/rating', quizesController.getAllByRating);
+quizesRouter.get('/category', quizesController.getQuizesByCategory);
 quizesRouter.get('/:id', quizesController.getQuizeById);
+
 
 quizesRouter.post(
   "/",
@@ -23,10 +25,10 @@ quizesRouter.post(
 );
 
 quizesRouter.put(
-  "/:id",
-  isEmptyBody,
-  // validateBody(quizUpdateSchema),
-  quizesController.updateById
+    '/:id',
+    isEmptyBody,
+    // validateBody(quizUpdateSchema),
+    quizesController.updateQuizeById
 );
 
 quizesRouter.delete('/:id', quizesController.deleteQuizeById);

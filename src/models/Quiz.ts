@@ -3,6 +3,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 interface Quiz {
     theme: string;
     category: Schema.Types.ObjectId;
+    background: string;
     ageGroup: string;
     ratingQuantity: number;
     rating: number;
@@ -12,7 +13,8 @@ interface Quiz {
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: { type: Schema.Types.ObjectId, required: true, ref: 'auth' },
+        category: [{ type: Schema.Types.ObjectId, required: true }],
+        background: { type: String, required: true },
         ageGroup: { type: String, required: true },
         ratingQuantity: { type: Number, required: true },
         rating: { type: Number, required: true },
