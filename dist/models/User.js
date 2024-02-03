@@ -25,12 +25,10 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: '',
     },
-    contactInfo: {
-        additionalEmail: { type: String, default: '', match: emailRegex },
-    },
     favoriteTests: [{
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'Test'
+            ref: 'Test',
+            default: []
         }],
 }, { versionKey: false, timestamps: true });
 // Методи оновлює  додає  видаляє

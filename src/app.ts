@@ -4,6 +4,7 @@ import cors from 'cors';
 import 'dotenv/config';
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
+import userRouter from "./routes/api/user.js"
 
 const app = express();
 
@@ -23,7 +24,7 @@ app.use(express.json());
 
 app.use('/api/quizes', quizesRouter);
 app.use('/api/auth', router);
-
+app.use('/api/user', userRouter);
 // errors
 
 interface CustomError extends Error {

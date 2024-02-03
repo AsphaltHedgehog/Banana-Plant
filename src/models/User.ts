@@ -42,13 +42,14 @@ const userSchema = new Schema<User>(
         token: {
             type: String,
             default: '',
+            
         },
-        contactInfo: {
-            additionalEmail: { type: String, default: '', match: emailRegex },
-        },
+       
         favoriteTests: [{
             type: Schema.Types.ObjectId,
-            ref: 'Test'
+            ref: 'Test',
+           
+            default: []
         }],
     },
     { versionKey: false, timestamps: true }

@@ -9,6 +9,7 @@ const cors_1 = __importDefault(require("cors"));
 require("dotenv/config");
 const quizes_router_js_1 = __importDefault(require("./routes/api/quizes-router.js"));
 const auth_js_1 = __importDefault(require("./routes/api/auth.js"));
+const user_js_1 = __importDefault(require("./routes/api/user.js"));
 const app = (0, express_1.default)();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use((req, res, next) => {
@@ -22,6 +23,7 @@ app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/api/quizes', quizes_router_js_1.default);
 app.use('/api/auth', auth_js_1.default);
+app.use('/api/user', user_js_1.default);
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });
 });
