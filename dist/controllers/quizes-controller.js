@@ -27,6 +27,7 @@ const Quiz_1 = __importDefault(require("../models/Quiz"));
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
 const mongoose_1 = __importDefault(require("mongoose"));
+const promises_1 = __importDefault(require("fs/promises"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield Quiz_1.default.find({}, '-createdAt -updatedAt');
@@ -104,6 +105,7 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+
         const { theme, ageGroup } = req.body;
         const result = yield Quiz_1.default.find({ ageGroup: ageGroup });
         const arrQuizesCategory = result.map(q => q.category);
@@ -119,6 +121,7 @@ const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ message: error.message });
     }
 });
+
 const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;

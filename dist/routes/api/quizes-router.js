@@ -12,7 +12,7 @@ quizesRouter.get("/", quizes_controller_js_1.default.getAll);
 quizesRouter.get('/rating', quizes_controller_js_1.default.getAllByRating);
 quizesRouter.get('/category', quizes_controller_js_1.default.getQuizesByCategory);
 quizesRouter.get('/:id', quizes_controller_js_1.default.getQuizeById);
-quizesRouter.post("/", index_js_1.isEmptyBody, 
+quizesRouter.post("/", index_js_1.upload.single("poster"), index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
 quizes_controller_js_1.default.addNewQuize);
 quizesRouter.put('/:id', index_js_1.isEmptyBody, 
