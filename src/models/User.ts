@@ -6,7 +6,15 @@ export interface User extends Document {
     email: string;
     password: string;
     token: string;
+    contactInfo: {
+        additionalEmail: string;
+    };
+    favoriteTests: Schema.Types.ObjectId[];
+    updateContactInfo: (newContactInfo: any) => Promise<void>;
+    addFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
+    removeFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
 }
+
 
 const emailRegex =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
@@ -35,12 +43,37 @@ const userSchema = new Schema<User>(
             type: String,
             default: '',
         },
+        contactInfo: {
+            additionalEmail: { type: String, default: '', match: emailRegex },
+        },
+        favoriteTests: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Test'
+        }],
     },
     { versionKey: false, timestamps: true }
 );
-
+// Методи оновлює  додає  видаляє
+// userSchema.methods.updateContactInfo = function (newContactInfo) {
+//     this.contactInfo.additionalEmail = newContactInfo.additionalEmail || this.contactInfo.additionalEmail;
+//     return this.save();
+// };
+// userSchema.methods.addFavoriteTest = function (testId) {
+//     if (!this.favoriteTests.includes(testId)) {
+//         this.favoriteTests.push(testId);
+//         return this.save();
+//     }
+// };
+// userSchema.methods.removeFavoriteTest = function (testId) {
+//     const index = this.favoriteTests.indexOf(testId);
+//     if (index !== -1) {
+//         this.favoriteTests.splice(index, 1);
+//         return this.save();
+//     }
+// };
 // userSchema.post("save", handleMongooseError);
 
 const User: Model<User> = model<User>('user', userSchema);
+
 
 export default User;
