@@ -58,12 +58,11 @@ const getQuizesByCategory = async (
     try {
         if (ageGroup === 'adults') {
             const result = await Quiz.find({ ageGroup: 'adults' });
-            res.json(result);
         }
         if (ageGroup === 'children') {
             const result = await Quiz.find({ ageGroup: 'children' });
-            res.json(result);
         }
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
