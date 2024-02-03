@@ -11,6 +11,12 @@ const quizes_router_js_1 = __importDefault(require("./routes/api/quizes-router.j
 const auth_js_1 = __importDefault(require("./routes/api/auth.js"));
 const app = (0, express_1.default)();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 app.use((0, morgan_1.default)(formatsLogger));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
