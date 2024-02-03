@@ -49,34 +49,20 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// const addNewQuize = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const { category } = req.body;
 
-//         if (!mongoose.Types.ObjectId.isValid(category)) {
-//             res.status(400).json({ error: 'Invalid category ID' });
-//             return;
-//         }
-//         const categoryObjectId = new mongoose.Types.ObjectId(category);
-
-//         const newQuize = new Quiz({
-//             ...req.body,
-//             category: categoryObjectId,
-//         });
-//         const quize = await newQuize.save();
-//         console.log(newQuize);
-
-//         res.status(201).json(newQuize);
-//     } catch (error: any) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-
+//TODO: create a pagination function
 const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category } = req.query;
+  const { category, page, pageSize } = req.query;
+
+  //FIXME: change pageSize and pirPage
+  const currentPage: number = page ? parseInt(page.toString(), 8) : 1;
+  const itemsPerPage: number = pageSize
+      ? parseInt(pageSize.toString(), 10)
+      : 10;
+
     let result;
     try {
         if (category === 'adults') {

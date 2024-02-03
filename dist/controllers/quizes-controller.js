@@ -87,7 +87,11 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 //     }
 // };
 const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category } = req.query;
+    const { category, page, pageSize } = req.query;
+    const currentPage = page ? parseInt(page.toString(), 8) : 1;
+    const itemsPerPage = pageSize
+        ? parseInt(pageSize.toString(), 10)
+        : 10;
     let result;
     try {
         if (category === 'adults') {
