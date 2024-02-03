@@ -1,47 +1,139 @@
 {
-    "openapi": "3.0.3",
-    "info": {
-        "title": "API documentation for project QuizMaster",
-        "description": "API documentation for QuizMaster backend\n[GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)",
-        "version": "1.0.0"
-    },
-
-    "servers": [
-        {
-            "url": "https://pigs.onrender.com/"
-        }
-    ],
-
-    "tags": [
-        {
-            "name": "Auth",
-            "description": "Authorization endpoints"
-        },
-        {
-            "name": "Users",
-            "description": "User endpoints"
-        },
-        {
-            "name": "Reviews",
-            "description": "Reviews endpoints"
-        },
-        {
-            "name": "Quizzes",
-            "description": "Quizzes endpoints"
-        },
-        {
-            "name": "Questions",
-            "description": "Questions endpoints"
-        }
-    ],
-
-    "paths": {
-        "/auth/register": {},
-
-        "/auth/login": {},
-
-        "/auth/logout": {},
-
-        "/api/quizes": {}
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API documentation for project QuizMaster",
+    "description": "API documentation for QuizMaster backend\n\n_[GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)_",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://pigs.onrender.com/"
     }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "User endpoints"
+    },
+    {
+      "name": "Reviews",
+      "description": "Reviews endpoints"
+    },
+    {
+      "name": "Quizzes",
+      "description": "Quizzes endpoints"
+    },
+    {
+      "name": "Questions",
+      "description": "Questions endpoints"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "operationId": "register",
+        "summary": "Register new user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "# Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "### Succsessful registration\n**name** - string, user name.\n**email** - string, user email.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequesResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User with such email already exists"
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "Alex"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "alex"
+          }
+        },
+        "required": [
+          "username",
+          "email",
+          "password"
+        ]
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Username",
+            "example": "Alex"
+          },
+          "email": {
+            "type": "string",
+            "example": "alex@gmail.com"
+          }
+        }
+      },
+      "errorBadRequesResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "400"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Bad request"
+          }
+        }
+      }
+    }
+  }
 }
