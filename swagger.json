@@ -1,0 +1,47 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API documentation for project QuizMaster",
+        "description": "API documentation for QuizMaster backend\n[GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)",
+        "version": "1.0.0"
+    },
+
+    "servers": [
+        {
+            "url": "https://pigs.onrender.com/"
+        }
+    ],
+
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authorization endpoints"
+        },
+        {
+            "name": "Users",
+            "description": "User endpoints"
+        },
+        {
+            "name": "Reviews",
+            "description": "Reviews endpoints"
+        },
+        {
+            "name": "Quizzes",
+            "description": "Quizzes endpoints"
+        },
+        {
+            "name": "Questions",
+            "description": "Questions endpoints"
+        }
+    ],
+
+    "paths": {
+        "/auth/register": {},
+
+        "/auth/login": {},
+
+        "/auth/logout": {},
+
+        "/api/quizes": {}
+    }
+}

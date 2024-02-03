@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from 'express';
 import logger from 'morgan';
 import cors from 'cors';
 import 'dotenv/config';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../swagger.json';
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
 
@@ -23,6 +25,8 @@ app.use(express.json());
 
 app.use('/api/quizes', quizesRouter);
 app.use('/api/auth', router);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // errors
 
