@@ -49,6 +49,25 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+const getQuizesByCategory = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const { ageGroup } = req.query;
+    let result;
+    try {
+        if (ageGroup === 'adults') {
+            const result = await Quiz.find({ ageGroup: 'adults' });
+        }
+        if (ageGroup === 'children') {
+            const result = await Quiz.find({ ageGroup: 'children' });
+        }
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 const addNewQuize = async (req: Request, res: Response): Promise<void> => {
     try {
         const { category } = req.body;
@@ -64,7 +83,6 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
             category: categoryObjectId,
         });
         const quize = await newQuize.save();
-        console.log(newQuize);
 
         res.status(201).json(newQuize);
     } catch (error: any) {
@@ -72,7 +90,30 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-const updateById = async (req: Request, res: Response): Promise<void> => {};
+const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).json({ error: 'Invalid quiz ID' });
+            return;
+        }
+      
+      const { _id, ...updatedData } = req.body;
+
+        const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
+            new: true,
+        });
+        if (!existingQuiz) {
+            res.status(404).json({ error: 'Quiz not found' });
+            return;
+        }
+      
+        res.status(200).json(existingQuiz);
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const deleteQuizeById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
@@ -100,7 +141,8 @@ export default {
     getAll: ctrlWrapper(getAll),
     getAllByRating: ctrlWrapper(getAllByRating),
     getQuizeById: ctrlWrapper(getQuizeById),
+    getQuizesByCategory: ctrlWrapper(getQuizesByCategory),
     addNewQuize: ctrlWrapper(addNewQuize),
-    updateById: ctrlWrapper(updateById),
+    updateQuizeById: ctrlWrapper(updateQuizeById),
     deleteQuizeById: ctrlWrapper(deleteQuizeById),
 };
