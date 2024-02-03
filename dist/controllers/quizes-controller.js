@@ -73,12 +73,11 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
     try {
         if (ageGroup === 'adults') {
             const result = yield Quiz_1.default.find({ ageGroup: 'adults' });
-            res.json(result);
         }
         if (ageGroup === 'children') {
             const result = yield Quiz_1.default.find({ ageGroup: 'children' });
-            res.json(result);
         }
+        res.json(result);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
