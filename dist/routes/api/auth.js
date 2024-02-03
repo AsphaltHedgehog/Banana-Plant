@@ -10,4 +10,5 @@ const router = express_1.default.Router();
 router.post('/register', auth_1.ctrl.register);
 router.post('/login', auth_1.ctrl.login);
 router.patch('/logout', middlewares_1.authenticate, auth_1.ctrl.logout);
+router.post('/resetPassword', middlewares_1.authenticate, auth_1.ctrl.logout);
 exports.default = router;

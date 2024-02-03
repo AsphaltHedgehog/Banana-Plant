@@ -1,10 +1,13 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
-import { HttpError } from '../helpers';
 import bcrypt from 'bcrypt';
-import { ctrlWrapper } from '../decorators/index';
 import jwt from 'jsonwebtoken';
+
 import envsConfig from '../conf/envConfs';
+
+import { HttpError } from '../helpers';
+import { ctrlWrapper } from '../decorators/index';
+
+import User from '../models/User';
 
 const register = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;

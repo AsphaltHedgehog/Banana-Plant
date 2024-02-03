@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ctrl = void 0;
-const User_1 = __importDefault(require("../models/User"));
-const helpers_1 = require("../helpers");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const index_1 = require("../decorators/index");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const envConfs_1 = __importDefault(require("../conf/envConfs"));
+const helpers_1 = require("../helpers");
+const index_1 = require("../decorators/index");
+const User_1 = __importDefault(require("../models/User"));
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     const user = yield User_1.default.findOne({ email });
