@@ -54,7 +54,7 @@ const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category, page, pageSize, rating, ratingQuantity } = req.query;
+    const { category, page, pageSize, rating, finished } = req.query;
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
@@ -81,9 +81,9 @@ const getQuizesByCategory = async (
         if (rating) {
             result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
         }
-        if (ratingQuantity) {
+        if (finished) {
             result = resultQuizesByCategory.sort(
-                (a, b) => b.ratingQuantity - a.ratingQuantity
+                (a, b) => b.finished - a.finished
             );
         }
 

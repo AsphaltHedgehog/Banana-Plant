@@ -69,7 +69,7 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, page, pageSize, rating, ratingQuantity } = req.query;
+    const { category, page, pageSize, rating, finished } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
@@ -89,8 +89,8 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         if (rating) {
             result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
         }
-        if (ratingQuantity) {
-            result = resultQuizesByCategory.sort((a, b) => b.ratingQuantity - a.ratingQuantity);
+        if (finished) {
+            result = resultQuizesByCategory.sort((a, b) => b.finished - a.finished);
         }
         res.json({
             data: result,
