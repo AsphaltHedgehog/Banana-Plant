@@ -10,6 +10,11 @@ interface Quiz {
     finished: number;
 }
 
+interface QuizCategory {
+  ageGroup: string;
+  title: string;
+}
+
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
@@ -23,6 +28,16 @@ const quizSchema = new Schema<Quiz & Document>(
     { timestamps: true, versionKey: false }
 );
 
-const Quiz = mongoose.model<Quiz & Document>('quizes', quizSchema);
+const quizCategorySchema = new Schema<QuizCategory & Document>({
+    ageGroup: { type: String, required: true },
+    title: { type: String, required: true },
+});
 
-export default Quiz;
+export const Quiz = mongoose.model<Quiz & Document>('quizes', quizSchema);
+
+export const QuizCategory = mongoose.model<QuizCategory & Document>(
+    'categories',
+    quizCategorySchema
+);
+
+// export default Quiz;
