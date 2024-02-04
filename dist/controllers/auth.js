@@ -15,10 +15,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ctrl = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const crypto_1 = __importDefault(require("crypto"));
 const envConfs_1 = __importDefault(require("../conf/envConfs"));
 const helpers_1 = require("../helpers");
 const index_1 = require("../decorators/index");
 const User_1 = __importDefault(require("../models/User"));
+const sendEmail_1 = __importDefault(require("../services/sendEmail"));
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     const user = yield User_1.default.findOne({ email });
@@ -60,9 +62,34 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     res.status(204).json({});
 });
-const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () { });
+const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email } = req.body;
+    const user = yield User_1.default.findOne({ email });
+    if (!user) {
+        throw (0, helpers_1.HttpError)(404, 'Account not found');
+    }
+    const resetToken = crypto_1.default.randomUUID();
+    const emailData = {
+        subject: 'Password reset',
+        to: [{ email }],
+        htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Password Reset</h2>
+            <p>Dear User,</p>
+            <p>We have received a notification that your current password may be compromised or unsafe. To ensure the security of your account, we recommend you reset your password.</p>
+            <p>Please use the <a href="${envConfs_1.default.frontendResetLink}?token=${resetToken}" style="color: #007BFF; text-decoration: none;">following link</a> to set a new password.</p>
+            <p>If you did not initiate this request, please ignore this message.</p>
+            <p>Thank you for your understanding and prompt action.</p>
+            <p>Best regards,<br>Your Support Team</p>
+        </div>
+    `,
+    };
+    yield (0, sendEmail_1.default)(emailData);
+    res.json({ message: 'Message delivered' });
+});
 exports.ctrl = {
     register: (0, index_1.ctrlWrapper)(register),
     login: (0, index_1.ctrlWrapper)(login),
     logout: (0, index_1.ctrlWrapper)(logout),
+    resetPassword: (0, index_1.ctrlWrapper)(resetPassword),
 };

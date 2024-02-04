@@ -10,6 +10,6 @@ router.post('/login', ctrl.login);
 
 router.patch('/logout', authenticate, ctrl.logout);
 
-router.post('/resetPassword', authenticate, ctrl.logout);
+router.post('/resetPassword', ctrl.resetPassword);
 
 export default router;

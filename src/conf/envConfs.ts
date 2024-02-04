@@ -1,7 +1,15 @@
 import dotenv from 'dotenv';
 
 dotenv.config();
-const { DB_HOST, PORT, BASE_URL, SECRET_KEY, BREVO_KEY, EMAIL } = process.env;
+const {
+    DB_HOST,
+    PORT,
+    BASE_URL,
+    SECRET_KEY,
+    BREVO_KEY,
+    EMAIL,
+    FRONTEND_RESET_LINK,
+} = process.env;
 
 interface EnvsConfig {
     port?: string;
@@ -10,6 +18,7 @@ interface EnvsConfig {
     secretKey?: string;
     brevoKey?: string;
     email?: string;
+    frontendResetLink?: string;
 }
 
 const envsConfig: EnvsConfig = {
@@ -19,6 +28,7 @@ const envsConfig: EnvsConfig = {
     secretKey: SECRET_KEY,
     brevoKey: BREVO_KEY,
     email: EMAIL,
+    frontendResetLink: FRONTEND_RESET_LINK,
 };
 
 export default envsConfig;
