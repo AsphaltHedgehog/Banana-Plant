@@ -26,6 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Quiz_1 = require("../models/Quiz");
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
+// import fs from 'fs/promises';
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -142,7 +143,7 @@ const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function
         //             poster,
         //         });
         //         const quize = await newQuize.save();
-        const _a = req.body, { _id } = _a, updatedData = __rest(_a, ["_id"]);
+        const _a = req.body, { id } = _a, updatedData = __rest(_a, ["id"]);
         const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, updatedData, {
             new: true,
         });

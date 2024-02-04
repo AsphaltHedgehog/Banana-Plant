@@ -9,8 +9,10 @@ const cors_1 = __importDefault(require("cors"));
 require("dotenv/config");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_json_1 = __importDefault(require("../swagger.json"));
+// routes
 const quizes_router_js_1 = __importDefault(require("./routes/api/quizes-router.js"));
 const auth_js_1 = __importDefault(require("./routes/api/auth.js"));
+const quiz_question_1 = __importDefault(require("./routes/api/quiz-question"));
 const app = (0, express_1.default)();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use((req, res, next) => {
@@ -23,8 +25,13 @@ app.use((0, morgan_1.default)(formatsLogger));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.static('public'));
-app.use('/api/quizes', quizes_router_js_1.default);
+// auth routes
 app.use('/api/auth', auth_js_1.default);
+// get sorted quizes routes
+app.use('/api/quizes', quizes_router_js_1.default);
+// quizQuestion routes
+app.use('/api/quiz/question', quiz_question_1.default);
+// swagger routes
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });
