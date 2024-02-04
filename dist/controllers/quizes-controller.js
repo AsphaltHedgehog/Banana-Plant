@@ -41,7 +41,7 @@ const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         const result = yield Quiz_1.Quiz.find({}, '-createdAt -updatedAt').sort({
             rating: -1,
-        }); // Сортування за зменшенням рейтингу
+        });
         res.json(result);
     }
     catch (error) {
@@ -69,25 +69,31 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, page, pageSize } = req.query;
+    const { category, page, pageSize, rating, ratingQuantity } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
     try {
+        const startIndex = (currentPage - 1) * itemsPerPage;
         const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({
             ageGroup: category,
         });
         const resultQuizCategories = yield Quiz_1.QuizCategory.find({
             ageGroup: category,
         });
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const endIndex = currentPage * itemsPerPage;
-        const resultQuiz = yield Quiz_1.Quiz.find({ ageGroup: category })
+        const resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
             .skip(startIndex)
             .limit(itemsPerPage);
+        let result = [];
+        if (rating) {
+            result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
+        }
+        if (ratingQuantity) {
+            result = resultQuizesByCategory.sort((a, b) => b.ratingQuantity - a.ratingQuantity);
+        }
         res.json({
-            data: resultQuiz,
+            data: result,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
