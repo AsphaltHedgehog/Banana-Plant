@@ -1,260 +1,245 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "API documentation for project QuizMaster",
-    "description": "API documentation for QuizMaster backend\n\n_[GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)_",
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "https://pigs.onrender.com/"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Auth",
-      "description": "Authorization endpoints"
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API documentation for project QuizMaster",
+        "description": "API documentation for QuizMaster backend [GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)  \n\n\nThis application serves as a platform for creating and taking quizzes, offering an interactive space for users to assess their knowledge.\n\nThe project provides for the possibility of user registration, authentication and authorization. Users can create and pass and delete tests, filter them by category, view statistics and reviews.\n\nThe application has a friendly and clear user interface that allows you to conveniently and quickly perform all the necessary actions.\n\nThe project also ensures user security through password encryption and token-based identification.\n\n## Key Features:\n\n**User Registration and Authentication:** Securely manage user access and identification through registration and authentication processes.    \n**Quiz Management:** Create and delete quizzes  \n**Diverse Question Types:** Multiple Choice, True/False, etc.  \n**Quiz Taking:** Participants receive immediate scoring and have the option to leave feedback.  \n\n\n## Technology Stack:\n\n**Node.js:** JavaScript runtime environment on the server  \n**Express.js:** Framework for building web applications on Node.js  \n**MongoDB:** NoSQL database for storing quiz data  \n**Mongoose:** Library for interfacing with MongoDB in Node.js  \n**React.js:** Front-end library for creating user interfaces  \n**Redux:** State management library for React applications  ",
+        "version": "1.0.1"
     },
-    {
-      "name": "Users",
-      "description": "User endpoints"
-    },
-    {
-      "name": "Reviews",
-      "description": "Reviews endpoints"
-    },
-    {
-      "name": "Quizzes",
-      "description": "Quizzes endpoints"
-    },
-    {
-      "name": "Questions",
-      "description": "Questions endpoints"
-    }
-  ],
-  "paths": {
-    "/api/auth/register": {
-      "post": {
-        "operationId": "register",
-        "summary": "Register new user",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "# Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterDto"
-              }
-            }
-          }
+    "servers": [
+        {
+            "url": "https://pigs.onrender.com/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Authorization endpoints"
         },
-        "responses": {
-          "201": {
-            "description": "### Successful registration\n**name** - string, user name.\n**email** - string, user email.\n",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegisterResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorBadRequestResponse"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "User with such email already exists"
-          }
+        {
+            "name": "Users",
+            "description": "User endpoints"
         },
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/api/auth/login": {
-      "post": {
-        "operationId": "login",
-        "summary": "Sign in existing user",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "# Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginDto"
-              }
-            }
-          }
+        {
+            "name": "Reviews",
+            "description": "Reviews endpoints"
         },
-        "responses": {
-          "200": {
-            "description": "### Created session for existing user\n**token** - string, token is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.\n",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Validation error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorBadRequestResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Incorrect email or password"
-          }
+        {
+            "name": "Quizzes",
+            "description": "Quizzes endpoints"
         },
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/api/auth/logout": {
-      "patch": {
-        "operationId": "logout",
-        "summary": "Log out user",
-        "parameters": [],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "User signed out"
-          },
-          "401": {
-            "description": "Bearer auth failed - invalid token. If the request does not contain a valid token or the token has already expired, the server will return a response with HTTP status code 401 Unauthorized.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Description of the error."
+        {
+            "name": "Questions",
+            "description": "Questions endpoints"
+        }
+    ],
+    "paths": {
+        "/api/auth/register": {
+            "post": {
+                "operationId": "register",
+                "summary": "Register new user",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "description": "# Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterDto"
+                            }
+                        }
                     }
-                  }
                 },
-                "example": {
-                  "message": "Unauthorized"
-                }
-              }
+                "responses": {
+                    "201": {
+                        "description": "### Successful registration\n**name** - string, user name.\n**email** - string, user email.\n",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RegisterResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "User with such email already exists"
+                    }
+                },
+                "tags": ["Auth"]
             }
-          }
         },
-        "tags": [
-          "Auth"
-        ]
-      }
-    }
-  },
-  "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
+        "/api/auth/login": {
+            "post": {
+                "operationId": "login",
+                "summary": "Sign in existing user",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "description": "# Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "### Created session for existing user\n**token** - string, token is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.\n",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Incorrect email or password"
+                    }
+                },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/logout": {
+            "patch": {
+                "operationId": "logout",
+                "summary": "Log out user",
+                "parameters": [],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "User signed out"
+                    },
+                    "401": {
+                        "description": "Bearer auth failed - invalid token. If the request does not contain a valid token or the token has already expired, the server will return a response with HTTP status code 401 Unauthorized.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Auth"]
+            }
+        }
     },
-    "schemas": {
-      "RegisterDto": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "User name",
-            "example": "Alex"
-          },
-          "email": {
-            "type": "string",
-            "example": "alex@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "alex"
-          }
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
         },
-        "required": [
-          "name",
-          "email",
-          "password"
-        ]
-      },
-      "RegisterResponse": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "User name",
-            "example": "Alex"
-          },
-          "email": {
-            "type": "string",
-            "example": "alex@gmail.com"
-          }
+        "schemas": {
+            "RegisterDto": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "User name",
+                        "example": "Alex"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "alex@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "alex"
+                    }
+                },
+                "required": ["name", "email", "password"]
+            },
+            "RegisterResponse": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "User name",
+                        "example": "Alex"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "alex@gmail.com"
+                    }
+                }
+            },
+            "LoginDto": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "alex@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "alex"
+                    }
+                },
+                "required": ["email", "password"]
+            },
+            "LoginResponse": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
+                    }
+                },
+                "required": ["token"]
+            },
+            "errorBadRequestResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "description": "Error status code",
+                        "example": "400"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message",
+                        "example": "Bad request"
+                    }
+                }
+            }
         }
-      },
-      "LoginDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "alex@gmail.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "alex"
-          }
-        },
-        "required": [
-          "email",
-          "password"
-        ]
-      },
-      "LoginResponse": {
-        "type": "object",
-        "properties": {
-          "token": {
-            "type": "string",
-            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIyOWI4ZmZmNS0xN2NjLTQ5NTYtOTViZC1jN2U3N2FkZDEwOWEiLCJpYXQiOjE2ODE4OTM3MzEsImV4cCI6MTAwMDAwMDE2ODE4OTM3MzJ9.hQpNKIj4SR7Gm9waUMn7hzwKQyqwKrniL_qSW7SxrjM"
-          }
-        },
-        "required": [
-          "token"
-        ]
-      },
-      "errorBadRequestResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "Error status code",
-            "example": "400"
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "Bad request"
-          }
-        }
-      }
     }
-  }
 }
