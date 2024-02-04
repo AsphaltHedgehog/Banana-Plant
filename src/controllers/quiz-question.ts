@@ -62,22 +62,18 @@ const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> =>
 };
 
 const updateQuizQuestionById = async (req: Request, res: Response): Promise<void> => {
+    // Прикрутить авторизацию
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-
-        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: 'Invalid quiz ID' });
-            return;
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw HttpError(404, "Bad Request");
         }
 
-        const { _id, ...updatedData } = req.body;
+        const { ...updatedData } = req.body;
 
-        const existingQuiz = await QuizQuestion.findByIdAndUpdate(id, updatedData, {
-            new: true,
-        });
+        const existingQuiz = await QuizQuestion.findByIdAndUpdate(id, updatedData, { new: true });
         if (!existingQuiz) {
-            res.status(404).json({ error: 'Quiz not found' });
-            return;
+            throw HttpError(404, "Bad Request")
         }
 
         res.status(200).json(existingQuiz);
