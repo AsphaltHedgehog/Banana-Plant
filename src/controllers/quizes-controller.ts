@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose, { ObjectId } from 'mongoose';
+import { boolean } from 'joi';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -53,12 +54,12 @@ const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category, page, pageSize } = req.query;
+    const { category, page, pageSize, rating, ratingQuantity } = req.query;
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
         ? parseInt(pageSize.toString(), 10)
-        : 4; 
+        : 4;
 
     try {
         const totalQuizzesCount = await Quiz.countDocuments({
@@ -70,11 +71,21 @@ const getQuizesByCategory = async (
         });
 
         const startIndex: number = (currentPage - 1) * itemsPerPage;
-        const endIndex: number = currentPage * itemsPerPage;
+
+        let sortCriteria;
+        if (rating) {
+            sortCriteria = { rating: 1 };
+        }
+        if (ratingQuantity) {
+            sortCriteria = { ratingQuantity: 1 };
+        }
+
+        console.log(sortCriteria);
 
         const resultQuiz = await Quiz.find({ ageGroup: category })
             .skip(startIndex)
-            .limit(itemsPerPage);
+            .limit(itemsPerPage)
+            .sort(sortCriteria);
 
         res.json({
             data: resultQuiz,
