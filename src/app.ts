@@ -4,8 +4,11 @@ import cors from 'cors';
 import 'dotenv/config';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
+
+// routes
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
+import quizQuestionRoute from './routes/api/quiz-question'
 
 const app = express();
 
@@ -24,13 +27,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-app.use('/api/quizes', quizesRouter);
+// auth routes
 app.use('/api/auth', router);
 
+// get sorted quizes routes
+app.use('/api/quizes', quizesRouter);
+
+// quizQuestion routes
+app.use('/api/quiz/question', quizQuestionRoute)
+
+// swagger routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // errors
-
 interface CustomError extends Error {
     status?: number;
     message: string;

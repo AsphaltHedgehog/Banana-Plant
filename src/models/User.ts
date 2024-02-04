@@ -1,5 +1,4 @@
 import { Document, Model, Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers';
 
 export interface User extends Document {
     name: string;
@@ -39,7 +38,6 @@ const userSchema = new Schema<User>(
     { versionKey: false, timestamps: true }
 );
 
-// userSchema.post("save", handleMongooseError);
 
 const User: Model<User> = model<User>('user', userSchema);
 
