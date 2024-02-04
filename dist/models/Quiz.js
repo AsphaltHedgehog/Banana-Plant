@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.QuizCategory = exports.Quiz = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const quizSchema = new mongoose_1.Schema({
     theme: { type: String, required: true },
@@ -33,5 +34,10 @@ const quizSchema = new mongoose_1.Schema({
     rating: { type: Number, required: true },
     finished: { type: Number, required: true },
 }, { timestamps: true, versionKey: false });
-const Quiz = mongoose_1.default.model('quizes', quizSchema);
-exports.default = Quiz;
+const quizCategorySchema = new mongoose_1.Schema({
+    ageGroup: { type: String, required: true },
+    title: { type: String, required: true },
+});
+exports.Quiz = mongoose_1.default.model('quizes', quizSchema);
+exports.QuizCategory = mongoose_1.default.model('categories', quizCategorySchema);
+// export default Quiz;

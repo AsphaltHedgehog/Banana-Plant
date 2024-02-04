@@ -1,4 +1,4 @@
-import Quiz from '../models/Quiz';
+import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError, cloudinary } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
@@ -51,43 +51,41 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// const addNewQuize = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const { category } = req.body;
-
-//         if (!mongoose.Types.ObjectId.isValid(category)) {
-//             res.status(400).json({ error: 'Invalid category ID' });
-//             return;
-//         }
-//         const categoryObjectId = new mongoose.Types.ObjectId(category);
-
-//         const newQuize = new Quiz({
-//             ...req.body,
-//             category: categoryObjectId,
-//         });
-//         const quize = await newQuize.save();
-//         console.log(newQuize);
-
-//         res.status(201).json(newQuize);
-//     } catch (error: any) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-
 const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category } = req.query;
-    let result;
+    const { category, page, pageSize } = req.query;
+
+    const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
+    const itemsPerPage: number = pageSize
+        ? parseInt(pageSize.toString(), 10)
+        : 4; 
+
     try {
-        if (category === 'adults') {
-            result = await Quiz.find({ ageGroup: 'adults' });
-        }
-        if (category === 'children') {
-            result = await Quiz.find({ ageGroup: 'children' });
-        }
-        res.json(result);
+        const totalQuizzesCount = await Quiz.countDocuments({
+            ageGroup: category,
+        });
+
+        const resultQuizCategories = await QuizCategory.find({
+            ageGroup: category,
+        });
+
+        const startIndex: number = (currentPage - 1) * itemsPerPage;
+        const endIndex: number = currentPage * itemsPerPage;
+
+        const resultQuiz = await Quiz.find({ ageGroup: category })
+            .skip(startIndex)
+            .limit(itemsPerPage);
+
+        res.json({
+            data: resultQuiz,
+            categories: resultQuizCategories,
+            currentPage,
+            pageSize: itemsPerPage,
+            totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
+            totalQuizzesCount,
+        });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
