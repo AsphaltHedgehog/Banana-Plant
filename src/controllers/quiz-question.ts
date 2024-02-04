@@ -103,23 +103,24 @@ const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void
 };
 
 const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<void> => {
-    // const { id } = req.params;
+    const { id } = req.params;
 
-    // try {
-    //     if (!mongoose.Types.ObjectId.isValid(id)) {
-    //         throw HttpError(400, 'Invalid quiz ID');
-    //     }
+    // Прикрути аутефикацию)
+    try {
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            throw HttpError(400, 'Invalid quiz ID');
+        }
 
-    //     const result = await QuizQuestion.findByIdAndDelete(id);
+        const result = await QuizQuestion.findByIdAndDelete(id);
 
-    //     if (!result) {
-    //         throw HttpError(404, 'Quiz not found');
-    //     }
+        if (!result) {
+            throw HttpError(404, 'Quiz not found');
+        }
 
         res.status(204).json({});
-    // } catch (error: any) {
-    //     res.status(500).json({ message: error.message });
-    // }
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 

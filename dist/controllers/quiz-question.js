@@ -112,19 +112,21 @@ const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const { id } = req.params;
-    // try {
-    //     if (!mongoose.Types.ObjectId.isValid(id)) {
-    //         throw HttpError(400, 'Invalid quiz ID');
-    //     }
-    //     const result = await QuizQuestion.findByIdAndDelete(id);
-    //     if (!result) {
-    //         throw HttpError(404, 'Quiz not found');
-    //     }
-    res.status(204).json({});
-    // } catch (error: any) {
-    //     res.status(500).json({ message: error.message });
-    // }
+    const { id } = req.params;
+    // Прикрути аутефикацию)
+    try {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+        }
+        const result = yield QuizQuestion_1.default.findByIdAndDelete(id);
+        if (!result) {
+            throw (0, index_1.HttpError)(404, 'Quiz not found');
+        }
+        res.status(204).json({});
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 exports.default = {
     addNewQuizQuestion: (0, index_2.ctrlWrapper)(addNewQuizQuestion),
