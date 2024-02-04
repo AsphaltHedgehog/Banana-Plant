@@ -1,15 +1,14 @@
 import express, { NextFunction, Request, Response } from 'express';
-import logger from "morgan";
-import cors from "cors";
-import "dotenv/config";
+import logger from 'morgan';
+import cors from 'cors';
+import 'dotenv/config';
 import bodyParser from 'body-parser';
-import reviewsRouter from "./routes/api/reviews-router.js";
+// import reviewsRouter from "./routes/api/reviews-router.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
-import quizQuestionRoute from './routes/api/quiz-question'
-
+import quizQuestionRoute from './routes/api/quiz-question';
 
 const app = express();
 
@@ -32,13 +31,13 @@ app.use(express.static('public'));
 // auth routes
 app.use('/api/auth', router);
 
-app.use('api/reviews', reviewsRoutes);
+// app.use('api/reviews', reviewsRoutes);
 
 // get sorted quizes routes
 app.use('/api/quizes', quizesRouter);
 
 // quizQuestion routes
-app.use('/api/quiz/question', quizQuestionRoute)
+app.use('/api/quiz/question', quizQuestionRoute);
 
 // swagger routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
