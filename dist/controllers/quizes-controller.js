@@ -82,9 +82,17 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         const resultQuizCategories = yield Quiz_1.QuizCategory.find({
             ageGroup: category,
         });
-        const resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
-            .skip(startIndex)
-            .limit(itemsPerPage);
+        let resultQuizesByCategory;
+        if (Array.isArray(category)) {
+            resultQuizesByCategory = yield Quiz_1.Quiz.find({})
+                .skip(startIndex)
+                .limit(itemsPerPage);
+        }
+        else {
+            resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
+                .skip(startIndex)
+                .limit(itemsPerPage);
+        }
         let result = [];
         if (rating) {
             result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);

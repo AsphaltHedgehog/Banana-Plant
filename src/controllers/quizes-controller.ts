@@ -18,7 +18,7 @@ const getAllByRating = async (req: Request, res: Response): Promise<void> => {
     try {
         const result = await Quiz.find({}, '-createdAt -updatedAt').sort({
             rating: -1,
-        }); 
+        });
 
         res.json(result);
     } catch (error: any) {
@@ -72,12 +72,20 @@ const getQuizesByCategory = async (
             ageGroup: category,
         });
 
-        const resultQuizesByCategory = await Quiz.find({ ageGroup: category })
-            .skip(startIndex)
-          .limit(itemsPerPage);
-      
-      let result: any[] = [];
-      
+        let resultQuizesByCategory;
+
+        if (Array.isArray(category)) {
+            resultQuizesByCategory = await Quiz.find({})
+                .skip(startIndex)
+                .limit(itemsPerPage);
+        } else {
+            resultQuizesByCategory = await Quiz.find({ ageGroup: category })
+                .skip(startIndex)
+                .limit(itemsPerPage);
+        }
+
+        let result: any[] = [];
+
         if (rating) {
             result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
         }
