@@ -89,9 +89,26 @@ const resetPassword = async (req: Request, res: Response) => {
     res.json({ message: 'Message delivered' });
 };
 
+const newPassword = async (req: Request, res: Response) => {
+    const { token } = req.params;
+    const { password } = req.body;
+    const hashPassword = await bcrypt.hash(password, 10);
+    const user = await User.findOneAndUpdate(
+        { resetToken: token },
+        { password: hashPassword },
+        { new: true }
+    );
+    if (!user) {
+        throw HttpError(400, 'Bad request');
+    }
+
+    res.json({ message: 'Message delivered' });
+};
+
 export const ctrl = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     logout: ctrlWrapper(logout),
     resetPassword: ctrlWrapper(resetPassword),
+    newPassword: ctrlWrapper(newPassword),
 };

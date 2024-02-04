@@ -87,9 +87,20 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     yield (0, sendEmail_1.default)(emailData);
     res.json({ message: 'Message delivered' });
 });
+const newPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = req.params;
+    const { password } = req.body;
+    const hashPassword = yield bcrypt_1.default.hash(password, 10);
+    const user = yield User_1.default.findOneAndUpdate({ resetToken: token }, { password: hashPassword }, { new: true });
+    if (!user) {
+        throw (0, helpers_1.HttpError)(400, 'Bad request');
+    }
+    res.json({ message: 'Message delivered' });
+});
 exports.ctrl = {
     register: (0, index_1.ctrlWrapper)(register),
     login: (0, index_1.ctrlWrapper)(login),
     logout: (0, index_1.ctrlWrapper)(logout),
     resetPassword: (0, index_1.ctrlWrapper)(resetPassword),
+    newPassword: (0, index_1.ctrlWrapper)(newPassword),
 };
