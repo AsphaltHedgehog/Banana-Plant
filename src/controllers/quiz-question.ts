@@ -70,7 +70,6 @@ const updateQuizQuestionById = async (req: Request, res: Response): Promise<void
         }
 
         const newData = req.body;
-        console.log(newData);
         
 
         if (newData.answers & newData.validAnswerIndex) {
@@ -83,10 +82,7 @@ const updateQuizQuestionById = async (req: Request, res: Response): Promise<void
             _id: new Types.ObjectId()
         }));
         newData.answers = arrayOfDescriptions;
-        console.log(newData.validAnswerIndex);
-            delete newData.validAnswerIndex;
-        console.log(newData);
-            
+        delete newData.validAnswerIndex;
         newData.validAnswer = arrayOfDescriptions[newData.validAnswerIndex]._id;
         };
 

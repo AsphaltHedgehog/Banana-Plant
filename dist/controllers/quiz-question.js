@@ -74,14 +74,11 @@ const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
             throw (0, index_1.HttpError)(404, "Bad Request");
         }
         const newData = req.body;
-        console.log(newData);
         if (newData.answers & newData.validAnswerIndex) {
             ;
             const arrayOfDescriptions = newData.answers.map((obj) => (Object.assign(Object.assign({}, obj), { _id: new mongoose_1.Types.ObjectId() })));
             newData.answers = arrayOfDescriptions;
-            console.log(newData.validAnswerIndex);
             delete newData.validAnswerIndex;
-            console.log(newData);
             newData.validAnswer = arrayOfDescriptions[newData.validAnswerIndex]._id;
         }
         ;
