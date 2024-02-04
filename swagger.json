@@ -157,6 +157,73 @@
                 },
                 "tags": ["Auth"]
             }
+        },
+        "/api/quiz/question": {
+            "post": {
+                "operationId": "postQuestion",
+                "summary": "adding a test question to the collection",
+                "parameters": [],
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "description": "# Description of request parameters:\n\n**time** - string, time to answer questions\n\n**description** - string, text question of the test\n\n**answers** - array, options for answering questions\n\n**validAnswer** - string, correct answer option;\n            \n**imageUrl** - string\n\n**type:** - 'full-text' or 'true-or-false'\n",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuizQuestionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Question created"
+                    },
+                    "400": {
+                        "description": ".",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Bad request"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Unauthorized"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Questions"]
+            }
         }
     },
     "components": {
@@ -224,6 +291,55 @@
                     }
                 },
                 "required": ["token"]
+            },
+            "QuizQuestionDto": {
+                "type": "object",
+                "properties": {
+                    "time": {
+                        "type": "string",
+                        "description": "time to answer questions",
+                        "example": "00:45"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "text question of the test",
+                        "example": "Яка іграшка складається з кольорових кубиків, які можна збирати в різні фігури?"
+                    },
+                    "answers": {
+                        "type": "array",
+                        "description": "options for answering questions",
+                        "example": [
+                            {
+                                "descr": "Пазли"
+                            },
+                            {
+                                "descr": "Кукла"
+                            },
+                            {
+                                "descr": "Лего"
+                            },
+                            {
+                                "descr": "Автомобільчик"
+                            }
+                        ]
+                    },
+                    "validAnswer": {
+                        "type": "string",
+                        "description": "correct answer option",
+                        "example": "65b9bbe690b27011571e1233"
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "description": "image URL",
+                        "example": ""
+                    },
+                    "type": {
+                        "type": "string",
+                        "description": "'full-text' or 'true-or-false'",
+                        "example": "true-or-false",
+                        "enum": ["full-text", "true-or-false"]
+                    }
+                }
             },
             "errorBadRequestResponse": {
                 "type": "object",
