@@ -231,6 +231,129 @@
                 },
                 "tags": ["Questions"]
             }
+        },
+        "/api/quiz/question/{id}": {
+            "patch": {
+                "summary": "Update a quiz question by ID",
+                "description": "Update a quiz question data by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "The ID of the quiz question to be updated.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "answers": {
+                                        "type": "array",
+                                        "description": "An array of answer descriptions.",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "descr": {
+                                                    "type": "string",
+                                                    "description": "Description of the answer."
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "validAnswerIndex": {
+                                        "type": "number",
+                                        "description": "Index of the valid answer in the 'answers' array."
+                                    }
+                                },
+                                "example": {
+                                    "answers": [
+                                        {
+                                            "descr": "Option 1"
+                                        },
+                                        {
+                                            "descr": "Option 2"
+                                        },
+                                        {
+                                            "descr": "Option 3"
+                                        },
+                                        {
+                                            "descr": "Option 4"
+                                        }
+                                    ],
+                                    "validAnswerIndex": 2
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation. Returns the updated quiz question.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "The ID of the updated quiz question."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "_id": "60f38c49e6e81c0015a7f7f1"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid ID format or other request issues.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Quiz question with the given ID not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Not found"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Questions"]
+            }
         }
     },
     "components": {
