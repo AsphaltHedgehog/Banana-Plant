@@ -12,19 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addReview = void 0;
+exports.reviewsController = exports.addReview = void 0;
 const Review_1 = __importDefault(require("../models/Review"));
+const decorators_1 = require("../decorators");
 const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, avatar, rating, comment } = req.body;
         // Додаємо відгук
-        const newReview = yield Review_1.default.create({ username, avatar, rating, comment });
+        const newReview = yield Review_1.default.create({
+            username,
+            avatar,
+            rating,
+            comment,
+        });
         // Отримуємо тест, для якого додавався відгук
-        const test = yield Test.findOne( /* умова для вибору тесту */);
-        // Переобчислюємо середній рейтинг тесту
-        test.totalRatings += 1;
-        test.averageRating = (test.averageRating * (test.totalRatings - 1) + rating) / test.totalRatings;
-        yield test.save();
+        // const test = await Test.findOne(/* умова для вибору тесту */);
+        // // Переобчислюємо середній рейтинг тесту
+        // * Закоментувала, бо тесту не існує
+        // test.totalRatings += 1;
+        // test.averageRating = (test.averageRating * (test.totalRatings - 1) + rating) / test.totalRatings;
+        // await test.save();
         res.status(201).json({
             status: 'OK',
             code: 201,
@@ -37,3 +44,4 @@ const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addReview = addReview;
+exports.reviewsController = { addReview: (0, decorators_1.ctrlWrapper)(exports.addReview) };

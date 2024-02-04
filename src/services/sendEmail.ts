@@ -21,19 +21,3 @@ const sendEmail = async (data: EmailData) => {
 };
 
 export default sendEmail;
-// const email = {
-//     subject: 'Hello',
-//     sender: { email: envsConfig.email },
-//     to: [{ email: 'tane4ka170@gmail.com' }],
-//     htmlContent:
-//         '<h1>Congratulations! You successfully sent this example campaign via theBrevo API.</h1>',
-// };
-
-// apiInstance
-//     .sendTransacEmail(email)
-//     .then(() => {
-//         console.log('Sended mail');
-//     })
-//     .catch((error: any) => {
-//         console.log(error);
-//     });

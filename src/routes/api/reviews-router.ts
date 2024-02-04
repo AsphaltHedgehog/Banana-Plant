@@ -1,13 +1,12 @@
-import { Router } from "express";
+import { Router } from 'express';
 
-import reviewsController from "../../controllers/reviews-controller";
+import { reviewsController } from '../../controllers/reviews-controller';
 // import authenticate from "../../middlewares/";
-import reviewsValidation from "../../middlewares/reviews-validation.js";
+import reviewsValidation from '../../middlewares/reviews-validation.js';
 
 const reviewsRouter = Router();
 
-reviewsRouter.get("/",
-  reviewsController.getAllReviews);
+reviewsRouter.get('/', reviewsController.addReview);
 
 // reviewsRouter.get("/own",
 //   authenticate,
@@ -28,6 +27,3 @@ reviewsRouter.get("/",
 //   reviewsController.removeOneReview);
 
 export default reviewsRouter;
-
-
-

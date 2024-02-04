@@ -1,12 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const reviews_controller_1 = __importDefault(require("../../controllers/reviews-controller"));
+const reviews_controller_1 = require("../../controllers/reviews-controller");
 const reviewsRouter = (0, express_1.Router)();
-reviewsRouter.get("/", reviews_controller_1.default.getAllReviews);
+reviewsRouter.get('/', reviews_controller_1.reviewsController.addReview);
 // reviewsRouter.get("/own",
 //   authenticate,
 //   reviewsController.getOneReview);
