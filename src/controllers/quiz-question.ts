@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import mongoose, { ObjectId } from 'mongoose';
-// import crypto from 'crypto';
+import mongoose, { Schema, Types } from 'mongoose';
 
 // helpers
 import { HttpError } from '../helpers/index';
@@ -14,7 +13,7 @@ import QuizQuestion from '../models/QuizQuestion';
 
 const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { quizId, time, imageUrl = '', type, descr, answers, validAnswer = '75b9b74a5af6ce975d92ee51', validAnswerIndex } = req.body;
+        const { quizId, time, imageUrl = '', type, descr, answers, validAnswerIndex } = req.body;
 
         // auth (Пока закоменчено чтобы не ломать ничего)
         // const user = req.body.user
@@ -28,42 +27,31 @@ const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> =>
         //   throw HttpError(401, "Unauthorized")
         // }
 
-        // НЕНУЖНАЯ СЕКЦИЯ!!!!
-        // generate answers id's, amd set validAnswer
-        //   interface DescriptionObject {
-        //   descr: string;
-        //   }
 
-        //   const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
-        //       ...(obj as DescriptionObject),
-        //       id: crypto.randomUUID().toString()
-        //   }));
+        // generate answers id's, and set validAnswer as ObjectId
+        interface DescriptionObject {
+            descr: string;
+        };
 
-        //   const validDescr = arrayOfDescriptions[validAnswer].id
-        // НЕНУЖНАЯ СЕКЦИЯ!!!!
-        
-        // const quizQuestion = new QuizQuestion ({
-        //     quiz: quizId,
-        //     time: time,
-        //     answers: answers,
-        //     imageUrl: imageUrl,
-        //     type: type,
-        //     descr: descr,
-        //     validAnswer: answers[validAnswerIndex]._id,
-        // });
+        const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
+            ...(obj as DescriptionObject),
+            _id: new Types.ObjectId()
+        }));
+
+        const validAnswerId = arrayOfDescriptions[validAnswerIndex]._id;
 
         const quizQuestion = {
             quiz: quizId,
             time: time,
-            answers: answers,
+            answers: arrayOfDescriptions,
             imageUrl: imageUrl,
             type: type,
             descr: descr,
-            validAnswer: answers[validAnswerIndex]._id,
+            validAnswer: validAnswerId,
         };
 
 
-        console.log(quizQuestion, validAnswerIndex);
+        console.log();
 
         const createdQuizQuestion = await QuizQuestion.create(quizQuestion)
 

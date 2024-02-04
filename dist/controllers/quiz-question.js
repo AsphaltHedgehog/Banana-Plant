@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -23,8 +46,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-// import crypto from 'crypto';
+const mongoose_1 = __importStar(require("mongoose"));
 // helpers
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
@@ -34,47 +56,20 @@ const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
 // import Quiz from '../models/Quiz';
 const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { quizId, time, imageUrl = '', type, descr, answers, validAnswer = '75b9b74a5af6ce975d92ee51', validAnswerIndex } = req.body;
-        // auth (Пока закоменчено чтобы не ломать ничего)
-        // const user = req.body.user
-        // const quiz = await Quiz.findById(quizId);
-        // if (!quiz ) {
-        //   throw HttpError(400, "Bad Request")
-        // };
-        // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
-        // if (!user.ownTests.find(quizId)) {
-        //   throw HttpError(401, "Unauthorized")
-        // }
-        // НЕНУЖНАЯ СЕКЦИЯ!!!!
-        // generate answers id's, amd set validAnswer
-        //   interface DescriptionObject {
-        //   descr: string;
-        //   }
-        //   const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
-        //       ...(obj as DescriptionObject),
-        //       id: crypto.randomUUID().toString()
-        //   }));
-        //   const validDescr = arrayOfDescriptions[validAnswer].id
-        // НЕНУЖНАЯ СЕКЦИЯ!!!!
-        // const quizQuestion = new QuizQuestion ({
-        //     quiz: quizId,
-        //     time: time,
-        //     answers: answers,
-        //     imageUrl: imageUrl,
-        //     type: type,
-        //     descr: descr,
-        //     validAnswer: answers[validAnswerIndex]._id,
-        // });
+        const { quizId, time, imageUrl = '', type, descr, answers, validAnswerIndex } = req.body;
+        ;
+        const arrayOfDescriptions = answers.map((obj) => (Object.assign(Object.assign({}, obj), { _id: new mongoose_1.Types.ObjectId() })));
+        const validAnswerId = arrayOfDescriptions[validAnswerIndex]._id;
         const quizQuestion = {
             quiz: quizId,
             time: time,
-            answers: answers,
+            answers: arrayOfDescriptions,
             imageUrl: imageUrl,
             type: type,
             descr: descr,
-            validAnswer: answers[validAnswerIndex]._id,
+            validAnswer: validAnswerId,
         };
-        console.log(quizQuestion, validAnswerIndex);
+        console.log();
         const createdQuizQuestion = yield QuizQuestion_1.default.create(quizQuestion);
         res.status(201).json({ createdQuizQuestion });
     }
