@@ -18,7 +18,7 @@ quizQuestionRoute.patch('/:id', isEmptyBody, //authenticate,
 quizQuestionRoute.delete('/:id', //authenticate,
   quizQuestion.deleteQuizQuestionById);
 
-// quizQuestionRoute.delete('/img/:id', //authenticate,
-//   quizQuestion.deleteQuizQuestionImgById);
+quizQuestionRoute.delete('/img/:id', //authenticate,
+  quizQuestion.deleteQuizQuestionImgById);
 
 export default quizQuestionRoute;

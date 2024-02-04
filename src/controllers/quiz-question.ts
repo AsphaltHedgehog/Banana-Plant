@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mongoose, { ObjectId } from 'mongoose';
-import crypto from 'crypto';
+// import crypto from 'crypto';
 
 // helpers
 import { HttpError } from '../helpers/index';
@@ -14,45 +14,60 @@ import QuizQuestion from '../models/QuizQuestion';
 
 const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { quizId, time, imageUrl = '', type, descr, answers, validAnswer } = req.body;
+        const { quizId, time, imageUrl = '', type, descr, answers, validAnswer = '75b9b74a5af6ce975d92ee51', validAnswerIndex } = req.body;
 
-      // auth (Пока закоменчено чтобы не ломать ничего)
-      // const user = req.body.user
-      // const quiz = await Quiz.findById(quizId);
-      // if (!quiz ) {
-      //   throw HttpError(400, "Bad Request")
-      // };
+        // auth (Пока закоменчено чтобы не ломать ничего)
+        // const user = req.body.user
+        // const quiz = await Quiz.findById(quizId);
+        // if (!quiz ) {
+        //   throw HttpError(400, "Bad Request")
+        // };
 
-      // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
-      // if (!user.ownTests.find(quizId)) {
-      //   throw HttpError(401, "Unauthorized")
-      // }
+        // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
+        // if (!user.ownTests.find(quizId)) {
+        //   throw HttpError(401, "Unauthorized")
+        // }
 
-      // generate answers id's, amd set validAnswer
-      interface DescriptionObject {
-      descr: string;
-      }
+        // НЕНУЖНАЯ СЕКЦИЯ!!!!
+        // generate answers id's, amd set validAnswer
+        //   interface DescriptionObject {
+        //   descr: string;
+        //   }
 
-      const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
-          ...(obj as DescriptionObject),
-          id: crypto.randomUUID().toString()
-      }));
+        //   const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
+        //       ...(obj as DescriptionObject),
+        //       id: crypto.randomUUID().toString()
+        //   }));
 
-      const validDescr = arrayOfDescriptions[validAnswer].id
+        //   const validDescr = arrayOfDescriptions[validAnswer].id
+        // НЕНУЖНАЯ СЕКЦИЯ!!!!
+        
+        // const quizQuestion = new QuizQuestion ({
+        //     quiz: quizId,
+        //     time: time,
+        //     answers: answers,
+        //     imageUrl: imageUrl,
+        //     type: type,
+        //     descr: descr,
+        //     validAnswer: answers[validAnswerIndex]._id,
+        // });
 
-      const quizQuestion = {
+        const quizQuestion = {
             quiz: quizId,
-            time,
-            imageUrl,
-            type,
-            descr,
-            answers: arrayOfDescriptions,
-            validAnswer: validDescr
-      };
-      
-      await QuizQuestion.create({...quizQuestion})
+            time: time,
+            answers: answers,
+            imageUrl: imageUrl,
+            type: type,
+            descr: descr,
+            validAnswer: answers[validAnswerIndex]._id,
+        };
 
-        res.status(201).json({ quizQuestion });
+
+        console.log(quizQuestion, validAnswerIndex);
+
+        const createdQuizQuestion = await QuizQuestion.create(quizQuestion)
+
+        res.status(201).json({ createdQuizQuestion });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }

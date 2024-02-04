@@ -2,7 +2,7 @@ import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError, cloudinary } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import fs from 'fs/promises';
+// import fs from 'fs/promises';
 import mongoose, { ObjectId } from 'mongoose';
 
 
@@ -145,7 +145,7 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
 //         });
 //         const quize = await newQuize.save();
 
-        const { _id, ...updatedData } = req.body;
+        const { id, ...updatedData } = req.body;
 
         const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
             new: true,

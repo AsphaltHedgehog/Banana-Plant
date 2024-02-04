@@ -24,7 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const crypto_1 = __importDefault(require("crypto"));
+// import crypto from 'crypto';
 // helpers
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
@@ -34,20 +34,49 @@ const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
 // import Quiz from '../models/Quiz';
 const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { quizId, time, imageUrl = '', type, descr, answers, validAnswer } = req.body;
-        const arrayOfDescriptions = answers.map((obj) => (Object.assign(Object.assign({}, obj), { id: crypto_1.default.randomUUID().toString() })));
-        const validDescr = arrayOfDescriptions[validAnswer].id;
+        const { quizId, time, imageUrl = '', type, descr, answers, validAnswer = '75b9b74a5af6ce975d92ee51', validAnswerIndex } = req.body;
+        // auth (Пока закоменчено чтобы не ломать ничего)
+        // const user = req.body.user
+        // const quiz = await Quiz.findById(quizId);
+        // if (!quiz ) {
+        //   throw HttpError(400, "Bad Request")
+        // };
+        // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
+        // if (!user.ownTests.find(quizId)) {
+        //   throw HttpError(401, "Unauthorized")
+        // }
+        // НЕНУЖНАЯ СЕКЦИЯ!!!!
+        // generate answers id's, amd set validAnswer
+        //   interface DescriptionObject {
+        //   descr: string;
+        //   }
+        //   const arrayOfDescriptions = answers.map((obj: DescriptionObject) => ({
+        //       ...(obj as DescriptionObject),
+        //       id: crypto.randomUUID().toString()
+        //   }));
+        //   const validDescr = arrayOfDescriptions[validAnswer].id
+        // НЕНУЖНАЯ СЕКЦИЯ!!!!
+        // const quizQuestion = new QuizQuestion ({
+        //     quiz: quizId,
+        //     time: time,
+        //     answers: answers,
+        //     imageUrl: imageUrl,
+        //     type: type,
+        //     descr: descr,
+        //     validAnswer: answers[validAnswerIndex]._id,
+        // });
         const quizQuestion = {
             quiz: quizId,
-            time,
-            imageUrl,
-            type,
-            descr,
-            answers: arrayOfDescriptions,
-            validAnswer: validDescr
+            time: time,
+            answers: answers,
+            imageUrl: imageUrl,
+            type: type,
+            descr: descr,
+            validAnswer: answers[validAnswerIndex]._id,
         };
-        yield QuizQuestion_1.default.create(Object.assign({}, quizQuestion));
-        res.status(201).json({ quizQuestion });
+        console.log(quizQuestion, validAnswerIndex);
+        const createdQuizQuestion = yield QuizQuestion_1.default.create(quizQuestion);
+        res.status(201).json({ createdQuizQuestion });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
