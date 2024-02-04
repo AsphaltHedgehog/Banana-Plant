@@ -23,21 +23,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QuizCategory = exports.Quiz = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const quizSchema = new mongoose_1.Schema({
-    theme: { type: String, required: true },
-    category: [{ type: mongoose_1.Schema.Types.ObjectId, required: true }],
-    background: { type: String, required: true },
-    ageGroup: { type: String, required: true },
-    ratingQuantity: { type: Number, required: true },
-    rating: { type: Number, required: true },
-    finished: { type: Number, required: true },
-}, { timestamps: true, versionKey: false });
-const quizCategorySchema = new mongoose_1.Schema({
-    ageGroup: { type: String, required: true },
-    title: { type: String, required: true },
+const answerSchema = new mongoose_1.Schema({
+    descr: { type: String, required: true },
 });
-exports.Quiz = mongoose_1.default.model('quizes', quizSchema);
-exports.QuizCategory = mongoose_1.default.model('categories', quizCategorySchema);
-// export default Quiz;
+;
+const quizQuestionSchema = new mongoose_1.Schema({
+    quiz: { type: mongoose_1.Schema.Types.ObjectId, required: true },
+    time: { type: String, required: true },
+    descr: { type: String, required: true },
+    answers: [answerSchema],
+    validAnswer: { type: mongoose_1.Schema.Types.ObjectId },
+    imageUrl: { type: String, required: false, default: '' },
+    type: { type: String, required: true, enum: ['full-text', 'true-or-false'] },
+}, { timestamps: true, versionKey: false });
+const QuizQuestion = mongoose_1.default.model('quizQuestion', quizQuestionSchema);
+exports.default = QuizQuestion;

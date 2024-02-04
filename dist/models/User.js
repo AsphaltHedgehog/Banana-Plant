@@ -26,6 +26,5 @@ const userSchema = new mongoose_1.Schema({
         default: '',
     },
 }, { versionKey: false, timestamps: true });
-// userSchema.post("save", handleMongooseError);
 const User = (0, mongoose_1.model)('user', userSchema);
 exports.default = User;
