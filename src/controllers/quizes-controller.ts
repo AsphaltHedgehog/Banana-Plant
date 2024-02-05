@@ -6,8 +6,18 @@ import { ctrlWrapper } from '../decorators/index';
 import mongoose, { ObjectId } from 'mongoose';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
+    const { page, pageSize } = req.query;
+    const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
+    const itemsPerPage: number = pageSize
+        ? parseInt(pageSize.toString(), 10)
+        : 4;
+
     try {
-        const result = await Quiz.find({}, '-createdAt -updatedAt');
+        const startIndex: number = (currentPage - 1) * itemsPerPage;
+
+        const result = await Quiz.find({}, '-createdAt -updatedAt')
+            .skip(startIndex)
+            .limit(itemsPerPage);
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });

@@ -29,8 +29,16 @@ const index_2 = require("../decorators/index");
 // import fs from 'fs/promises';
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, pageSize } = req.query;
+    const currentPage = page ? parseInt(page.toString(), 10) : 1;
+    const itemsPerPage = pageSize
+        ? parseInt(pageSize.toString(), 10)
+        : 4;
     try {
-        const result = yield Quiz_1.Quiz.find({}, '-createdAt -updatedAt');
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const result = yield Quiz_1.Quiz.find({}, '-createdAt -updatedAt')
+            .skip(startIndex)
+            .limit(itemsPerPage);
         res.json(result);
     }
     catch (error) {
