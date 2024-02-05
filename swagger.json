@@ -162,7 +162,6 @@
             "post": {
                 "operationId": "postQuestion",
                 "summary": "adding a test question to the collection",
-                "parameters": [],
                 "security": [
                     {
                         "bearerAuth": []
@@ -235,6 +234,11 @@
         "/api/quiz/question/{id}": {
             "patch": {
                 "summary": "Update a quiz question by ID",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "description": "Update a quiz question data by ID.",
                 "parameters": [
                     {
@@ -244,7 +248,8 @@
                         "description": "The ID of the quiz question to be updated.",
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "example": "60f38c49e6e81c0015a7f7f2"
                     }
                 ],
                 "requestBody": {
@@ -347,6 +352,145 @@
                                 },
                                 "example": {
                                     "message": "Not found"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Questions"]
+            },
+            "delete": {
+                "summary": "Delete a quiz question by ID",
+                "description": "Delete a quiz question by ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "The ID of the quiz question to be deleted.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "60f38c49e6e81c0015a7f7f2"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful deletion.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Quiz deleted successfully"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid ID format.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Invalid quiz ID"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Quiz question with the given ID not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Quiz not found"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Questions"]
+            }
+        },
+        "/api/quiz/question/img/{id}": {
+            "delete": {
+                "summary": "Delete the image associated with a quiz question",
+                "description": "Delete the image associated with a quiz question by ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "ID of the quiz question which image have to be deleted.",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "60f38c49e6e81c0015a7f7f2"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content. Image deleted successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request. Invalid quiz ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Invalid quiz ID"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found. Quiz question or image not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Description of the error."
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "message": "Quiz question not found"
                                 }
                             }
                         }
