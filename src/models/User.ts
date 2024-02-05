@@ -5,7 +5,15 @@ export interface User extends Document {
     email: string;
     password: string;
     token: string;
+    contactInfo: {
+        additionalEmail: string;
+    };
+    favorite: Schema.Types.ObjectId[];
+   
+    addFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
+    removeFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
 }
+
 
 const emailRegex =
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
@@ -33,12 +41,22 @@ const userSchema = new Schema<User>(
         token: {
             type: String,
             default: '',
+            
         },
+       
+        favorite: [{
+            type: Schema.Types.ObjectId,
+            ref: 'Test',
+           
+            default: []
+            
+        }],
     },
     { versionKey: false, timestamps: true }
 );
 
 
 const User: Model<User> = model<User>('user', userSchema);
+
 
 export default User;
