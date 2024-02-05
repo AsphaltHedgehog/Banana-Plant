@@ -4,8 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const auth_1 = require("./../../controllers/auth");
+const user_1 = require("./../../controllers/user");
 const middlewares_1 = require("../../middlewares");
 const userRouter = express_1.default.Router();
-userRouter.patch('/favorite', middlewares_1.authenticate, auth_1.ctrl.register);
+userRouter.get('/info', middlewares_1.authenticate, user_1.userController.userInfo);
+userRouter.patch('/update', middlewares_1.authenticate, user_1.userController.updateInfo);
+userRouter.patch('/favorite', middlewares_1.authenticate, user_1.userController.favorite);
 exports.default = userRouter;

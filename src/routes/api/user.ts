@@ -1,10 +1,18 @@
 import express from 'express';
-import { ctrl } from './../../controllers/auth';
-import { authenticate } from '../../middlewares';
+import { userController } from './../../controllers/user';
+ import { authenticate } from '../../middlewares';
 
 const userRouter = express.Router();
+userRouter.get('/info',
+ authenticate, 
+ userController.userInfo);
 
-userRouter.patch('/favorite',authenticate, ctrl.register);
+ userRouter.patch('/update',
+ authenticate, userController.updateInfo);
+
+userRouter.patch('/favorite',
+ authenticate, 
+ userController.favorite);
 
 
 

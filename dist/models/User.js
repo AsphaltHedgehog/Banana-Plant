@@ -25,30 +25,11 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: '',
     },
-    favoriteTests: [{
+    favorite: [{
             type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Test',
             default: []
         }],
 }, { versionKey: false, timestamps: true });
-// Методи оновлює  додає  видаляє
-// userSchema.methods.updateContactInfo = function (newContactInfo) {
-//     this.contactInfo.additionalEmail = newContactInfo.additionalEmail || this.contactInfo.additionalEmail;
-//     return this.save();
-// };
-// userSchema.methods.addFavoriteTest = function (testId) {
-//     if (!this.favoriteTests.includes(testId)) {
-//         this.favoriteTests.push(testId);
-//         return this.save();
-//     }
-// };
-// userSchema.methods.removeFavoriteTest = function (testId) {
-//     const index = this.favoriteTests.indexOf(testId);
-//     if (index !== -1) {
-//         this.favoriteTests.splice(index, 1);
-//         return this.save();
-//     }
-// };
-// userSchema.post("save", handleMongooseError);
 const User = (0, mongoose_1.model)('user', userSchema);
 exports.default = User;

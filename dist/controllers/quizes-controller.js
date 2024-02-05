@@ -145,13 +145,20 @@ const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.params;
-        if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
-            res.status(400).json({ error: 'Invalid quiz ID' });
-            return;
-        }
-        const _a = req.body, { _id } = _a, updatedData = __rest(_a, ["_id"]);
-        const existingQuiz = yield Quiz_1.default.findByIdAndUpdate(id, updatedData, {
+        //         const { id } = req.params;
+        //         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        //             res.status(400).json({ error: 'Invalid quiz ID' });
+        //             return;
+        //         }
+        // точно так же, обновление должно быть не напрямую в Квиз, а в Вопросы квиза
+        //         const newQuize = new Quiz({
+        //             ...req.body,
+        //             category: categoryObjectId,
+        //             poster,
+        //         });
+        //         const quize = await newQuize.save();
+        const _a = req.body, { id } = _a, updatedData = __rest(_a, ["id"]);
+        const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, updatedData, {
             new: true,
         });
         if (!existingQuiz) {
