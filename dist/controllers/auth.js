@@ -69,6 +69,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         throw (0, helpers_1.HttpError)(404, 'Account not found');
     }
     const resetToken = crypto_1.default.randomUUID();
+    yield User_1.default.findOneAndUpdate({ email }, { $set: { resetToken } });
     const emailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -89,13 +90,21 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 const newPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = req.params;
-    const { password } = req.body;
-    const hashPassword = yield bcrypt_1.default.hash(password, 10);
-    const user = yield User_1.default.findOneAndUpdate({ resetToken: token }, { password: hashPassword }, { new: true });
+    const { newPassword } = req.body;
+    const user = yield User_1.default.findOne({ resetToken: token });
     if (!user) {
-        throw (0, helpers_1.HttpError)(400, 'Bad request');
+        throw (0, helpers_1.HttpError)(401, 'Invalid or expired token');
     }
-    res.json({ message: 'Message delivered' });
+    // Перевірте, чи є newPassword та не є порожнім значенням
+    if (!newPassword) {
+        throw (0, helpers_1.HttpError)(400, 'New password is required');
+    }
+    // Хешуємо новий пароль і зберігаємо його
+    const hashPassword = yield bcrypt_1.default.hash(newPassword, 10);
+    user.password = hashPassword;
+    user.resetToken = null;
+    yield user.save();
+    res.json({ message: 'Password reset successful' });
 });
 exports.ctrl = {
     register: (0, index_1.ctrlWrapper)(register),

@@ -25,11 +25,17 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         default: '',
     },
-    favorite: [{
+    resetToken: {
+        type: String,
+        default: null,
+    },
+    favorite: [
+        {
             type: mongoose_1.Schema.Types.ObjectId,
             ref: 'Test',
-            default: []
-        }],
+            default: [],
+        },
+    ],
 }, { versionKey: false, timestamps: true });
 const User = (0, mongoose_1.model)('user', userSchema);
 exports.default = User;
