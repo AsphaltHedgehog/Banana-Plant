@@ -23,21 +23,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QuizCategory = exports.Quiz = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const quizSchema = new mongoose_1.Schema({
-    theme: { type: String, required: true },
-    category: [{ type: mongoose_1.Schema.Types.ObjectId, required: true }],
-    background: { type: String, required: true },
-    ageGroup: { type: String, required: true },
-    ratingQuantity: { type: Number, required: true },
+const reviewSchema = new mongoose_1.Schema({
+    username: { type: String, required: true },
+    avatar: { type: String },
     rating: { type: Number, required: true },
-    finished: { type: Number, required: true },
-}, { timestamps: true, versionKey: false });
-const quizCategorySchema = new mongoose_1.Schema({
-    ageGroup: { type: String, required: true },
-    title: { type: String, required: true },
+    comment: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
 });
-exports.Quiz = mongoose_1.default.model('quizes', quizSchema);
-exports.QuizCategory = mongoose_1.default.model('categories', quizCategorySchema);
-// export default Quiz;
+const Review = mongoose_1.default.model('Review', reviewSchema);
+exports.default = Review;

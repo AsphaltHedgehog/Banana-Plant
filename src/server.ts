@@ -1,6 +1,5 @@
-import mongoose from 'mongoose';
-
-import app from './app.js';
+import app from './app';
+import mongoose, { ConnectOptions } from 'mongoose';
 import 'dotenv/config';
 import envsConfig from './conf/envConfs';
 
@@ -11,7 +10,10 @@ if (!envsConfig.dbHost) {
 }
 
 mongoose
-    .connect(envsConfig.dbHost)
+    .connect(envsConfig.dbHost, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    } as ConnectOptions)
     .then(() => {
         app.listen(envsConfig.port, () => {
             console.log(

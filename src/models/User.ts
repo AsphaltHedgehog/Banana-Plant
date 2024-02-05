@@ -1,5 +1,4 @@
 import { Document, Model, Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers';
 
 export interface User extends Document {
     name: string;
