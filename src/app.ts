@@ -8,7 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
-import userRouter from "./routes/api/user.js"
+import userRouter from './routes/api/user.js';
 import quizQuestionRoute from './routes/api/quiz-question';
 
 const app = express();
@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 

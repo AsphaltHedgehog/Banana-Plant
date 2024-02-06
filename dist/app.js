@@ -26,6 +26,7 @@ app.use((req, res, next) => {
 app.use((0, morgan_1.default)(formatsLogger));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
 app.use(express_1.default.static('public'));
 // auth routes

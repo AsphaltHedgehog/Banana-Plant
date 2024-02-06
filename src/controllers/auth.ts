@@ -70,6 +70,7 @@ const resetPassword = async (req: Request, res: Response) => {
         throw HttpError(404, 'Account not found');
     }
     const resetToken = crypto.randomUUID();
+    await User.findOneAndUpdate({ email }, { $set: { resetToken } });
     const emailData: EmailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -91,18 +92,23 @@ const resetPassword = async (req: Request, res: Response) => {
 
 const newPassword = async (req: Request, res: Response) => {
     const { token } = req.params;
-    const { password } = req.body;
-    const hashPassword = await bcrypt.hash(password, 10);
-    const user = await User.findOneAndUpdate(
-        { resetToken: token },
-        { password: hashPassword },
-        { new: true }
-    );
-    if (!user) {
-        throw HttpError(400, 'Bad request');
-    }
+    const { newPassword } = req.body;
 
-    res.json({ message: 'Message delivered' });
+    const user = await User.findOne({ resetToken: token });
+
+    if (!user) {
+        throw HttpError(401, 'Invalid or expired token');
+    }
+    if (!newPassword) {
+        throw HttpError(400, 'New password is required');
+    }
+    const hashPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashPassword;
+    user.resetToken = null;
+
+    await user.save();
+
+    res.json({ message: 'Password reset successful' });
 };
 
 export const ctrl = {
