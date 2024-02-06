@@ -1,11 +1,19 @@
 import { Document, Model, Schema, model } from 'mongoose';
-import { handleMongooseError } from '../helpers';
 
 export interface User extends Document {
     name: string;
     email: string;
     password: string;
+    avatarURL: string;
     token: string;
+    resetToken: string | null;
+    contactInfo: {
+        additionalEmail: string;
+    };
+    favorite: Schema.Types.ObjectId[];
+
+    addFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
+    removeFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
 }
 
 const emailRegex =
@@ -31,15 +39,30 @@ const userSchema = new Schema<User>(
             minlength: 1,
             maxlength: 64,
         },
+        avatarURL: {
+            type: String,
+            required: true,
+        },
         token: {
             type: String,
             default: '',
         },
+        resetToken: {
+            type: String,
+            default: null,
+        },
+
+        favorite: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Test',
+
+                default: [],
+            },
+        ],
     },
     { versionKey: false, timestamps: true }
 );
-
-// userSchema.post("save", handleMongooseError);
 
 const User: Model<User> = model<User>('user', userSchema);
 

@@ -21,11 +21,25 @@ const userSchema = new mongoose_1.Schema({
         minlength: 1,
         maxlength: 64,
     },
+    avatarURL: {
+        type: String,
+        required: true,
+    },
     token: {
         type: String,
         default: '',
     },
+    resetToken: {
+        type: String,
+        default: null,
+    },
+    favorite: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: 'Test',
+            default: [],
+        },
+    ],
 }, { versionKey: false, timestamps: true });
-// userSchema.post("save", handleMongooseError);
 const User = (0, mongoose_1.model)('user', userSchema);
 exports.default = User;
