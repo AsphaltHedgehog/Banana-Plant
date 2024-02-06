@@ -68,7 +68,7 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, page, pageSize, rating, ratingQuantity } = req.query;
+    const { category, page, pageSize, rating, finished } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
@@ -83,12 +83,15 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         const startIndex = (currentPage - 1) * itemsPerPage;
         let sortCriteria;
         if (rating) {
-            sortCriteria = { rating: -1 };
+            sortCriteria = {
+                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
+            };
         }
-        if (ratingQuantity) {
-            sortCriteria = { ratingQuantity: -1 };
+        else if (finished) {
+            sortCriteria = {
+                ratingQuantity: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
+            };
         }
-        console.log(sortCriteria);
         const resultQuiz = yield Quiz_1.Quiz.find({ ageGroup: category })
             .skip(startIndex)
             .limit(itemsPerPage)
@@ -117,6 +120,7 @@ const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             category: arrQuizesCategory,
             background: 'none',
         });
+        quizInfo.save();
         res.status(201).json(quizInfo);
     }
     catch (error) {

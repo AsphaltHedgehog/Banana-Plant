@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose, { ObjectId } from 'mongoose';
-import { boolean } from 'joi';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -43,7 +42,6 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
             throw HttpError(404, 'Quiz not found');
             return;
         }
-
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -54,7 +52,7 @@ const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category, page, pageSize, rating, ratingQuantity } = req.query;
+    const { category, page, pageSize, rating, finished } = req.query;
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
@@ -72,15 +70,17 @@ const getQuizesByCategory = async (
 
         const startIndex: number = (currentPage - 1) * itemsPerPage;
 
-        let sortCriteria;
-        if (rating) {
-            sortCriteria = { rating: 1 };
-        }
-        if (ratingQuantity) {
-            sortCriteria = { ratingQuantity: 1 };
-        }
+        let sortCriteria: { [key: string]: 1 | -1 } | undefined;
 
-        console.log(sortCriteria);
+        if (rating) {
+            sortCriteria = {
+                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
+            };
+        } else if (finished) {
+            sortCriteria = {
+                ratingQuantity: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
+            };
+        }
 
         const resultQuiz = await Quiz.find({ ageGroup: category })
             .skip(startIndex)
@@ -114,6 +114,8 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
             category: arrQuizesCategory,
             background: 'none',
         });
+
+        quizInfo.save();
 
         res.status(201).json(quizInfo);
     } catch (error: any) {
