@@ -21,6 +21,10 @@ const userSchema = new mongoose_1.Schema({
         minlength: 1,
         maxlength: 64,
     },
+    avatarURL: {
+        type: String,
+        required: true,
+    },
     token: {
         type: String,
         default: '',

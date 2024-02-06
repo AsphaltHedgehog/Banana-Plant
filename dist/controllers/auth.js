@@ -16,6 +16,7 @@ exports.ctrl = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
+const gravatar_1 = __importDefault(require("gravatar"));
 const envConfs_1 = __importDefault(require("../conf/envConfs"));
 const helpers_1 = require("../helpers");
 const index_1 = require("../decorators/index");
@@ -24,11 +25,12 @@ const sendEmail_1 = __importDefault(require("../services/sendEmail"));
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password } = req.body;
     const user = yield User_1.default.findOne({ email });
+    const avatarURL = gravatar_1.default.url(email);
     if (user) {
         throw (0, helpers_1.HttpError)(409, 'Email already in use');
     }
     const hashPassword = yield bcrypt_1.default.hash(password, 10);
-    const newUser = yield User_1.default.create(Object.assign(Object.assign({}, req.body), { password: hashPassword }));
+    const newUser = yield User_1.default.create(Object.assign(Object.assign({}, req.body), { password: hashPassword, avatarURL: avatarURL }));
     res.status(201).json({
         name: newUser.name,
         email: newUser.email,
