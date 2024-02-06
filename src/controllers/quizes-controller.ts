@@ -93,39 +93,26 @@ const getQuizesByCategory = async (
             };
         } else if (finished) {
             sortCriteria = {
-                ratingQuantity: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
+                finished: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
             };
         }
 
-        const resultQuiz = await Quiz.find({ ageGroup: category })
-            .skip(startIndex)
-            .limit(itemsPerPage)
-            .sort(sortCriteria);
-        let resultQuizesByCategory;
-
+      let resultQuizesByCategory;
+      
         if (Array.isArray(category)) {
             resultQuizesByCategory = await Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage);
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         } else {
             resultQuizesByCategory = await Quiz.find({ ageGroup: category })
                 .skip(startIndex)
-                .limit(itemsPerPage);
-        }
-
-        let result: any[] = [];
-
-        if (rating) {
-            result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
-        }
-        if (finished) {
-            result = resultQuizesByCategory.sort(
-                (a, b) => b.finished - a.finished
-            );
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         }
 
         res.json({
-            data: result,
+            data: resultQuizesByCategory,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
