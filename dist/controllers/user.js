@@ -17,21 +17,34 @@ const User_1 = __importDefault(require("../models/User"));
 const index_1 = require("../decorators/index");
 const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id, name, email, favorite } = req.body.user;
-    res.status(201).json({ user: { _id, name, email, favorite } });
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: { user: { _id, name, email, favorite } }
+    });
 });
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
     const { name } = req.body;
-    console.log();
-    const result = yield User_1.default.findByIdAndUpdate(_id, { name }, { new: true });
-    res.status(201).json({ result: name });
+    yield User_1.default.findByIdAndUpdate(_id, { name }, { new: true });
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: { name }
+    });
 });
 const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.body.user;
     const favoriteID = req.body.favorite;
     if (!user.favorite.includes(favoriteID)) {
         yield User_1.default.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } }, { new: true });
-        res.status(201).json({ message: 'user favorite succsessfuly added' });
+        res.status(201).json({
+            status: 'OK',
+            code: 201,
+            data: {
+                message: 'user favorite succsessfuly added'
+            }
+        });
         return;
     }
     if (user.favorite.includes(favoriteID)) {

@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 const {
@@ -9,6 +10,9 @@ const {
     BREVO_KEY,
     EMAIL,
     FRONTEND_RESET_LINK,
+    CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET,
 } = process.env;
 
 interface EnvsConfig {
@@ -19,6 +23,9 @@ interface EnvsConfig {
     brevoKey?: string;
     email?: string;
     frontendResetLink?: string;
+    cloud_name?: string;
+    api_key?: string;
+    api_secret?: string;
 }
 
 const envsConfig: EnvsConfig = {
@@ -29,6 +36,20 @@ const envsConfig: EnvsConfig = {
     brevoKey: BREVO_KEY,
     email: EMAIL,
     frontendResetLink: FRONTEND_RESET_LINK,
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET
 };
 
+
 export default envsConfig;
+
+cloudinary.config({
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
+});
+
+
+export { cloudinary }
+

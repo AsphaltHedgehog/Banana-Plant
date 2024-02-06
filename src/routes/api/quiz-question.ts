@@ -2,15 +2,18 @@ import express from "express";
 
 import quizQuestion from "../../controllers/quiz-question.js";
 
-import { isEmptyBody } from "../../middlewares/index.js";
+import { authenticate, isEmptyBody, upload  } from "../../middlewares/index.js";
 
 // Пока не добавляю аутефикацию чтобы фронту было удобнее работать
-// import { authenticate } from '../../middlewares';
 
 const quizQuestionRoute = express.Router();
 
-quizQuestionRoute.post("/", isEmptyBody, //authenticate,
+quizQuestionRoute.post("/:id", isEmptyBody, //authenticate,
   quizQuestion.addNewQuizQuestion);
+
+quizQuestionRoute.patch("/img/:id", //authenticate, 
+  upload.single("poster"),
+  quizQuestion.questionImg);
 
 quizQuestionRoute.patch('/:id', isEmptyBody, //authenticate,
   quizQuestion.updateQuizQuestionById);

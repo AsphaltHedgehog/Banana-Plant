@@ -26,7 +26,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Quiz_1 = require("../models/Quiz");
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
-// import fs from 'fs/promises';
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, pageSize } = req.query;
@@ -127,19 +126,6 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //Добавление фотки не в квиз должно быть, а в вопрос квиза
-        //         const { category } = req.body;
-        //         if (!req.file || !req.file.path) {
-        //             res.status(400).json({ error: 'No file uploaded' });
-        //             return;
-        //         }
-        //         const { url: poster } = await cloudinary.uploader.upload(
-        //             req.file.path,
-        //             {
-        //                 folder: 'posters',
-        //             }
-        //         );
-        //         await fs.unlink(req.file.path);
         const { theme, ageGroup } = req.body;
         const result = yield Quiz_1.Quiz.find({ ageGroup: ageGroup });
         const arrQuizesCategory = result.map(q => q.category);
