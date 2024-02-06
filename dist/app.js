@@ -8,7 +8,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 require("dotenv/config");
 const body_parser_1 = __importDefault(require("body-parser"));
-// import reviewsRouter from "./routes/api/reviews-router.js";
+const reviews_router_1 = __importDefault(require("./routes/api/reviews-router"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_json_1 = __importDefault(require("../swagger.json"));
 const quizes_router_js_1 = __importDefault(require("./routes/api/quizes-router.js"));
@@ -31,7 +31,8 @@ app.use(body_parser_1.default.json());
 app.use(express_1.default.static('public'));
 // auth routes
 app.use('/api/auth', auth_js_1.default);
-// app.use('api/reviews', reviewsRoutes);
+// reviews routes
+app.use('api/reviews', reviews_router_1.default);
 // get sorted quizes routes
 app.use('/api/quizes', quizes_router_js_1.default);
 // quizQuestion routes
