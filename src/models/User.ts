@@ -4,6 +4,7 @@ export interface User extends Document {
     name: string;
     email: string;
     password: string;
+    avatarURL: string;
     token: string;
     resetToken: string | null;
     contactInfo: {
@@ -37,6 +38,10 @@ const userSchema = new Schema<User>(
             required: [true, "Set user's password"],
             minlength: 1,
             maxlength: 64,
+        },
+        avatarURL: {
+            type: String,
+            required: true,
         },
         token: {
             type: String,

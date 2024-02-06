@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import gravatar from 'gravatar';
 
 import envsConfig from '../conf/envConfs';
 
@@ -14,6 +15,7 @@ import sendEmail, { EmailData } from '../services/sendEmail';
 const register = async (req: Request, res: Response) => {
     const { name, email, password } = req.body;
     const user = await User.findOne({ email });
+    const avatarURL = gravatar.url(email);
 
     if (user) {
         throw HttpError(409, 'Email already in use');
@@ -23,6 +25,7 @@ const register = async (req: Request, res: Response) => {
     const newUser = await User.create({
         ...req.body,
         password: hashPassword,
+        avatarURL: avatarURL,
     });
 
     res.status(201).json({
