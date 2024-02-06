@@ -99,13 +99,9 @@ const newPassword = async (req: Request, res: Response) => {
     if (!user) {
         throw HttpError(401, 'Invalid or expired token');
     }
-
-    // Перевірте, чи є newPassword та не є порожнім значенням
     if (!newPassword) {
         throw HttpError(400, 'New password is required');
     }
-
-    // Хешуємо новий пароль і зберігаємо його
     const hashPassword = await bcrypt.hash(newPassword, 10);
     user.password = hashPassword;
     user.resetToken = null;

@@ -27,8 +27,6 @@ app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//?  вказує Express використовувати middleware для обробки даних форми у форматі application/x-www-form-urlencoded. Це дозволяє коректно обробляти дані, що надходять з HTML-форм, забезпечуючи їх правильне розшифрування та доступ до них у вашому додатку.
-
 app.use(bodyParser.json());
 app.use(express.static('public'));
 

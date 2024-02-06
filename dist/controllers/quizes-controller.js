@@ -37,7 +37,6 @@ const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({});
-        console.log('totalQuizes', totalQuizzesCount);
         const result = yield Quiz_1.Quiz.find({}, '-createdAt -updatedAt')
             .skip(startIndex)
             .limit(itemsPerPage);

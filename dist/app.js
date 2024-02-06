@@ -27,7 +27,6 @@ app.use((0, morgan_1.default)(formatsLogger));
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-//?  вказує Express використовувати middleware для обробки даних форми у форматі application/x-www-form-urlencoded. Це дозволяє коректно обробляти дані, що надходять з HTML-форм, забезпечуючи їх правильне розшифрування та доступ до них у вашому додатку.
 app.use(body_parser_1.default.json());
 app.use(express_1.default.static('public'));
 // auth routes
