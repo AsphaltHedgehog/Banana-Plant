@@ -13,6 +13,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_json_1 = __importDefault(require("../swagger.json"));
 const quizes_router_js_1 = __importDefault(require("./routes/api/quizes-router.js"));
 const auth_js_1 = __importDefault(require("./routes/api/auth.js"));
+const user_js_1 = __importDefault(require("./routes/api/user.js"));
 const quiz_question_1 = __importDefault(require("./routes/api/quiz-question"));
 const app = (0, express_1.default)();
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -36,6 +37,7 @@ app.use('/api/quizes', quizes_router_js_1.default);
 app.use('/api/quiz/question', quiz_question_1.default);
 // swagger routes
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
+app.use('/api/user', user_js_1.default);
 app.use((req, res) => {
     res.status(404).json({ message: 'Not found' });
 });

@@ -8,6 +8,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import quizesRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
+import userRouter from "./routes/api/user.js"
 import quizQuestionRoute from './routes/api/quiz-question';
 
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/quiz/question', quizQuestionRoute);
 // swagger routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.use('/api/user', userRouter);
 // errors
 interface CustomError extends Error {
     status?: number;
