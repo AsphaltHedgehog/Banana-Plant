@@ -14,11 +14,15 @@ const getAll = async (req: Request, res: Response): Promise<void> => {
 
     try {
         const startIndex: number = (currentPage - 1) * itemsPerPage;
+        const totalQuizzesCount = await Quiz.countDocuments({});
 
         const result = await Quiz.find({}, '-createdAt -updatedAt')
             .skip(startIndex)
             .limit(itemsPerPage);
-        res.json(result);
+        res.json({
+            result,
+            totalQuizes: totalQuizzesCount,
+        });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
