@@ -305,6 +305,65 @@
                 }
             }
         },
+        "/api/quizes/rating": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quizzes sorted by rating.",
+                "responses": {
+                    "200": {
+                        "description": "A list of quizzes sorted by rating.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/QuizListResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quizes/category": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get quizzes by category.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The page number for pagination. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The number of items per page for pagination. (Optional)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A of categories.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuizzesCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quiz/question": {
             "post": {
                 "operationId": "postQuestion",
@@ -818,11 +877,8 @@
                 "type": "object",
                 "properties": {
                     "result": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/Quiz",
-                            "description": "A list of quizzes."
-                        }
+                        "$ref": "#/components/schemas/QuizArray",
+                        "description": "A list of quizzes."
                     },
                     "totalQuizes": {
                         "type": "integer",
@@ -853,6 +909,72 @@
                         }
                     ],
                     "totalQuizes": 2
+                }
+            },
+            "QuizArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Quiz"
+                },
+                "description": "A list of quizzes."
+            },
+            "QuizCategory": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the quiz category."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group of the quiz category."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title of the quiz category."
+                    }
+                },
+                "example": {
+                    "_id": "65b9bc98193936430e4f2e4d",
+                    "ageGroup": "children",
+                    "title": "Comics"
+                }
+            },
+            "QuizzesCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "description": "List of quizzes."
+                    },
+                    "categories": {
+                        "type": "array",
+                        "description": "List of quiz categories."
+                    },
+                    "currentPage": {
+                        "type": "integer",
+                        "description": "The current page number."
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "description": "The number of items per page."
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "description": "The total number of pages."
+                    },
+                    "totalQuizzesCount": {
+                        "type": "integer",
+                        "description": "The total number of quizzes."
+                    }
+                },
+                "example": {
+                    "data": [],
+                    "categories": [],
+                    "currentPage": 1,
+                    "pageSize": 1,
+                    "totalPages": 0,
+                    "totalQuizzesCount": 0
                 }
             },
             "QuizQuestionDto": {
