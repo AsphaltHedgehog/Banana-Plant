@@ -333,6 +333,14 @@
                 "parameters": [
                     {
                         "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The category of quizzes to retrieve."
+                    },
+                    {
+                        "in": "query",
                         "name": "page",
                         "schema": {
                             "type": "integer",
@@ -348,15 +356,81 @@
                             "minimum": 1
                         },
                         "description": "The number of items per page for pagination. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "rating",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Sort by rating. Positive value for ascending, negative for descending. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "finished",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Sort by number of finished quizzes. Positive value for ascending, negative for descending. (Optional)"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "A of categories.",
+                        "description": "Successfully retrieved quizzes by category.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/QuizzesCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quizes/{id}": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get a quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to fetch."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A quiz object.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid quiz ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
                                 }
                             }
                         }
@@ -945,10 +1019,12 @@
                 "properties": {
                     "data": {
                         "type": "array",
+                        "items": {},
                         "description": "List of quizzes."
                     },
                     "categories": {
                         "type": "array",
+                        "items": {},
                         "description": "List of quiz categories."
                     },
                     "currentPage": {
@@ -1105,6 +1181,21 @@
                         "type": "string",
                         "description": "Error message",
                         "example": "Bad request"
+                    }
+                }
+            },
+            "errorNotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "description": "Error status code",
+                        "example": "404"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message",
+                        "example": "Not Found"
                     }
                 }
             }
