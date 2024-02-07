@@ -27,7 +27,6 @@ const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             throw new Error('Secret key is not configured');
         }
         const decodedToken = jsonwebtoken_1.default.verify(token, envConfs_1.default.secretKey);
-        console.log(decodedToken);
         const { id } = decodedToken;
         const user = yield User_1.default.findById(id);
         if (!user || !user.token || user.token !== token) {

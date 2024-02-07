@@ -1,8 +1,7 @@
 import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
-import { HttpError, cloudinary } from '../helpers/index';
+import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-// import fs from 'fs/promises';
 import mongoose, { ObjectId } from 'mongoose';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
@@ -126,20 +125,6 @@ const getQuizesByCategory = async (
 
 const addNewQuize = async (req: Request, res: Response): Promise<void> => {
     try {
-        //Добавление фотки не в квиз должно быть, а в вопрос квиза
-        //         const { category } = req.body;
-        //         if (!req.file || !req.file.path) {
-        //             res.status(400).json({ error: 'No file uploaded' });
-        //             return;
-        //         }
-        //         const { url: poster } = await cloudinary.uploader.upload(
-        //             req.file.path,
-        //             {
-        //                 folder: 'posters',
-        //             }
-        //         );
-        //         await fs.unlink(req.file.path);
-
         const { theme, ageGroup }: { theme: string; ageGroup: string } =
             req.body;
         const result = await Quiz.find({ ageGroup: ageGroup });
