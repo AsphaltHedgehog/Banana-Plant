@@ -23,7 +23,6 @@ const authenticate = async (
             token,
             envsConfig.secretKey
         ) as JwtPayload;
-console.log(decodedToken)
         const { id } = decodedToken;
 
         const user = await User.findById(id);

@@ -22,20 +22,24 @@ const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
     const { name } = req.body;
-    console.log();
-    const result = yield User_1.default.findByIdAndUpdate(_id, { name }, { new: true });
+    yield User_1.default.findByIdAndUpdate(_id, { name }, { new: true });
     res.status(201).json({ result: name });
 });
 const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.body.user;
     const favoriteID = req.body.favorite;
-    if (!user.favorite.includes(favoriteID)) {
-        yield User_1.default.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } }, { new: true });
-        res.status(201).json({ message: 'user favorite succsessfuly added' });
+    const index = user.favorite.indexOf(favoriteID);
+    if (index === -1) {
+        yield User_1.default.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } });
+        res.status(201).json({
+            status: 'OK',
+            code: 201,
+            message: 'user favorite succsessfuly added'
+        });
         return;
     }
-    if (user.favorite.includes(favoriteID)) {
-        yield User_1.default.findByIdAndUpdate(user.id, { $pull: { favorite: { id: favoriteID } } }, { new: true });
+    else {
+        yield User_1.default.findByIdAndUpdate(user.id, { $pull: { favorite: favoriteID } }, { new: true });
         res.status(204).json({});
         return;
     }
