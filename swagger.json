@@ -264,6 +264,380 @@
                 }
             }
         },
+        "/api/quiz": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quizzes.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The page number for pagination."
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The number of items per page for pagination."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of quizzes.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/QuizListResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Quizzes"],
+                "summary": "Add a new quiz.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "theme": {
+                                        "type": "string",
+                                        "description": "The theme of the quiz."
+                                    },
+                                    "ageGroup": {
+                                        "type": "string",
+                                        "enum": ["adult", "children"],
+                                        "description": "The age group for which the quiz is intended."
+                                    },
+                                    "category": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of category IDs associated with the quiz."
+                                    },
+                                    "background": {
+                                        "type": "string",
+                                        "example": "none",
+                                        "description": "Background information for the quiz."
+                                    }
+                                },
+                                "required": ["theme", "ageGroup"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New quiz created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "theme": {
+                                            "type": "string",
+                                            "description": "The theme of the quiz."
+                                        },
+                                        "ageGroup": {
+                                            "type": "string",
+                                            "enum": ["adult", "children"],
+                                            "description": "The age group for which the quiz is intended."
+                                        },
+                                        "category": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "description": "List of category IDs associated with the quiz."
+                                        },
+                                        "background": {
+                                            "type": "string",
+                                            "example": "none",
+                                            "description": "Background information for the quiz."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/rating": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quizzes sorted by rating.",
+                "responses": {
+                    "200": {
+                        "description": "A list of quizzes sorted by rating.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/QuizListResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/category": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get quizzes by category.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The category of quizzes to retrieve."
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The page number for pagination. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The number of items per page for pagination. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "rating",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Sort by rating. Positive value for ascending, negative for descending. (Optional)"
+                    },
+                    {
+                        "in": "query",
+                        "name": "finished",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Sort by number of finished quizzes. Positive value for ascending, negative for descending. (Optional)"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved quizzes by category.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuizzesCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/{id}": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get a quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to fetch."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A quiz object.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid quiz ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Quizzes"],
+                "summary": "Update a quiz by ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to update."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "theme": {
+                                        "type": "string",
+                                        "description": "The updated theme of the quiz."
+                                    },
+                                    "ageGroup": {
+                                        "type": "string",
+                                        "enum": ["adult", "children"],
+                                        "description": "The updated age group for the quiz."
+                                    },
+                                    "category": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of updated category IDs associated with the quiz."
+                                    },
+                                    "background": {
+                                        "type": "string",
+                                        "description": "Updated background information for the quiz."
+                                    }
+                                },
+                                "example": {
+                                    "theme": "Updated Theme",
+                                    "ageGroup": "children",
+                                    "category": ["65b9b74a0af6ce975d97ee53"],
+                                    "background": "Updated background info"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated quiz object.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Quizzes"],
+                "summary": "Delete a quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to delete."
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Quiz deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid quiz ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quiz/question": {
             "post": {
                 "operationId": "postQuestion",
@@ -371,7 +745,7 @@
                                         "items": {
                                             "type": "object",
                                             "properties": {
-                                                "descr": {
+                                                "description": {
                                                     "type": "string",
                                                     "description": "Description of the answer."
                                                 }
@@ -491,7 +865,7 @@
                         "content": {
                             "application/json": {
                                 "example": {
-                                    "message": "Quiz deleted successfully"
+                                    "message": "Question deleted successfully"
                                 }
                             }
                         }
@@ -713,6 +1087,172 @@
                     }
                 }
             },
+            "Quiz": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the quiz."
+                    },
+                    "theme": {
+                        "type": "string",
+                        "description": "The theme of the quiz."
+                    },
+                    "category": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "The categories associated with the quiz."
+                    },
+                    "background": {
+                        "type": "string",
+                        "description": "The background of the quiz."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group targeted by the quiz."
+                    },
+                    "ratingQuantity": {
+                        "type": "integer",
+                        "description": "The number of ratings received by the quiz."
+                    },
+                    "rating": {
+                        "type": "number",
+                        "description": "The rating of the quiz."
+                    },
+                    "finished": {
+                        "type": "number",
+                        "description": "The number of times the quiz has been completed."
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp indicating when the quiz was created."
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp indicating when the quiz was last updated."
+                    }
+                },
+                "example": {
+                    "_id": "65b9bc98193936430e4f2e4d",
+                    "theme": "Комікси",
+                    "category": ["65b9b74a0af6ce975d97ee53"],
+                    "background": "none",
+                    "ageGroup": "children",
+                    "ratingQuantity": 84,
+                    "rating": 3.9,
+                    "finished": 165
+                }
+            },
+            "QuizListResponse": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "$ref": "#/components/schemas/QuizArray",
+                        "description": "A list of quizzes."
+                    },
+                    "totalQuizes": {
+                        "type": "integer",
+                        "description": "The total number of quizzes."
+                    }
+                },
+                "example": {
+                    "result": [
+                        {
+                            "_id": "65b9bc98193936430e4f2e4d",
+                            "theme": "Комікси",
+                            "category": ["65b9b74a0af6ce975d97ee53"],
+                            "background": "none",
+                            "ageGroup": "children",
+                            "ratingQuantity": 84,
+                            "rating": 3.9,
+                            "finished": 165
+                        },
+                        {
+                            "_id": "65b9bcad8ce630a714a30e4e",
+                            "theme": "Професії",
+                            "category": ["65b9b74a0af6ce975d97ee4f"],
+                            "background": "none",
+                            "ageGroup": "children",
+                            "ratingQuantity": 79,
+                            "rating": 4.7,
+                            "finished": 118
+                        }
+                    ],
+                    "totalQuizes": 2
+                }
+            },
+            "QuizArray": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Quiz"
+                },
+                "description": "A list of quizzes."
+            },
+            "QuizCategory": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the quiz category."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group of the quiz category."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title of the quiz category."
+                    }
+                },
+                "example": {
+                    "_id": "65b9bc98193936430e4f2e4d",
+                    "ageGroup": "children",
+                    "title": "Comics"
+                }
+            },
+            "QuizzesCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {},
+                        "description": "List of quizzes."
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {},
+                        "description": "List of quiz categories."
+                    },
+                    "currentPage": {
+                        "type": "integer",
+                        "description": "The current page number."
+                    },
+                    "pageSize": {
+                        "type": "integer",
+                        "description": "The number of items per page."
+                    },
+                    "totalPages": {
+                        "type": "integer",
+                        "description": "The total number of pages."
+                    },
+                    "totalQuizzesCount": {
+                        "type": "integer",
+                        "description": "The total number of quizzes."
+                    }
+                },
+                "example": {
+                    "data": [],
+                    "categories": [],
+                    "currentPage": 1,
+                    "pageSize": 1,
+                    "totalPages": 0,
+                    "totalQuizzesCount": 0
+                }
+            },
             "QuizQuestionDto": {
                 "type": "object",
                 "properties": {
@@ -729,6 +1269,15 @@
                     "answers": {
                         "type": "array",
                         "description": "options for answering questions",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the answer option"
+                                }
+                            }
+                        },
                         "example": [
                             {
                                 "descr": "Пазли"
@@ -778,6 +1327,15 @@
                     "answers": {
                         "type": "array",
                         "description": "options for answering questions",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the answer option"
+                                }
+                            }
+                        },
                         "example": [
                             {
                                 "descr": "Пазли"
@@ -823,6 +1381,21 @@
                         "type": "string",
                         "description": "Error message",
                         "example": "Bad request"
+                    }
+                }
+            },
+            "errorNotFoundResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "description": "Error status code",
+                        "example": "404"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message",
+                        "example": "Not Found"
                     }
                 }
             }
