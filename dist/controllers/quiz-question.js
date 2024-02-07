@@ -37,6 +37,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const promises_1 = __importDefault(require("fs/promises"));
+const util_1 = require("util");
 // helpers
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
@@ -69,7 +70,7 @@ const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, funct
     });
 });
 const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    // const { id } = req.params;
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
     // const quiz = await Quiz.findById(quizId);
@@ -84,14 +85,16 @@ const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (!req.file || !req.file.path) {
         throw (0, index_1.HttpError)(400, "Bad Request");
     }
-    const { url: poster } = yield envConfs_1.cloudinary.uploader.upload(req.file.path, {
-        folder: 'posters',
-    });
+    ;
+    const cloudinaryUpload = (0, util_1.promisify)(envConfs_1.cloudinary.uploader.upload);
+    const { url } = yield cloudinaryUpload(req.file.path);
     yield promises_1.default.unlink(req.file.path);
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: {}
+        data: {
+            url
+        }
     });
 });
 const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

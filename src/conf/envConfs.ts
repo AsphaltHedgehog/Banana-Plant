@@ -10,9 +10,6 @@ const {
     BREVO_KEY,
     EMAIL,
     FRONTEND_RESET_LINK,
-    CLOUDINARY_CLOUD_NAME,
-    CLOUDINARY_API_KEY,
-    CLOUDINARY_API_SECRET,
 } = process.env;
 
 interface EnvsConfig {
@@ -23,9 +20,6 @@ interface EnvsConfig {
     brevoKey?: string;
     email?: string;
     frontendResetLink?: string;
-    cloud_name?: string;
-    api_key?: string;
-    api_secret?: string;
 }
 
 const envsConfig: EnvsConfig = {
@@ -36,19 +30,32 @@ const envsConfig: EnvsConfig = {
     brevoKey: BREVO_KEY,
     email: EMAIL,
     frontendResetLink: FRONTEND_RESET_LINK,
-    cloud_name: CLOUDINARY_CLOUD_NAME,
-    api_key: CLOUDINARY_API_KEY,
-    api_secret: CLOUDINARY_API_SECRET
 };
 
 
 export default envsConfig;
 
-cloudinary.config({
-    cloud_name: CLOUDINARY_CLOUD_NAME,
-    api_key: CLOUDINARY_API_KEY,
-    api_secret: CLOUDINARY_API_SECRET,
-});
+// const cloudinaryUrlParts = process.env.CLOUDINARY_URL?.split('@');
+// if (cloudinaryUrlParts) {
+//     const [credentialsPart, cloudNamePart] = cloudinaryUrlParts[0].split(':');
+//     const [apiKey, apiSecret] = credentialsPart.split(':');
+//     console.log(apiKey, apiSecret);
+//     const cloudName = cloudNamePart.replace('cloudinary://', '');
+    
+//     cloudinary.config({
+//         cloud_name: cloudName,
+//         api_key: apiKey,
+//         api_secret: apiSecret
+//     });
+// } else {
+//     console.error('CLOUDINARY_URL is not defined');
+// }
+
+    cloudinary.config({
+        cloud_name: 'dddrrdx7a',
+        api_key: '218738411157477',
+        api_secret: 'UW4Sxhg0KjSrdBIa-IpuiMUrYKs'
+    });
 
 
 export { cloudinary }

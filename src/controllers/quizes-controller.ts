@@ -1,6 +1,6 @@
 import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
-import { HttpError, cloudinary } from '../helpers/index';
+import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose, { ObjectId } from 'mongoose';
 

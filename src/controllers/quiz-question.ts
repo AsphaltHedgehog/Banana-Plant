@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose, { Types } from 'mongoose';
 import fs from 'fs/promises';
+import { promisify } from 'util';
 
 
 // helpers
@@ -69,8 +70,8 @@ const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> =>
 
 
 const questionImg = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-
+    // const { id } = req.params;
+    
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
     // const quiz = await Quiz.findById(quizId);
@@ -86,21 +87,18 @@ const questionImg = async (req: Request, res: Response): Promise<void> => {
     // work with img
     if (!req.file || !req.file.path) {
         throw HttpError(400, "Bad Request")
-    }
-    const { url: poster } = await cloudinary.uploader.upload(
-        req.file.path,
-        {
-            folder: 'posters',
-        }
-    );
-    await fs.unlink(req.file.path);
+    };
 
+    const cloudinaryUpload = promisify(cloudinary.uploader.upload)
+    const { url } = await cloudinaryUpload(req.file.path)
+    
+    await fs.unlink(req.file.path);
 
     res.status(201).json({
         status: 'OK',
         code: 201,
         data: {
-
+            url
         }
     });
 };

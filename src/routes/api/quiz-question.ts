@@ -12,7 +12,7 @@ quizQuestionRoute.post("/:id", isEmptyBody, //authenticate,
   quizQuestion.addNewQuizQuestion);
 
 quizQuestionRoute.patch("/img/:id", //authenticate, 
-  upload.single("poster"),
+  upload.single("questionPoster"),
   quizQuestion.questionImg);
 
 quizQuestionRoute.patch('/:id', isEmptyBody, //authenticate,

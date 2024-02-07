@@ -11,7 +11,7 @@ const quizQuestionRoute = express_1.default.Router();
 quizQuestionRoute.post("/:id", index_js_1.isEmptyBody, //authenticate,
 quiz_question_js_1.default.addNewQuizQuestion);
 quizQuestionRoute.patch("/img/:id", //authenticate, 
-index_js_1.upload.single("poster"), quiz_question_js_1.default.questionImg);
+index_js_1.upload.single("questionPoster"), quiz_question_js_1.default.questionImg);
 quizQuestionRoute.patch('/:id', index_js_1.isEmptyBody, //authenticate,
 quiz_question_js_1.default.updateQuizQuestionById);
 quizQuestionRoute.delete('/:id', //authenticate,
