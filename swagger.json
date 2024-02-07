@@ -307,6 +307,11 @@
             "post": {
                 "tags": ["Quizzes"],
                 "summary": "Add a new quiz.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -513,6 +518,11 @@
             "put": {
                 "tags": ["Quizzes"],
                 "summary": "Update a quiz by ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -570,6 +580,47 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Quiz"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Quizzes"],
+                "summary": "Delete a quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to delete."
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Quiz deleted successfully."
+                    },
+                    "400": {
+                        "description": "Invalid quiz ID.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
                                 }
                             }
                         }
@@ -814,7 +865,7 @@
                         "content": {
                             "application/json": {
                                 "example": {
-                                    "message": "Quiz deleted successfully"
+                                    "message": "Question deleted successfully"
                                 }
                             }
                         }
