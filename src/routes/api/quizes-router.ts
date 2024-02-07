@@ -1,10 +1,12 @@
 import express from "express";
 
-import quizController from "../../controllers/quizes-controller.js";
+import quizController from "../../controllers/quizes-controller";
 
 import {
   isEmptyBody,
 } from "../../middlewares/index.js";
+
+import  authenticate  from "../../middlewares/authenticate"
 
 // import { validateBody } from "../../decorators/index.js";
 
@@ -20,6 +22,7 @@ quizRouter.get('/:id', quizController.getQuizById);
 
 quizRouter.post(
   "/",
+  authenticate,
   isEmptyBody,
   // validateBody(quizAddSchema),
   quizController.addNewQuiz

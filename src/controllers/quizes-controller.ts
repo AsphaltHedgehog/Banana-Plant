@@ -125,6 +125,7 @@ const getQuizByCategory = async (
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { theme } = req.body;
+    const { id } = req.body.user;
 
     const categories = await QuizCategory.find({ ageGroup: 'adults' });
     if (!categories) {
@@ -132,7 +133,7 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     };
     const categoryId = categories[0]._id
 
-    const result = await Quiz.create({ theme, categoryId });
+    const result = await Quiz.create({ theme, categoryId, owner: id });
     const { _id, background, ageGroup } = result;
 
     res.status(201).json({
