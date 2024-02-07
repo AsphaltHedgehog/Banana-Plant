@@ -27,7 +27,6 @@ if (!cloudinaryUrlParts) {
 const cloudName = cloudinaryUrlParts[1];
 const [_, slashApiKey, apiSecret] = cloudinaryUrlParts[0].split(':');
 const apiKey = slashApiKey.replace(/\//g, '');
-console.log(cloudName, apiKey, apiSecret);
 cloudinary_1.v2.config({
     cloud_name: cloudName,
     api_key: apiKey,
