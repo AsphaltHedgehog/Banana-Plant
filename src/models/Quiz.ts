@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 interface Quiz {
     theme: string;
@@ -11,22 +11,23 @@ interface Quiz {
 }
 
 interface QuizCategory {
-  ageGroup: string;
-  title: string;
-}
+    ageGroup: string;
+    title: string;
+};
 
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: [{ type: Schema.Types.ObjectId, required: true }],
-        background: { type: String, required: true },
-        ageGroup: { type: String, required: true },
-        ratingQuantity: { type: Number, required: false },
-        rating: { type: Number, required: false },
-        finished: { type: Number, required: false },
+        category: { type: Schema.Types.ObjectId , ref: 'categories' },
+        background: { type: String, default: "none"  },
+        ageGroup: { type: String, default: 'adults' },
+        ratingQuantity: { type: Number, default: 0 },
+        rating: { type: Number, default: 0 },
+        finished: { type: Number, default: 0 },
     },
     { timestamps: true, versionKey: false }
 );
+
 
 const quizCategorySchema = new Schema<QuizCategory & Document>({
     ageGroup: { type: String, required: true },
@@ -39,5 +40,3 @@ export const QuizCategory = mongoose.model<QuizCategory & Document>(
     'categories',
     quizCategorySchema
 );
-
-// export default Quiz;

@@ -2,7 +2,10 @@ import express from "express";
 
 import quizQuestion from "../../controllers/quiz-question.js";
 
-import { authenticate, isEmptyBody, upload  } from "../../middlewares/index.js";
+import {
+  // authenticate,
+  isEmptyBody, upload
+} from "../../middlewares/index.js";
 
 // Пока не добавляю аутефикацию чтобы фронту было удобнее работать
 
