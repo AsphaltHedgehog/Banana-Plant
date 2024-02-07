@@ -131,9 +131,8 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     if (!categories) {
         throw HttpError(400, 'DB is not available')
     };
-    const categoryId = categories[0]._id
 
-    const result = await Quiz.create({ theme, categoryId, owner: id });
+    const result = await Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
 
     res.status(201).json({

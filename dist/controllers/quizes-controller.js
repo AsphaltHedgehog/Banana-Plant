@@ -138,8 +138,7 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         throw (0, index_1.HttpError)(400, 'DB is not available');
     }
     ;
-    const categoryId = categories[0]._id;
-    const result = yield Quiz_1.Quiz.create({ theme, categoryId, owner: id });
+    const result = yield Quiz_1.Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
     res.status(201).json({
         status: 'OK',
