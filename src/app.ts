@@ -34,7 +34,7 @@ app.use(express.static('public'));
 app.use('/api/auth', router);
 
 // reviews routes
-app.use('api/reviews', reviewsRouter);
+app.use('/api/reviews', reviewsRouter);
 
 // get sorted quizes routes
 app.use('/api/quiz', quizRouter);

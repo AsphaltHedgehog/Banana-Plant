@@ -32,7 +32,7 @@ app.use(express_1.default.static('public'));
 // auth routes
 app.use('/api/auth', auth_js_1.default);
 // reviews routes
-app.use('api/reviews', reviews_router_1.default);
+app.use('/api/reviews', reviews_router_1.default);
 // get sorted quizes routes
 app.use('/api/quiz', quizes_router_js_1.default);
 // quizQuestion routes

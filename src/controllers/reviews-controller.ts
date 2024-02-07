@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
+import gravatar from 'gravatar';
 
 import Review from '../models/Review';
 import { ctrlWrapper } from '../decorators';
+import { Quiz } from '../models/Quiz';
 
 const getReviews = async (req: Request, res: Response): Promise<void> => {
     const reviews = await Review.find().sort({ createdAt: -1 });
@@ -14,8 +16,32 @@ const getReviews = async (req: Request, res: Response): Promise<void> => {
 };
 
 const addReview = async (req: Request, res: Response): Promise<void> => {
-    const { username, avatarUrl, rating, comment } = req.body;
-    // Додаємо відгук
+    const { username, email, rating, comment } = req.body;
+
+    const quizId = req.body._id;
+    const quiz = await Quiz.findById(quizId);
+
+    if (!quiz) {
+        res.status(404).json({ error: 'Quiz not found' });
+        return;
+    }
+
+    const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
+    const newQuizRating =
+        ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+        newRatingQuantity;
+
+    await Quiz.findByIdAndUpdate(quizId, {
+        rating: newQuizRating,
+        ratingQuantity: newRatingQuantity,
+    });
+
+    const avatarUrl = gravatar.url(email, {
+        s: '200',
+        r: 'pg',
+        d: 'identicon',
+    });
+
     const newReview = await Review.create({
         username,
         avatarUrl,
@@ -23,7 +49,7 @@ const addReview = async (req: Request, res: Response): Promise<void> => {
         comment,
     });
 
-    const quizId = res.status(201).json({
+    res.status(201).json({
         status: 'OK',
         code: 201,
         data: newReview,
@@ -67,3 +93,41 @@ export const reviewsController = {
 //         res.status(500).json({ error: 'Internal Server Error' });
 //     }
 // };
+
+//   const { username, email, rating, comment } = req.body;
+// const quizId = req.body._id;
+// const quiz = await Quiz.findById(quizId);
+
+//   // if (!quiz) {
+//   //     res.status(404).json({ error: 'Quiz not found' });
+//   //     return;
+//   // }
+
+//   const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
+//   const newQuizRating =
+//       ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+//       newRatingQuantity;
+
+//   await Quiz.findByIdAndUpdate(quizId, {
+//       rating: newQuizRating,
+//       ratingQuantity: newRatingQuantity,
+//   });
+
+//   const avatarUrl = gravatar.url(email, {
+//       s: '200',
+//       r: 'pg',
+//       d: 'identicon',
+//   });
+
+//   const newReview = await Review.create({
+//       username,
+//       avatarUrl,
+//       rating,
+//       comment,
+//   });
+
+//   res.status(201).json({
+//       status: 'OK',
+//       code: 201,
+//       data: newReview,
+//   });

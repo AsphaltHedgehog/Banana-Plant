@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 interface IReview extends Document {
     username: string;
-    avatar?: string;
+    avatarUrl?: string;
     rating: number;
     comment: string;
     createdAt: Date;
@@ -13,7 +13,7 @@ const reviewSchema = new Schema<IReview>({
         type: String,
         required: true,
     },
-    avatar: {
+    avatarUrl: {
         type: String,
     },
     rating: {

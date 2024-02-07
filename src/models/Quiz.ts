@@ -13,13 +13,13 @@ interface Quiz {
 interface QuizCategory {
     ageGroup: string;
     title: string;
-};
+}
 
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: { type: Schema.Types.ObjectId , ref: 'categories' },
-        background: { type: String, default: "none"  },
+        category: { type: Schema.Types.ObjectId, ref: 'categories' },
+        background: { type: String, default: 'none' },
         ageGroup: { type: String, default: 'adults' },
         ratingQuantity: { type: Number, default: 0 },
         rating: { type: Number, default: 0 },
@@ -27,7 +27,6 @@ const quizSchema = new Schema<Quiz & Document>(
     },
     { timestamps: true, versionKey: false }
 );
-
 
 const quizCategorySchema = new Schema<QuizCategory & Document>({
     ageGroup: { type: String, required: true },

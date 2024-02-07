@@ -13,8 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.reviewsController = void 0;
+const gravatar_1 = __importDefault(require("gravatar"));
 const Review_1 = __importDefault(require("../models/Review"));
 const decorators_1 = require("../decorators");
+const Quiz_1 = require("../models/Quiz");
 const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reviews = yield Review_1.default.find().sort({ createdAt: -1 });
     res.status(200).json({
@@ -24,15 +26,32 @@ const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, avatarUrl, rating, comment } = req.body;
-    // Додаємо відгук
+    const { username, email, rating, comment } = req.body;
+    const quizId = req.body._id;
+    const quiz = yield Quiz_1.Quiz.findById(quizId);
+    if (!quiz) {
+        res.status(404).json({ error: 'Quiz not found' });
+        return;
+    }
+    const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
+    const newQuizRating = ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+        newRatingQuantity;
+    yield Quiz_1.Quiz.findByIdAndUpdate(quizId, {
+        rating: newQuizRating,
+        ratingQuantity: newRatingQuantity,
+    });
+    const avatarUrl = gravatar_1.default.url(email, {
+        s: '200',
+        r: 'pg',
+        d: 'identicon',
+    });
     const newReview = yield Review_1.default.create({
         username,
         avatarUrl,
         rating,
         comment,
     });
-    const quizId = res.status(201).json({
+    res.status(201).json({
         status: 'OK',
         code: 201,
         data: newReview,
@@ -69,3 +88,34 @@ exports.reviewsController = {
 //         res.status(500).json({ error: 'Internal Server Error' });
 //     }
 // };
+//   const { username, email, rating, comment } = req.body;
+// const quizId = req.body._id;
+// const quiz = await Quiz.findById(quizId);
+//   // if (!quiz) {
+//   //     res.status(404).json({ error: 'Quiz not found' });
+//   //     return;
+//   // }
+//   const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
+//   const newQuizRating =
+//       ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+//       newRatingQuantity;
+//   await Quiz.findByIdAndUpdate(quizId, {
+//       rating: newQuizRating,
+//       ratingQuantity: newRatingQuantity,
+//   });
+//   const avatarUrl = gravatar.url(email, {
+//       s: '200',
+//       r: 'pg',
+//       d: 'identicon',
+//   });
+//   const newReview = await Review.create({
+//       username,
+//       avatarUrl,
+//       rating,
+//       comment,
+//   });
+//   res.status(201).json({
+//       status: 'OK',
+//       code: 201,
+//       data: newReview,
+//   });

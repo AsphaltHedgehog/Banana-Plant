@@ -6,10 +6,11 @@ import reviewsValidation from '../../middlewares/reviews-validation.js';
 
 const reviewsRouter = Router();
 
-reviewsRouter.post('/addReview', reviewsController.addReview);
-
 reviewsRouter.get('/getReviews', reviewsController.getReviews);
 
+reviewsRouter.post('/addReview', reviewsController.addReview);
+
+export default reviewsRouter;
 // reviewsRouter.get('/own', reviewsController.getOneReview);
 
 // reviewsRouter.post(
@@ -27,5 +28,3 @@ reviewsRouter.get('/getReviews', reviewsController.getReviews);
 // );
 
 // reviewsRouter.delete('/own', authenticate, reviewsController.removeOneReview);
-
-export default reviewsRouter;
