@@ -264,7 +264,7 @@
                 }
             }
         },
-        "/api/quizes": {
+        "/api/quiz": {
             "get": {
                 "tags": ["Quizzes"],
                 "summary": "Get all quizzes.",
@@ -378,7 +378,7 @@
                 }
             }
         },
-        "/api/quizes/rating": {
+        "/api/quiz/rating": {
             "get": {
                 "tags": ["Quizzes"],
                 "summary": "Get all quizzes sorted by rating.",
@@ -399,7 +399,7 @@
                 }
             }
         },
-        "/api/quizes/category": {
+        "/api/quiz/category": {
             "get": {
                 "tags": ["Quizzes"],
                 "summary": "Get quizzes by category.",
@@ -461,7 +461,7 @@
                 }
             }
         },
-        "/api/quizes/{id}": {
+        "/api/quiz/{id}": {
             "get": {
                 "tags": ["Quizzes"],
                 "summary": "Get a quiz by ID.",
@@ -494,6 +494,82 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Quizzes"],
+                "summary": "Update a quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "ObjectId"
+                        },
+                        "description": "The ID of the quiz to update."
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "theme": {
+                                        "type": "string",
+                                        "description": "The updated theme of the quiz."
+                                    },
+                                    "ageGroup": {
+                                        "type": "string",
+                                        "enum": ["adult", "children"],
+                                        "description": "The updated age group for the quiz."
+                                    },
+                                    "category": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of updated category IDs associated with the quiz."
+                                    },
+                                    "background": {
+                                        "type": "string",
+                                        "description": "Updated background information for the quiz."
+                                    }
+                                },
+                                "example": {
+                                    "theme": "Updated Theme",
+                                    "ageGroup": "children",
+                                    "category": ["65b9b74a0af6ce975d97ee53"],
+                                    "background": "Updated background info"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated quiz object.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Quiz"
                                 }
                             }
                         }
