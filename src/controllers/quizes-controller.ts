@@ -124,26 +124,28 @@ const getQuizesByCategory = async (
 };
 
 const addNewQuize = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const { theme, ageGroup }: { theme: string; ageGroup: string } =
-            req.body;
-        const result = await Quiz.find({ ageGroup: ageGroup });
+    const { theme } = req.body;
 
-        const arrQuizesCategory: ObjectId[] = result.map(q => q.category);
+    const categories = await QuizCategory.find({ ageGroup: 'adults' });
+    if (!categories) {
+        throw HttpError(400, 'DB is not available')
+    };
+    const categoryId = categories[0]._id
 
-        const quizInfo = new Quiz({
-            theme: theme,
-            ageGroup: ageGroup,
-            category: arrQuizesCategory,
-            background: 'none',
-        });
+    const result = await Quiz.create({ theme, categoryId });
+    const { _id, background, ageGroup } = result;
 
-        quizInfo.save();
-
-        res.status(201).json(quizInfo);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: {
+            _id,
+            theme,
+            categories,
+            background,
+            ageGroup
+        }
+    });
 };
 
 const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
