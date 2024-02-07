@@ -303,6 +303,79 @@
                         }
                     }
                 }
+            },
+            "post": {
+                "tags": ["Quizzes"],
+                "summary": "Add a new quiz.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "theme": {
+                                        "type": "string",
+                                        "description": "The theme of the quiz."
+                                    },
+                                    "ageGroup": {
+                                        "type": "string",
+                                        "enum": ["adult", "children"],
+                                        "description": "The age group for which the quiz is intended."
+                                    },
+                                    "category": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "List of category IDs associated with the quiz."
+                                    },
+                                    "background": {
+                                        "type": "string",
+                                        "example": "none",
+                                        "description": "Background information for the quiz."
+                                    }
+                                },
+                                "required": ["theme", "ageGroup"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "New quiz created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "theme": {
+                                            "type": "string",
+                                            "description": "The theme of the quiz."
+                                        },
+                                        "ageGroup": {
+                                            "type": "string",
+                                            "enum": ["adult", "children"],
+                                            "description": "The age group for which the quiz is intended."
+                                        },
+                                        "category": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "description": "List of category IDs associated with the quiz."
+                                        },
+                                        "background": {
+                                            "type": "string",
+                                            "example": "none",
+                                            "description": "Background information for the quiz."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         },
         "/api/quizes/rating": {
