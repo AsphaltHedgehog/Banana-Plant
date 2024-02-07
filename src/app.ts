@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 // import reviewsRouter from "./routes/api/reviews-router.js";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
-import quizesRouter from './routes/api/quizes-router.js';
+import quizRouter from './routes/api/quizes-router.js';
 import router from './routes/api/auth.js';
 import userRouter from './routes/api/user.js';
 import quizQuestionRoute from './routes/api/quiz-question';
@@ -36,7 +36,7 @@ app.use('/api/auth', router);
 // app.use('api/reviews', reviewsRoutes);
 
 // get sorted quizes routes
-app.use('/api/quizes', quizesRouter);
+app.use('/api/quiz', quizRouter);
 
 // quizQuestion routes
 app.use('/api/quiz/question', quizQuestionRoute);
