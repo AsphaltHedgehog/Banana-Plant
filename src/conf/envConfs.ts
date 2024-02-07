@@ -46,9 +46,6 @@ const [_, slashApiKey, apiSecret] = cloudinaryUrlParts[0].split(':');
 
 const apiKey = slashApiKey.replace(/\//g, '');
 
-console.log(cloudName, apiKey, apiSecret);
-
-
 cloudinary.config({
     cloud_name: cloudName,
     api_key: apiKey,
