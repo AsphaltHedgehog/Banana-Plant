@@ -70,7 +70,7 @@ const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> =>
 
 
 const questionImg = async (req: Request, res: Response): Promise<void> => {
-    // const { id } = req.params;
+    const { id } = req.params;
     
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
@@ -90,15 +90,28 @@ const questionImg = async (req: Request, res: Response): Promise<void> => {
     };
 
     const cloudinaryUpload = promisify(cloudinary.uploader.upload)
-    const { url } = await cloudinaryUpload(req.file.path)
+    const result = await cloudinaryUpload(req.file.path);
     
     await fs.unlink(req.file.path);
+
+    if (!result) {
+        throw HttpError(500, 'file upload failed');
+    };
+
+    const question = await QuizQuestion.findByIdAndUpdate(id, { imageUrl: result.public_id }, { new: true });
+
+    if (!question) {
+        throw HttpError(400, 'question not found');
+    };
+
+    const { _id, imageUrl } = question
 
     res.status(201).json({
         status: 'OK',
         code: 201,
         data: {
-            url
+            _id,
+            imageUrl
         }
     });
 };
@@ -109,6 +122,12 @@ const questionImg = async (req: Request, res: Response): Promise<void> => {
 const updateQuizQuestionById = async (req: Request, res: Response): Promise<void> => {
     // Прикрутить авторизацию
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        throw HttpError(400, 'Invalid quiz ID');
+    }
+
+
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
     // const quiz = await Quiz.findById(id);
@@ -175,6 +194,7 @@ const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void
 const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
+
     // Прикрути аутефикацию)
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
@@ -192,11 +212,25 @@ const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<v
         throw HttpError(400, 'Invalid quiz ID');
     }
 
-    // const result = await QuizQuestion.findByIdAndDelete(id);
+    const question = await QuizQuestion.findByIdAndUpdate(id, { imageUrl: '' });
+    console.log(question);
+    
 
-    // if (!result) {
-    //     throw HttpError(404, 'Quiz not found');
-    // }
+    if (!question) {
+        throw HttpError(404, 'Question not found');
+    }
+
+    if (question.imageUrl === '') {
+        throw HttpError(404, 'Image not found');
+    }
+    console.log(question.imageUrl);
+    
+    const cloudinaryDeletion = promisify(cloudinary.uploader.destroy)
+    const result = await cloudinaryDeletion(question.imageUrl)
+
+    if (!result) {
+        throw HttpError(500, 'Image deletion failed');
+    }
 
     res.status(204).json({});
 };

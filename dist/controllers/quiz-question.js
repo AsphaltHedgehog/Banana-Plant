@@ -70,7 +70,7 @@ const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, funct
     });
 });
 const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const { id } = req.params;
+    const { id } = req.params;
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
     // const quiz = await Quiz.findById(quizId);
@@ -87,19 +87,33 @@ const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     ;
     const cloudinaryUpload = (0, util_1.promisify)(envConfs_1.cloudinary.uploader.upload);
-    const { url } = yield cloudinaryUpload(req.file.path);
+    const result = yield cloudinaryUpload(req.file.path);
     yield promises_1.default.unlink(req.file.path);
+    if (!result) {
+        throw (0, index_1.HttpError)(500, 'file upload failed');
+    }
+    ;
+    const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: result.public_id }, { new: true });
+    if (!question) {
+        throw (0, index_1.HttpError)(400, 'question not found');
+    }
+    ;
+    const { _id, imageUrl } = question;
     res.status(201).json({
         status: 'OK',
         code: 201,
         data: {
-            url
+            _id,
+            imageUrl
         }
     });
 });
 const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Прикрутить авторизацию
     const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+    }
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
     // const quiz = await Quiz.findById(id);
@@ -159,10 +173,20 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
-    // const result = await QuizQuestion.findByIdAndDelete(id);
-    // if (!result) {
-    //     throw HttpError(404, 'Quiz not found');
-    // }
+    const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: '' });
+    console.log(question);
+    if (!question) {
+        throw (0, index_1.HttpError)(404, 'Question not found');
+    }
+    if (question.imageUrl === '') {
+        throw (0, index_1.HttpError)(404, 'Image not found');
+    }
+    console.log(question.imageUrl);
+    const cloudinaryDeletion = (0, util_1.promisify)(envConfs_1.cloudinary.uploader.destroy);
+    const result = yield cloudinaryDeletion(question.imageUrl);
+    if (!result) {
+        throw (0, index_1.HttpError)(500, 'Image deletion failed');
+    }
     res.status(204).json({});
 });
 exports.default = {
