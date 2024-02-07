@@ -36,7 +36,7 @@ const userSchema = new mongoose_1.Schema({
     favorite: [
         {
             type: mongoose_1.Schema.Types.ObjectId,
-            ref: 'quizes',
+            ref: 'favorite',
             default: [],
         },
     ],

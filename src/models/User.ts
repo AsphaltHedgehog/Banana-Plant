@@ -55,7 +55,7 @@ const userSchema = new Schema<User>(
         favorite: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'Test',
+                ref: 'quizes',
 
                 default: [],
             },

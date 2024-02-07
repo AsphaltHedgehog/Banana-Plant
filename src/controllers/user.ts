@@ -31,25 +31,21 @@ const updateInfo = async (req: Request, res: Response) => {
 
 const favorite = async (req: Request, res: Response) => {
    const user = req.body.user;
-   
-   const favoriteID = req.body.favorite
-   if (!user.favorite.includes(favoriteID)) {
-      await User.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } }, { new: true })
+   const favoriteID = req.body.favorite;
+
+   const index = user.favorite.indexOf(favoriteID);
+   if (index === -1) {
+      await User.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } })
       res.status(201).json({
          status: 'OK',
          code: 201,
-         data: {
-            message: 'user favorite succsessfuly added'
-         }
+         message: 'user favorite succsessfuly added'
       })
-      return
-   }
-   if (user.favorite.includes(favoriteID)) {
-      await User.findByIdAndUpdate(user.id, { $pull: { favorite: { id: favoriteID } } }, { new: true })
+   } else {
+      await User.findByIdAndUpdate(user.id, { $pull: { favorite: favoriteID } }, { new: true })
       res.status(204).json({})
-      return
    }
-   
+   return
 };
 
 
