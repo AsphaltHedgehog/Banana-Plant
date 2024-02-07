@@ -5,16 +5,26 @@ import { ctrlWrapper } from '../decorators/index';
 
 const userInfo = async (req: Request, res: Response) => {
    const { _id, name, email, favorite } = req.body.user;
-   
-   res.status(201).json({ user: { _id, name, email, favorite } })
+   res.status(201).json({
+      status: 'OK',
+      code: 201,
+      data:{ user: { _id, name, email, favorite } }
+   })
 };
+
+
 
 const updateInfo = async (req: Request, res: Response) => {
    const { _id } = req.body.user;
    const { name } = req.body
+
    await User.findByIdAndUpdate(_id, { name }, { new: true })
    
-   res.status(201).json({ result: name })
+   res.status(201).json({
+      status: 'OK',
+      code: 201,
+      data:{ name }
+   })
 };
 
 
@@ -31,12 +41,11 @@ const favorite = async (req: Request, res: Response) => {
          code: 201,
          message: 'user favorite succsessfuly added'
       })
-      return;
    } else {
       await User.findByIdAndUpdate(user.id, { $pull: { favorite: favoriteID } }, { new: true })
       res.status(204).json({})
-      return;
    }
+   return
 };
 
 

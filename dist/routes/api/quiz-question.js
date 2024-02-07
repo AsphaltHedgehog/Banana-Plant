@@ -7,10 +7,11 @@ const express_1 = __importDefault(require("express"));
 const quiz_question_js_1 = __importDefault(require("../../controllers/quiz-question.js"));
 const index_js_1 = require("../../middlewares/index.js");
 // Пока не добавляю аутефикацию чтобы фронту было удобнее работать
-// import { authenticate } from '../../middlewares';
 const quizQuestionRoute = express_1.default.Router();
-quizQuestionRoute.post("/", index_js_1.isEmptyBody, //authenticate,
+quizQuestionRoute.post("/:id", index_js_1.isEmptyBody, //authenticate,
 quiz_question_js_1.default.addNewQuizQuestion);
+quizQuestionRoute.patch("/img/:id", //authenticate, 
+index_js_1.upload.single("questionPoster"), quiz_question_js_1.default.questionImg);
 quizQuestionRoute.patch('/:id', index_js_1.isEmptyBody, //authenticate,
 quiz_question_js_1.default.updateQuizQuestionById);
 quizQuestionRoute.delete('/:id', //authenticate,
