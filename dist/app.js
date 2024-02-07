@@ -33,7 +33,7 @@ app.use(express_1.default.static('public'));
 app.use('/api/auth', auth_js_1.default);
 // app.use('api/reviews', reviewsRoutes);
 // get sorted quizes routes
-app.use('/api/quizes', quizes_router_js_1.default);
+app.use('/api/quiz', quizes_router_js_1.default);
 // quizQuestion routes
 app.use('/api/quiz/question', quiz_question_1.default);
 // swagger routes
