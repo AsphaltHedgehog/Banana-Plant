@@ -57,7 +57,6 @@ const getQuizeById = async (req: Request, res: Response): Promise<void> => {
             throw HttpError(404, 'Quiz not found');
             return;
         }
-
         res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -86,31 +85,34 @@ const getQuizesByCategory = async (
             ageGroup: category,
         });
 
-        let resultQuizesByCategory;
+        let sortCriteria: { [key: string]: 1 | -1 } | undefined;
 
+        if (rating) {
+            sortCriteria = {
+                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
+            };
+        } else if (finished) {
+            sortCriteria = {
+                finished: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
+            };
+        }
+
+      let resultQuizesByCategory;
+      
         if (Array.isArray(category)) {
             resultQuizesByCategory = await Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage);
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         } else {
             resultQuizesByCategory = await Quiz.find({ ageGroup: category })
                 .skip(startIndex)
-                .limit(itemsPerPage);
-        }
-
-        let result: any[] = [];
-
-        if (rating) {
-            result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
-        }
-        if (finished) {
-            result = resultQuizesByCategory.sort(
-                (a, b) => b.finished - a.finished
-            );
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         }
 
         res.json({
-            data: result,
+            data: resultQuizesByCategory,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
@@ -150,6 +152,8 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
             category: arrQuizesCategory,
             background: 'none',
         });
+
+        quizInfo.save();
 
         res.status(201).json(quizInfo);
     } catch (error: any) {

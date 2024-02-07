@@ -94,26 +94,32 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         const resultQuizCategories = yield Quiz_1.QuizCategory.find({
             ageGroup: category,
         });
+        let sortCriteria;
+        if (rating) {
+            sortCriteria = {
+                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
+            };
+        }
+        else if (finished) {
+            sortCriteria = {
+                finished: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
+            };
+        }
         let resultQuizesByCategory;
         if (Array.isArray(category)) {
             resultQuizesByCategory = yield Quiz_1.Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage);
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         }
         else {
             resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
                 .skip(startIndex)
-                .limit(itemsPerPage);
-        }
-        let result = [];
-        if (rating) {
-            result = resultQuizesByCategory.sort((a, b) => b.rating - a.rating);
-        }
-        if (finished) {
-            result = resultQuizesByCategory.sort((a, b) => b.finished - a.finished);
+                .limit(itemsPerPage)
+                .sort(sortCriteria);
         }
         res.json({
-            data: result,
+            data: resultQuizesByCategory,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
@@ -149,6 +155,7 @@ const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             category: arrQuizesCategory,
             background: 'none',
         });
+        quizInfo.save();
         res.status(201).json(quizInfo);
     }
     catch (error) {
