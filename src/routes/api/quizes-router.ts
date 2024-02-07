@@ -1,38 +1,37 @@
 import express from "express";
 
-import quizesController from "../../controllers/quizes-controller.js";
+import quizController from "../../controllers/quizes-controller.js";
 
 import {
-  isEmptyBody, //upload 
+  isEmptyBody,
 } from "../../middlewares/index.js";
 
 // import { validateBody } from "../../decorators/index.js";
 
 // import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 
-const quizesRouter = express.Router();
+const quizRouter = express.Router();
 
-quizesRouter.get("/", quizesController.getAll);
-quizesRouter.get('/rating', quizesController.getAllByRating);
-quizesRouter.get('/category', quizesController.getQuizesByCategory);
-quizesRouter.get('/:id', quizesController.getQuizeById);
+quizRouter.get("/", quizController.getAll);
+quizRouter.get('/rating', quizController.getAllByRating);
+quizRouter.get('/category', quizController.getQuizByCategory);
+quizRouter.get('/:id', quizController.getQuizById);
 
 
-quizesRouter.post(
+quizRouter.post(
   "/",
-  // upload.single("poster"),
   isEmptyBody,
   // validateBody(quizAddSchema),
-  quizesController.addNewQuize
+  quizController.addNewQuiz
 );
 
-quizesRouter.put(
+quizRouter.put(
     '/:id',
     isEmptyBody,
     // validateBody(quizUpdateSchema),
-    quizesController.updateQuizeById
+    quizController.updateQuizById
 );
 
-quizesRouter.delete('/:id', quizesController.deleteQuizeById);
+quizRouter.delete('/:id', quizController.deleteQuizById);
 
-export default quizesRouter;
+export default quizRouter;

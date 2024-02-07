@@ -34,7 +34,7 @@ app.use('/api/auth', auth_js_1.default);
 // reviews routes
 app.use('api/reviews', reviews_router_1.default);
 // get sorted quizes routes
-app.use('/api/quizes', quizes_router_js_1.default);
+app.use('/api/quiz', quizes_router_js_1.default);
 // quizQuestion routes
 app.use('/api/quiz/question', quiz_question_1.default);
 // swagger routes

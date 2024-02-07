@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 const {
@@ -31,4 +32,26 @@ const envsConfig: EnvsConfig = {
     frontendResetLink: FRONTEND_RESET_LINK,
 };
 
+
 export default envsConfig;
+
+const cloudinaryUrlParts = process.env.CLOUDINARY_URL?.split('@');
+
+if (!cloudinaryUrlParts) {
+    throw new Error('Cloudinary URL not setup')
+} 
+
+const cloudName = cloudinaryUrlParts[1]
+const [_, slashApiKey, apiSecret] = cloudinaryUrlParts[0].split(':');
+
+const apiKey = slashApiKey.replace(/\//g, '');
+
+cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret
+});
+
+
+export { cloudinary }
+

@@ -26,7 +26,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Quiz_1 = require("../models/Quiz");
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
-// import fs from 'fs/promises';
 const mongoose_1 = __importDefault(require("mongoose"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, pageSize } = req.query;
@@ -60,7 +59,7 @@ const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(error.status || 500).json({ message: error.message });
     }
 });
-const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
@@ -80,7 +79,7 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(500).json({ message: error.message });
     }
 });
-const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category, page, pageSize, rating, finished } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
@@ -131,66 +130,34 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).json({ message: error.message });
     }
 });
-const addNewQuize = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        //Добавление фотки не в квиз должно быть, а в вопрос квиза
-        //         const { category } = req.body;
-        //         if (!req.file || !req.file.path) {
-        //             res.status(400).json({ error: 'No file uploaded' });
-        //             return;
-        //         }
-        //         const { url: poster } = await cloudinary.uploader.upload(
-        //             req.file.path,
-        //             {
-        //                 folder: 'posters',
-        //             }
-        //         );
-        //         await fs.unlink(req.file.path);
-        const { theme, ageGroup } = req.body;
-        const result = yield Quiz_1.Quiz.find({ ageGroup: ageGroup });
-        const arrQuizesCategory = result.map(q => q.category);
-        const quizInfo = new Quiz_1.Quiz({
-            theme: theme,
-            ageGroup: ageGroup,
-            category: arrQuizesCategory,
-            background: 'none',
-        });
-        quizInfo.save();
-        res.status(201).json(quizInfo);
+const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { theme } = req.body;
+    const categories = yield Quiz_1.QuizCategory.findOne({ ageGroup: 'adults' });
+    if (!categories) {
+        throw (0, index_1.HttpError)(400, 'DB is not available');
     }
-    catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    ;
+    const category = categories._id;
+    const result = yield Quiz_1.Quiz.create({ theme, category });
+    res.status(201).json({ result });
 });
-const updateQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        //         const { id } = req.params;
-        //         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-        //             res.status(400).json({ error: 'Invalid quiz ID' });
-        //             return;
-        //         }
-        // точно так же, обновление должно быть не напрямую в Квиз, а в Вопросы квиза
-        //         const newQuize = new Quiz({
-        //             ...req.body,
-        //             category: categoryObjectId,
-        //             poster,
-        //         });
-        //         const quize = await newQuize.save();
-        const _a = req.body, { id } = _a, updatedData = __rest(_a, ["id"]);
-        const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, updatedData, {
-            new: true,
-        });
-        if (!existingQuiz) {
-            res.status(404).json({ error: 'Quiz not found' });
-            return;
-        }
-        res.status(200).json(existingQuiz);
+const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ error: 'Invalid quiz ID' });
+        return;
     }
-    catch (error) {
-        res.status(500).json({ message: error.message });
+    const updatedData = __rest(req.body, []);
+    const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, updatedData, {
+        new: true,
+    });
+    if (!existingQuiz) {
+        res.status(404).json({ error: 'Quiz not found' });
+        return;
     }
+    res.status(200).json(existingQuiz);
 });
-const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
@@ -211,9 +178,9 @@ const deleteQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.default = {
     getAll: (0, index_2.ctrlWrapper)(getAll),
     getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
-    getQuizeById: (0, index_2.ctrlWrapper)(getQuizeById),
-    getQuizesByCategory: (0, index_2.ctrlWrapper)(getQuizesByCategory),
-    addNewQuize: (0, index_2.ctrlWrapper)(addNewQuize),
-    updateQuizeById: (0, index_2.ctrlWrapper)(updateQuizeById),
-    deleteQuizeById: (0, index_2.ctrlWrapper)(deleteQuizeById),
+    getQuizById: (0, index_2.ctrlWrapper)(getQuizById),
+    getQuizByCategory: (0, index_2.ctrlWrapper)(getQuizByCategory),
+    addNewQuiz: (0, index_2.ctrlWrapper)(addNewQuiz),
+    updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),
+    deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
 };
