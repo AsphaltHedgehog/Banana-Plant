@@ -21,9 +21,9 @@ const quizSchema = new Schema<Quiz & Document>(
         category: [{ type: Schema.Types.ObjectId, required: true }],
         background: { type: String, required: true },
         ageGroup: { type: String, required: true },
-        ratingQuantity: { type: Number, required: true },
-        rating: { type: Number, required: true },
-        finished: { type: Number, required: true },
+        ratingQuantity: { type: Number, required: false },
+        rating: { type: Number, required: false },
+        finished: { type: Number, required: false },
     },
     { timestamps: true, versionKey: false }
 );
