@@ -132,14 +132,25 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { theme } = req.body;
-    const categories = yield Quiz_1.QuizCategory.findOne({ ageGroup: 'adults' });
+    const { id } = req.body.user;
+    const categories = yield Quiz_1.QuizCategory.find({ ageGroup: 'adults' });
     if (!categories) {
         throw (0, index_1.HttpError)(400, 'DB is not available');
     }
     ;
-    const category = categories._id;
-    const result = yield Quiz_1.Quiz.create({ theme, category });
-    res.status(201).json({ result });
+    const result = yield Quiz_1.Quiz.create({ theme, owner: id });
+    const { _id, background, ageGroup } = result;
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: {
+            _id,
+            theme,
+            categories,
+            background,
+            ageGroup
+        }
+    });
 });
 const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;

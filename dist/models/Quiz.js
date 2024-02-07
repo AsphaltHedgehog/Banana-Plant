@@ -33,6 +33,7 @@ const quizSchema = new mongoose_1.Schema({
     ratingQuantity: { type: Number, default: 0 },
     rating: { type: Number, default: 0 },
     finished: { type: Number, default: 0 },
+    owner: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users' }
 }, { timestamps: true, versionKey: false });
 const quizCategorySchema = new mongoose_1.Schema({
     ageGroup: { type: String, required: true },
