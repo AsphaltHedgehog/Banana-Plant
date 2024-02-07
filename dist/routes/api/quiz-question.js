@@ -8,6 +8,7 @@ const quiz_question_js_1 = __importDefault(require("../../controllers/quiz-quest
 const index_js_1 = require("../../middlewares/index.js");
 // Пока не добавляю аутефикацию чтобы фронту было удобнее работать
 const quizQuestionRoute = express_1.default.Router();
+quizQuestionRoute.get("/:id", quiz_question_js_1.default.getAllQuestions);
 quizQuestionRoute.post("/:id", index_js_1.isEmptyBody, //authenticate,
 quiz_question_js_1.default.addNewQuizQuestion);
 quizQuestionRoute.patch("/img/:id", //authenticate, 

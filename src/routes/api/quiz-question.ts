@@ -7,9 +7,14 @@ import {
   isEmptyBody, upload
 } from "../../middlewares/index.js";
 
+
+
 // Пока не добавляю аутефикацию чтобы фронту было удобнее работать
 
 const quizQuestionRoute = express.Router();
+
+quizQuestionRoute.get("/:id",
+  quizQuestion.getAllQuestions);
 
 quizQuestionRoute.post("/:id", isEmptyBody, //authenticate,
   quizQuestion.addNewQuizQuestion);
