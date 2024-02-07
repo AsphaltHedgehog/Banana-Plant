@@ -264,6 +264,47 @@
                 }
             }
         },
+        "/api/quizes": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quizzes.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The page number for pagination."
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "description": "The number of items per page for pagination."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of quizzes.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/QuizListResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quiz/question": {
             "post": {
                 "operationId": "postQuestion",
@@ -371,7 +412,7 @@
                                         "items": {
                                             "type": "object",
                                             "properties": {
-                                                "descr": {
+                                                "description": {
                                                     "type": "string",
                                                     "description": "Description of the answer."
                                                 }
@@ -713,6 +754,107 @@
                     }
                 }
             },
+            "Quiz": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the quiz."
+                    },
+                    "theme": {
+                        "type": "string",
+                        "description": "The theme of the quiz."
+                    },
+                    "category": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "The categories associated with the quiz."
+                    },
+                    "background": {
+                        "type": "string",
+                        "description": "The background of the quiz."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group targeted by the quiz."
+                    },
+                    "ratingQuantity": {
+                        "type": "integer",
+                        "description": "The number of ratings received by the quiz."
+                    },
+                    "rating": {
+                        "type": "number",
+                        "description": "The rating of the quiz."
+                    },
+                    "finished": {
+                        "type": "number",
+                        "description": "The number of times the quiz has been completed."
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp indicating when the quiz was created."
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp indicating when the quiz was last updated."
+                    }
+                },
+                "example": {
+                    "_id": "65b9bc98193936430e4f2e4d",
+                    "theme": "Комікси",
+                    "category": ["65b9b74a0af6ce975d97ee53"],
+                    "background": "none",
+                    "ageGroup": "children",
+                    "ratingQuantity": 84,
+                    "rating": 3.9,
+                    "finished": 165
+                }
+            },
+            "QuizListResponse": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Quiz",
+                            "description": "A list of quizzes."
+                        }
+                    },
+                    "totalQuizes": {
+                        "type": "integer",
+                        "description": "The total number of quizzes."
+                    }
+                },
+                "example": {
+                    "result": [
+                        {
+                            "_id": "65b9bc98193936430e4f2e4d",
+                            "theme": "Комікси",
+                            "category": ["65b9b74a0af6ce975d97ee53"],
+                            "background": "none",
+                            "ageGroup": "children",
+                            "ratingQuantity": 84,
+                            "rating": 3.9,
+                            "finished": 165
+                        },
+                        {
+                            "_id": "65b9bcad8ce630a714a30e4e",
+                            "theme": "Професії",
+                            "category": ["65b9b74a0af6ce975d97ee4f"],
+                            "background": "none",
+                            "ageGroup": "children",
+                            "ratingQuantity": 79,
+                            "rating": 4.7,
+                            "finished": 118
+                        }
+                    ],
+                    "totalQuizes": 2
+                }
+            },
             "QuizQuestionDto": {
                 "type": "object",
                 "properties": {
@@ -729,6 +871,15 @@
                     "answers": {
                         "type": "array",
                         "description": "options for answering questions",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the answer option"
+                                }
+                            }
+                        },
                         "example": [
                             {
                                 "descr": "Пазли"
@@ -778,6 +929,15 @@
                     "answers": {
                         "type": "array",
                         "description": "options for answering questions",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "description": "Description of the answer option"
+                                }
+                            }
+                        },
                         "example": [
                             {
                                 "descr": "Пазли"
