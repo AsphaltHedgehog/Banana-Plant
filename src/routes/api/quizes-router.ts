@@ -29,7 +29,7 @@ quizRouter.post(
 );
 
 quizRouter.put(
-    '/:quizId',
+    '/:id',
     isEmptyBody,
     authenticate,
     // validateBody(quizUpdateSchema),

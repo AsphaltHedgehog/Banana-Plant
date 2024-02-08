@@ -22,8 +22,6 @@ const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     if (bearer !== 'Bearer') {
         next((0, helpers_1.HttpError)(404));
     }
-    console.log(bearer, token);
-    console.log(authorization);
     try {
         if (!envConfs_1.default.secretKey) {
             throw new Error('Secret key is not configured');

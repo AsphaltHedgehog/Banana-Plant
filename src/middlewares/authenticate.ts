@@ -14,8 +14,6 @@ const authenticate = async (
     if (bearer !== 'Bearer') {
         next(HttpError(404));
     }
-    console.log(bearer, token);
-    console.log(authorization);
     
     
     try {

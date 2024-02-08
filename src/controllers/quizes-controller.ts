@@ -152,21 +152,23 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateQuizById = async (req: Request, res: Response): Promise<void> => {
-    const { _id } = req.params;
-    if (!_id || !mongoose.Types.ObjectId.isValid(_id)) {
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
         res.status(400).json({ error: 'Invalid quiz ID' });
         return;
     }
 
-    const { id } = req.body.user;
-    const quiz = await Quiz.findById(_id);
+    const { user } = req.body;
+    const quiz = await Quiz.findById(id);
     if (!quiz) {
         throw HttpError(404, "Bad Request")
     };
 
-    if (quiz.owner !== id)  {
-        throw HttpError(401, "Unauthorized")
-    }
+    // if (quiz.owner !== user._id) {
+    //     console.log(quiz.owner, user._id);
+        
+    //     throw HttpError(401, "Unauthorized")
+    // }
 
     const { ...updatedData } = req.body;
     
@@ -179,7 +181,7 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    res.status(200).json({ existingQuiz });
+    res.status(200).json( existingQuiz );
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {

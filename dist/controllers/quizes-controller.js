@@ -151,20 +151,21 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.params;
-    if (!_id || !mongoose_1.default.Types.ObjectId.isValid(_id)) {
+    const { id } = req.params;
+    if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
         res.status(400).json({ error: 'Invalid quiz ID' });
         return;
     }
-    const { id } = req.body.user;
-    const quiz = yield Quiz_1.Quiz.findById(_id);
+    const { user } = req.body;
+    const quiz = yield Quiz_1.Quiz.findById(id);
     if (!quiz) {
         throw (0, index_1.HttpError)(404, "Bad Request");
     }
     ;
-    if (quiz.owner !== id) {
-        throw (0, index_1.HttpError)(401, "Unauthorized");
-    }
+    // if (quiz.owner !== user._id) {
+    //     console.log(quiz.owner, user._id);
+    //     throw HttpError(401, "Unauthorized")
+    // }
     const updatedData = __rest(req.body, []);
     const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { updatedData }, {
         new: true,
@@ -173,7 +174,7 @@ const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(404).json({ error: 'Quiz not found' });
         return;
     }
-    res.status(200).json({ existingQuiz });
+    res.status(200).json(existingQuiz);
 });
 const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
