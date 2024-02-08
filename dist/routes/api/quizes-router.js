@@ -17,7 +17,7 @@ quizRouter.get('/:id', quizes_controller_1.default.getQuizById);
 quizRouter.post("/", authenticate_1.default, index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
 quizes_controller_1.default.addNewQuiz);
-quizRouter.put('/:id', index_js_1.isEmptyBody, authenticate_1.default, 
+quizRouter.patch('/:id', index_js_1.isEmptyBody, authenticate_1.default, 
 // validateBody(quizUpdateSchema),
 quizes_controller_1.default.updateQuizById);
 quizRouter.delete('/:id', quizes_controller_1.default.deleteQuizById);

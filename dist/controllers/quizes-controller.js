@@ -81,12 +81,13 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
+    console.log(req.query);
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
     const startIndex = (currentPage - 1) * itemsPerPage;
-    // let sortCriteria: any | undefined;
+    let sortCriteria;
     try {
         const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({
             ageGroup: category,
@@ -107,15 +108,33 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 .skip(startIndex)
                 .limit(itemsPerPage);
         }
-        let result;
-        if (rating) {
-            result = resultQuizesByCategory
-                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-                .find(a => a.rating < +rating);
+        // let result;
+        // if (rating) {
+        //     result = resultQuizesByCategory
+        //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+        //         .find(a => a.rating < +rating);
+        // } else {
+        //     result = resultQuizesByCategory.sort((a, b) =>
+        //         a.finished > b.finished ? -1 : 1
+        //     );
+        // }
+        let newResult;
+        if (title) {
+            newResult = resultQuizCategories
+                .filter(a => (a.title === title ? a : null))
+                .map(a => a._id);
         }
         else {
-            result = resultQuizesByCategory.sort((a, b) => a.finished > b.finished ? -1 : 1);
+            newResult = resultQuizCategories;
         }
+        //TODO: при умові відсутності title
+        const result = resultQuizesByCategory
+            .filter(a => inputText
+            ? a.theme.toLowerCase().includes(inputText.toLowerCase())
+            : a)
+            .map(res => {
+            res.category.toString() === newResult.toString() ? res : 1;
+        });
         res.json({
             data: result,
             categories: resultQuizCategories,
@@ -128,6 +147,34 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         res.status(500).json({ message: error.message });
     }
+    // if (category || rating || finished || title || inputText) {
+    //     const matchStage = {};
+    //     // Додавання фільтрів
+    //     if (category) {
+    //         matchStage.ageGroup = category;
+    //     }
+    //     if (title) {
+    //         matchStage.title = title;
+    //     }
+    //     pipeline.push(
+    //       {
+    //         $match: matchStage, 
+    //       },
+    //       {
+    //         $skip: startIndex,
+    //       },
+    //       {
+    //         $limit: itemsPerPage,
+    //       },
+    //       );
+    //     console.log(pipeline);
+    // }
+    // try {
+    //     const result = await Quiz.aggregate(pipeline);
+    //     res.json(result);
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
 });
 const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { theme } = req.body;
@@ -155,11 +202,10 @@ const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const { user } = req.body;
     const quiz = yield Quiz_1.Quiz.findById(id);
     if (!quiz) {
-        throw (0, index_1.HttpError)(404, "Bad Request");
+        throw (0, index_1.HttpError)(404, 'Bad Request');
     }
-    ;
     if (quiz.owner.toString() !== user._id.toString()) {
-        throw (0, index_1.HttpError)(401, "Unauthorized");
+        throw (0, index_1.HttpError)(401, 'Unauthorized');
     }
     const updatedData = __rest(req.body, []);
     const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { updatedData }, {

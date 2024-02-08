@@ -1,4 +1,4 @@
-import { Quiz, QuizCategory } from '../models/Quiz';
+import { Quiz, QuizCategory, QuizeBy } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
@@ -40,8 +40,6 @@ const getAllByRating = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-
-
 const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
@@ -70,7 +68,8 @@ const getQuizByCategory = async (
     res: Response
 ): Promise<void> => {
     const { category, page, pageSize, rating, finished, title, inputText } =
-        req.query;
+      req.query;
+  console.log(req.query)
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
@@ -78,7 +77,8 @@ const getQuizByCategory = async (
         : 4;
 
     const startIndex: number = (currentPage - 1) * itemsPerPage;
-    // let sortCriteria: any | undefined;
+
+    let sortCriteria: any | undefined;
 
     try {
         const totalQuizzesCount = await Quiz.countDocuments({
@@ -103,17 +103,36 @@ const getQuizByCategory = async (
                 .limit(itemsPerPage);
         }
 
-        let result;
+        // let result;
 
-        if (rating) {
-            result = resultQuizesByCategory
-                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-                .find(a => a.rating < +rating);
-        } else {
-            result = resultQuizesByCategory.sort((a, b) =>
-                a.finished > b.finished ? -1 : 1
-            );
-        }
+        // if (rating) {
+        //     result = resultQuizesByCategory
+        //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+        //         .find(a => a.rating < +rating);
+        // } else {
+        //     result = resultQuizesByCategory.sort((a, b) =>
+        //         a.finished > b.finished ? -1 : 1
+        //     );
+      // }
+       let newResult;
+       if (title) {
+           newResult = resultQuizCategories
+               .filter(a => (a.title === title ? a : null))
+               .map(a => a._id);
+       } else {
+           newResult = resultQuizCategories;
+       }
+
+        //TODO: при умові відсутності title
+        const result = resultQuizesByCategory
+            .filter(a =>
+                inputText
+                    ? a.theme.toLowerCase().includes(inputText.toLowerCase())
+                    : a
+            )
+            .map(res => {
+                res.category.toString() === newResult.toString() ? res : 1;
+            });
 
         res.json({
             data: result,
@@ -126,6 +145,44 @@ const getQuizByCategory = async (
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
+  
+
+   
+    // if (category || rating || finished || title || inputText) {
+    //     const matchStage = {};
+
+    //     // Додавання фільтрів
+    //     if (category) {
+    //         matchStage.ageGroup = category;
+    //     }
+
+    //     if (title) {
+    //         matchStage.title = title;
+    //     }
+        
+    //     pipeline.push(
+    //       {
+    //         $match: matchStage, 
+    //       },
+    //       {
+    //         $skip: startIndex,
+    //       },
+    //       {
+    //         $limit: itemsPerPage,
+    //       },
+          
+    //       );
+          
+         
+    //     console.log(pipeline);
+    // }
+
+    // try {
+    //     const result = await Quiz.aggregate(pipeline);
+    //     res.json(result);
+    // } catch (error) {
+    //     res.status(500).json({ message: error.message });
+    // }
 };
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
@@ -160,25 +217,28 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
     const quiz = await Quiz.findById(id);
 
     if (!quiz) {
-        throw HttpError(404, "Bad Request")
-    };
-    
+        throw HttpError(404, 'Bad Request');
+    }
+
     if (quiz.owner.toString() !== user._id.toString()) {
-        throw HttpError(401, "Unauthorized")
+        throw HttpError(401, 'Unauthorized');
     }
 
     const { ...updatedData } = req.body;
-    
 
-    const existingQuiz = await Quiz.findByIdAndUpdate(id, { updatedData }, {
-        new: true,
-    });
+    const existingQuiz = await Quiz.findByIdAndUpdate(
+        id,
+        { updatedData },
+        {
+            new: true,
+        }
+    );
     if (!existingQuiz) {
         res.status(404).json({ error: 'Quiz not found' });
         return;
     }
 
-    res.status(200).json( existingQuiz );
+    res.status(200).json(existingQuiz);
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
