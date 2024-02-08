@@ -40,6 +40,8 @@ const getAllByRating = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+
+
 const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
@@ -153,22 +155,17 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
 
 const updateQuizById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    // if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    //     res.status(400).json({ error: 'Invalid quiz ID' });
-    //     return;
-    // }
 
     const { user } = req.body;
     const quiz = await Quiz.findById(id);
+
     if (!quiz) {
         throw HttpError(404, "Bad Request")
     };
-
-    // if (quiz.owner !== user._id) {
-    //     console.log(quiz.owner, user._id);
-        
-    //     throw HttpError(401, "Unauthorized")
-    // }
+    
+    if (quiz.owner.toString() !== user._id.toString()) {
+        throw HttpError(401, "Unauthorized")
+    }
 
     const { ...updatedData } = req.body;
     
