@@ -66,16 +66,18 @@ const getQuizByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category, page, pageSize, rating, finished } = req.query;
+    const { category, page, pageSize, rating, finished, title, inputText } =
+        req.query;
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
 
-    try {
-        const startIndex: number = (currentPage - 1) * itemsPerPage;
+    const startIndex: number = (currentPage - 1) * itemsPerPage;
+    // let sortCriteria: any | undefined;
 
+    try {
         const totalQuizzesCount = await Quiz.countDocuments({
             ageGroup: category,
         });
@@ -84,34 +86,33 @@ const getQuizByCategory = async (
             ageGroup: category,
         });
 
-        let sortCriteria: { [key: string]: 1 | -1 } | undefined;
-
-        if (rating) {
-            sortCriteria = {
-                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
-            };
-        } else if (finished) {
-            sortCriteria = {
-                finished: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
-            };
-        }
-
         let resultQuizesByCategory;
 
         if (Array.isArray(category)) {
             resultQuizesByCategory = await Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
         } else {
-            resultQuizesByCategory = await Quiz.find({ ageGroup: category })
+            resultQuizesByCategory = await Quiz.find({
+                ageGroup: category,
+            })
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
+        }
+        let result;
+        if (rating) {
+            result = resultQuizesByCategory
+                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+                .filter(a => a.rating < +rating);
+        } else {
+            result = resultQuizesByCategory.sort((a, b) =>
+                a.finished > b.finished ? -1 : 1
+            );
         }
 
         res.json({
-            data: resultQuizesByCategory,
+            // data: resultQuizesByCategory,
+            data: result,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
@@ -129,8 +130,8 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
 
     const categories = await QuizCategory.find({ ageGroup: 'adults' });
     if (!categories) {
-        throw HttpError(400, 'DB is not available')
-    };
+        throw HttpError(400, 'DB is not available');
+    }
 
     const result = await Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
@@ -143,8 +144,8 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
             theme,
             categories,
             background,
-            ageGroup
-        }
+            ageGroup,
+        },
     });
 };
 
@@ -155,7 +156,7 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const {...updatedData } = req.body;
+    const { ...updatedData } = req.body;
 
     const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
         new: true,
