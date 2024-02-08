@@ -111,13 +111,12 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (rating) {
             result = resultQuizesByCategory
                 .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-                .filter(a => a.rating < +rating);
+                .find(a => a.rating < +rating);
         }
         else {
             result = resultQuizesByCategory.sort((a, b) => a.finished > b.finished ? -1 : 1);
         }
         res.json({
-            // data: resultQuizesByCategory,
             data: result,
             categories: resultQuizCategories,
             currentPage,
