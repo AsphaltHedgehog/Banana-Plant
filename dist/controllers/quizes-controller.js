@@ -152,10 +152,10 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    if (!id || !mongoose_1.default.Types.ObjectId.isValid(id)) {
-        res.status(400).json({ error: 'Invalid quiz ID' });
-        return;
-    }
+    // if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    //     res.status(400).json({ error: 'Invalid quiz ID' });
+    //     return;
+    // }
     const { user } = req.body;
     const quiz = yield Quiz_1.Quiz.findById(id);
     if (!quiz) {
