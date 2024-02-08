@@ -1,34 +1,24 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 interface IReview extends Document {
-    username: string;
+    userName: string;
     avatarUrl?: string;
-    rating: number;
-    comment: string;
-    createdAt: Date;
+    review: string;
 }
 
 const reviewSchema = new Schema<IReview>({
-    username: {
+    userName: {
         type: String,
         required: true,
     },
     avatarUrl: {
         type: String,
     },
-    rating: {
-        type: Number,
-        required: true,
-    },
-    comment: {
+    review: {
         type: String,
         required: true,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
-});
+}, { versionKey: false, timestamps: true });
 
 const Review = mongoose.model<IReview>('review', reviewSchema);
 

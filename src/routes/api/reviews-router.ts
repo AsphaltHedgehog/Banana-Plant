@@ -8,7 +8,7 @@ const reviewsRouter = Router();
 
 reviewsRouter.get('/getReviews', reviewsController.getReviews);
 
-reviewsRouter.post('/addReview', reviewsController.addReview);
+reviewsRouter.post('/:id/addReview', reviewsController.addReview);
 
 export default reviewsRouter;
 // reviewsRouter.get('/own', reviewsController.getOneReview);
