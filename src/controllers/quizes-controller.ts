@@ -156,9 +156,10 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const { ...updatedData } = req.body;
+    const { ...updatedData } = req.body; 
+    
 
-    const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
+    const existingQuiz = await Quiz.findByIdAndUpdate(id, { updatedData }, {
         new: true,
     });
     if (!existingQuiz) {
@@ -166,7 +167,7 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    res.status(200).json(existingQuiz);
+    res.status(200).json({existingQuiz});
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {

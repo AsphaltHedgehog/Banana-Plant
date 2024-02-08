@@ -80,45 +80,45 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, page, pageSize, rating, finished } = req.query;
+    const { category, page, pageSize, rating, finished, title, inputText } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    // let sortCriteria: any | undefined;
     try {
-        const startIndex = (currentPage - 1) * itemsPerPage;
         const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({
             ageGroup: category,
         });
         const resultQuizCategories = yield Quiz_1.QuizCategory.find({
             ageGroup: category,
         });
-        let sortCriteria;
-        if (rating) {
-            sortCriteria = {
-                rating: parseInt(rating.toString(), 10) > 0 ? 1 : -1,
-            };
-        }
-        else if (finished) {
-            sortCriteria = {
-                finished: parseInt(finished.toString(), 10) > 0 ? 1 : -1,
-            };
-        }
         let resultQuizesByCategory;
         if (Array.isArray(category)) {
             resultQuizesByCategory = yield Quiz_1.Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
         }
         else {
-            resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
+            resultQuizesByCategory = yield Quiz_1.Quiz.find({
+                ageGroup: category,
+            })
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
+        }
+        let result;
+        if (rating) {
+            result = resultQuizesByCategory
+                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+                .filter(a => a.rating < +rating);
+        }
+        else {
+            result = resultQuizesByCategory.sort((a, b) => a.finished > b.finished ? -1 : 1);
         }
         res.json({
-            data: resultQuizesByCategory,
+            // data: resultQuizesByCategory,
+            data: result,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
@@ -137,7 +137,6 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     if (!categories) {
         throw (0, index_1.HttpError)(400, 'DB is not available');
     }
-    ;
     const result = yield Quiz_1.Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
     res.status(201).json({
@@ -148,8 +147,8 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             theme,
             categories,
             background,
-            ageGroup
-        }
+            ageGroup,
+        },
     });
 });
 const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -159,14 +158,14 @@ const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         return;
     }
     const updatedData = __rest(req.body, []);
-    const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, updatedData, {
+    const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { updatedData }, {
         new: true,
     });
     if (!existingQuiz) {
         res.status(404).json({ error: 'Quiz not found' });
         return;
     }
-    res.status(200).json(existingQuiz);
+    res.status(200).json({ existingQuiz });
 });
 const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
