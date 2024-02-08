@@ -18,6 +18,19 @@ import { cloudinary } from '../conf/envConfs';
 
 
 
+const getAllQuestions = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    const allQuestions = await QuizQuestion.find({quiz: id})
+
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            ...allQuestions
+        }
+    })
+};
 
 const addNewQuizQuestion = async (req: Request, res: Response): Promise<void> => {
         const { id } = req.params;
@@ -237,6 +250,7 @@ const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<v
 
 
 export default {
+    getAllQuestions: ctrlWrapper(getAllQuestions),
     addNewQuizQuestion: ctrlWrapper(addNewQuizQuestion),
     updateQuizQuestionById: ctrlWrapper(updateQuizQuestionById),
     deleteQuizQuestionById: ctrlWrapper(deleteQuizQuestionById),

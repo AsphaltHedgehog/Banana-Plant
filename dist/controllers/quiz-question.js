@@ -47,6 +47,15 @@ const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
 // import Quiz from '../models/Quiz';
 // img handlers
 const envConfs_1 = require("../conf/envConfs");
+const getAllQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const allQuestions = yield QuizQuestion_1.default.find({ quiz: id });
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: Object.assign({}, allQuestions)
+    });
+});
 const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const { time, imageUrl = '', type, descr, answers, validAnswerIndex } = req.body;
@@ -190,6 +199,7 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     res.status(204).json({});
 });
 exports.default = {
+    getAllQuestions: (0, index_2.ctrlWrapper)(getAllQuestions),
     addNewQuizQuestion: (0, index_2.ctrlWrapper)(addNewQuizQuestion),
     updateQuizQuestionById: (0, index_2.ctrlWrapper)(updateQuizQuestionById),
     deleteQuizQuestionById: (0, index_2.ctrlWrapper)(deleteQuizQuestionById),
