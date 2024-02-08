@@ -19,15 +19,14 @@ const helpers_1 = require("../helpers");
 const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization = '' } = req.headers;
     const [bearer, token] = authorization.split(' ');
-    if (bearer !== bearer) {
-        next((0, helpers_1.HttpError)(401));
+    if (bearer !== 'Bearer') {
+        next((0, helpers_1.HttpError)(404));
     }
     try {
         if (!envConfs_1.default.secretKey) {
             throw new Error('Secret key is not configured');
         }
         const decodedToken = jsonwebtoken_1.default.verify(token, envConfs_1.default.secretKey);
-        console.log(decodedToken);
         const { id } = decodedToken;
         const user = yield User_1.default.findById(id);
         if (!user || !user.token || user.token !== token) {

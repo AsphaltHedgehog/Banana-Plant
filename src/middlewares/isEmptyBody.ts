@@ -5,6 +5,7 @@ const isEmptyBody = (req:Request, res:Response, next:NextFunction) => {
     if(!Object.keys(req.body).length) {
         return next(HttpError(400, "Body must have fields"));
     }
+    
     next();
 }
 

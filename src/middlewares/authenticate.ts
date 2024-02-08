@@ -11,9 +11,11 @@ const authenticate = async (
 ) => {
     const { authorization = '' } = req.headers;
     const [bearer, token] = authorization.split(' ');
-    if (bearer !== bearer) {
-        next(HttpError(401));
+    if (bearer !== 'Bearer') {
+        next(HttpError(404));
     }
+    
+    
     try {
         if (!envsConfig.secretKey) {
             throw new Error('Secret key is not configured');
@@ -23,7 +25,6 @@ const authenticate = async (
             token,
             envsConfig.secretKey
         ) as JwtPayload;
-console.log(decodedToken)
         const { id } = decodedToken;
 
         const user = await User.findById(id);

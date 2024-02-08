@@ -27,12 +27,13 @@ exports.QuizCategory = exports.Quiz = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const quizSchema = new mongoose_1.Schema({
     theme: { type: String, required: true },
-    category: [{ type: mongoose_1.Schema.Types.ObjectId, required: true }],
-    background: { type: String, required: true },
-    ageGroup: { type: String, required: true },
-    ratingQuantity: { type: Number, required: false },
-    rating: { type: Number, required: false },
-    finished: { type: Number, required: false },
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: 'categories' },
+    background: { type: String, default: 'none' },
+    ageGroup: { type: String, default: 'adults' },
+    ratingQuantity: { type: Number, default: 0 },
+    rating: { type: Number, default: 0 },
+    finished: { type: Number, default: 0 },
+    owner: { type: mongoose_1.Schema.Types.ObjectId, ref: 'users' }
 }, { timestamps: true, versionKey: false });
 const quizCategorySchema = new mongoose_1.Schema({
     ageGroup: { type: String, required: true },
@@ -40,4 +41,3 @@ const quizCategorySchema = new mongoose_1.Schema({
 });
 exports.Quiz = mongoose_1.default.model('quizes', quizSchema);
 exports.QuizCategory = mongoose_1.default.model('categories', quizCategorySchema);
-// export default Quiz;

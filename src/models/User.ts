@@ -11,9 +11,6 @@ export interface User extends Document {
         additionalEmail: string;
     };
     favorite: Schema.Types.ObjectId[];
-
-    addFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
-    removeFavoriteTest: (testId: Schema.Types.ObjectId) => Promise<void>;
 }
 
 const emailRegex =
@@ -55,7 +52,7 @@ const userSchema = new Schema<User>(
         favorite: [
             {
                 type: Schema.Types.ObjectId,
-                ref: 'Test',
+                ref: 'quizes',
 
                 default: [],
             },
