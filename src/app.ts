@@ -3,7 +3,7 @@ import logger from 'morgan';
 import cors from 'cors';
 import 'dotenv/config';
 import bodyParser from 'body-parser';
-// import reviewsRouter from "./routes/api/reviews-router.js";
+import reviewsRouter from './routes/api/reviews-router';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger.json';
 import quizRouter from './routes/api/quizes-router.js';
@@ -33,7 +33,8 @@ app.use(express.static('public'));
 // auth routes
 app.use('/api/auth', router);
 
-// app.use('api/reviews', reviewsRoutes);
+// reviews routes
+app.use('/api/reviews', reviewsRouter);
 
 // get sorted quizes routes
 app.use('/api/quiz', quizRouter);

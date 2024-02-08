@@ -20,7 +20,7 @@ const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, email, favorite } }
+        data: { user: { _id, name, email, favorite } },
     });
 });
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,7 +30,7 @@ const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { name }
+        data: { name },
     });
 });
 const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -38,11 +38,13 @@ const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const favoriteID = req.body.favorite;
     const index = user.favorite.indexOf(favoriteID);
     if (index === -1) {
-        yield User_1.default.findByIdAndUpdate(user.id, { $push: { favorite: favoriteID } });
+        yield User_1.default.findByIdAndUpdate(user.id, {
+            $push: { favorite: favoriteID },
+        });
         res.status(201).json({
             status: 'OK',
             code: 201,
-            message: 'user favorite succsessfuly added'
+            message: 'user favorite succsessfuly added',
         });
     }
     else {
@@ -54,5 +56,5 @@ const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
     userInfo: (0, index_1.ctrlWrapper)(userInfo),
-    updateInfo: (0, index_1.ctrlWrapper)(updateInfo)
+    updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
 };
