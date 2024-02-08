@@ -2,10 +2,11 @@ import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const { page, pageSize } = req.query;
+
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
         ? parseInt(pageSize.toString(), 10)
@@ -99,11 +100,13 @@ const getQuizByCategory = async (
                 .skip(startIndex)
                 .limit(itemsPerPage);
         }
+
         let result;
+
         if (rating) {
             result = resultQuizesByCategory
                 .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-                .filter(a => a.rating < +rating);
+                .find(a => a.rating < +rating);
         } else {
             result = resultQuizesByCategory.sort((a, b) =>
                 a.finished > b.finished ? -1 : 1
@@ -111,7 +114,6 @@ const getQuizByCategory = async (
         }
 
         res.json({
-            // data: resultQuizesByCategory,
             data: result,
             categories: resultQuizCategories,
             currentPage,
