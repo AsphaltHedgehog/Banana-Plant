@@ -20,13 +20,22 @@ quizesRouter.get('/:id', quizesController.getQuizeById);
 
 quizesRouter.post(
   "/",
+<<<<<<< Updated upstream
   // upload.single("poster"),
   isEmptyBody,
+=======
+  // authenticate,
+  // isEmptyBody,
+>>>>>>> Stashed changes
   // validateBody(quizAddSchema),
   quizesController.addNewQuize
 );
 
+<<<<<<< Updated upstream
 quizesRouter.put(
+=======
+quizRouter.patch(
+>>>>>>> Stashed changes
     '/:id',
     isEmptyBody,
     // validateBody(quizUpdateSchema),

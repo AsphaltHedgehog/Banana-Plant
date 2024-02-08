@@ -67,16 +67,18 @@ const getQuizesByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { category, page, pageSize, rating, finished } = req.query;
+    const { category, page, pageSize, rating, finished, title, inputText } =
+        req.query;
 
     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage: number = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
 
-    try {
-        const startIndex: number = (currentPage - 1) * itemsPerPage;
+    const startIndex: number = (currentPage - 1) * itemsPerPage;
+    // let sortCriteria: any | undefined;
 
+    try {
         const totalQuizzesCount = await Quiz.countDocuments({
             ageGroup: category,
         });
@@ -85,6 +87,7 @@ const getQuizesByCategory = async (
             ageGroup: category,
         });
 
+<<<<<<< Updated upstream
         let sortCriteria: { [key: string]: 1 | -1 } | undefined;
 
         if (rating) {
@@ -99,20 +102,35 @@ const getQuizesByCategory = async (
 
       let resultQuizesByCategory;
       
+=======
+        let resultQuizesByCategory;
+
+>>>>>>> Stashed changes
         if (Array.isArray(category)) {
             resultQuizesByCategory = await Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
         } else {
-            resultQuizesByCategory = await Quiz.find({ ageGroup: category })
+            resultQuizesByCategory = await Quiz.find({
+                ageGroup: category,
+            })
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
+        }
+        let result;
+        if (rating) {
+            result = resultQuizesByCategory
+                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+                .filter(a => a.rating < +rating);
+        } else {
+            result = resultQuizesByCategory.sort((a, b) =>
+                a.finished > b.finished ? -1 : 1
+            );
         }
 
         res.json({
-            data: resultQuizesByCategory,
+            // data: resultQuizesByCategory,
+            data: result,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
@@ -140,12 +158,20 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
         //         );
         //         await fs.unlink(req.file.path);
 
+<<<<<<< Updated upstream
         const { theme, ageGroup }: { theme: string; ageGroup: string } =
             req.body;
         const result = await Quiz.find({ ageGroup: ageGroup });
+=======
+    const categories = await QuizCategory.find({ ageGroup: 'adults' });
+    if (!categories) {
+        throw HttpError(400, 'DB is not available');
+    }
+>>>>>>> Stashed changes
 
         const arrQuizesCategory: ObjectId[] = result.map(q => q.category);
 
+<<<<<<< Updated upstream
         const quizInfo = new Quiz({
             theme: theme,
             ageGroup: ageGroup,
@@ -195,6 +221,42 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
 };
 
 const deleteQuizeById = async (req: Request, res: Response): Promise<void> => {
+=======
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: {
+            _id,
+            theme,
+            categories,
+            background,
+            ageGroup,
+        },
+    });
+};
+
+const updateQuizById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        res.status(400).json({ error: 'Invalid quiz ID' });
+        return;
+    }
+
+    const { ...updatedData } = req.body;
+
+    const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
+        new: true,
+    });
+    if (!existingQuiz) {
+        res.status(404).json({ error: 'Quiz not found' });
+        return;
+    }
+
+    res.status(200).json(existingQuiz);
+};
+
+const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
+>>>>>>> Stashed changes
     const { id } = req.params;
 
     try {

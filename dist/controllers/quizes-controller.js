@@ -81,13 +81,14 @@ const getQuizeById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { category, page, pageSize, rating, finished } = req.query;
+    const { category, page, pageSize, rating, finished, title, inputText } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
     const itemsPerPage = pageSize
         ? parseInt(pageSize.toString(), 10)
         : 4;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    // let sortCriteria: any | undefined;
     try {
-        const startIndex = (currentPage - 1) * itemsPerPage;
         const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({
             ageGroup: category,
         });
@@ -109,17 +110,27 @@ const getQuizesByCategory = (req, res) => __awaiter(void 0, void 0, void 0, func
         if (Array.isArray(category)) {
             resultQuizesByCategory = yield Quiz_1.Quiz.find({})
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
         }
         else {
-            resultQuizesByCategory = yield Quiz_1.Quiz.find({ ageGroup: category })
+            resultQuizesByCategory = yield Quiz_1.Quiz.find({
+                ageGroup: category,
+            })
                 .skip(startIndex)
-                .limit(itemsPerPage)
-                .sort(sortCriteria);
+                .limit(itemsPerPage);
+        }
+        let result;
+        if (rating) {
+            result = resultQuizesByCategory
+                .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+                .filter(a => a.rating < +rating);
+        }
+        else {
+            result = resultQuizesByCategory.sort((a, b) => a.finished > b.finished ? -1 : 1);
         }
         res.json({
-            data: resultQuizesByCategory,
+            // data: resultQuizesByCategory,
+            data: result,
             categories: resultQuizCategories,
             currentPage,
             pageSize: itemsPerPage,
