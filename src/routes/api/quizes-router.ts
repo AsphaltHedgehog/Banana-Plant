@@ -1,47 +1,39 @@
 import express from "express";
 
-import quizesController from "../../controllers/quizes-controller.js";
+import quizController from "../../controllers/quizes-controller";
 
 import {
   isEmptyBody, //upload 
-} from "../../middlewares/index.js";
+} from "../../middlewares/index";
 
 // import { validateBody } from "../../decorators/index.js";
 
 // import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 
-const quizesRouter = express.Router();
+const quizRouter = express.Router();
 
-quizesRouter.get("/", quizesController.getAll);
-quizesRouter.get('/rating', quizesController.getAllByRating);
-quizesRouter.get('/category', quizesController.getQuizesByCategory);
-quizesRouter.get('/:id', quizesController.getQuizeById);
+quizRouter.get("/", quizController.getAll);
+quizRouter.get('/rating', quizController.getAllByRating);
+quizRouter.get('/category', quizController.getQuizesByCategory);
+quizRouter.get('/:id', quizController.getQuizeById);
 
 
-quizesRouter.post(
+quizRouter.post(
   "/",
-<<<<<<< Updated upstream
-  // upload.single("poster"),
-  isEmptyBody,
-=======
   // authenticate,
   // isEmptyBody,
->>>>>>> Stashed changes
   // validateBody(quizAddSchema),
-  quizesController.addNewQuize
+  quizController.addNewQuize
 );
 
-<<<<<<< Updated upstream
-quizesRouter.put(
-=======
+
 quizRouter.patch(
->>>>>>> Stashed changes
     '/:id',
     isEmptyBody,
     // validateBody(quizUpdateSchema),
-    quizesController.updateQuizeById
+    quizController.updateQuizeById
 );
 
-quizesRouter.delete('/:id', quizesController.deleteQuizeById);
+quizRouter.delete('/:id', quizController.deleteQuizeById);
 
-export default quizesRouter;
+export default quizRouter;
