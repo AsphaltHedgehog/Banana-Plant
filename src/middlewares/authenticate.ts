@@ -11,9 +11,13 @@ const authenticate = async (
 ) => {
     const { authorization = '' } = req.headers;
     const [bearer, token] = authorization.split(' ');
-    if (bearer !== bearer) {
-        next(HttpError(401));
+    if (bearer !== 'Bearer') {
+        next(HttpError(404));
     }
+    console.log(bearer, token);
+    console.log(authorization);
+    
+    
     try {
         if (!envsConfig.secretKey) {
             throw new Error('Secret key is not configured');
