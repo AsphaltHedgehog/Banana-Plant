@@ -1,6 +1,6 @@
 import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
-import { HttpError, cloudinary } from '../helpers/index';
+import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 // import fs from 'fs/promises';
 import mongoose, { ObjectId } from 'mongoose';
@@ -87,7 +87,6 @@ const getQuizesByCategory = async (
             ageGroup: category,
         });
 
-<<<<<<< Updated upstream
         let sortCriteria: { [key: string]: 1 | -1 } | undefined;
 
         if (rating) {
@@ -102,10 +101,6 @@ const getQuizesByCategory = async (
 
       let resultQuizesByCategory;
       
-=======
-        let resultQuizesByCategory;
-
->>>>>>> Stashed changes
         if (Array.isArray(category)) {
             resultQuizesByCategory = await Quiz.find({})
                 .skip(startIndex)
@@ -158,20 +153,12 @@ const addNewQuize = async (req: Request, res: Response): Promise<void> => {
         //         );
         //         await fs.unlink(req.file.path);
 
-<<<<<<< Updated upstream
         const { theme, ageGroup }: { theme: string; ageGroup: string } =
             req.body;
         const result = await Quiz.find({ ageGroup: ageGroup });
-=======
-    const categories = await QuizCategory.find({ ageGroup: 'adults' });
-    if (!categories) {
-        throw HttpError(400, 'DB is not available');
-    }
->>>>>>> Stashed changes
 
         const arrQuizesCategory: ObjectId[] = result.map(q => q.category);
 
-<<<<<<< Updated upstream
         const quizInfo = new Quiz({
             theme: theme,
             ageGroup: ageGroup,
@@ -221,42 +208,6 @@ const updateQuizeById = async (req: Request, res: Response): Promise<void> => {
 };
 
 const deleteQuizeById = async (req: Request, res: Response): Promise<void> => {
-=======
-    res.status(201).json({
-        status: 'OK',
-        code: 201,
-        data: {
-            _id,
-            theme,
-            categories,
-            background,
-            ageGroup,
-        },
-    });
-};
-
-const updateQuizById = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-        res.status(400).json({ error: 'Invalid quiz ID' });
-        return;
-    }
-
-    const { ...updatedData } = req.body;
-
-    const existingQuiz = await Quiz.findByIdAndUpdate(id, updatedData, {
-        new: true,
-    });
-    if (!existingQuiz) {
-        res.status(404).json({ error: 'Quiz not found' });
-        return;
-    }
-
-    res.status(200).json(existingQuiz);
-};
-
-const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
->>>>>>> Stashed changes
     const { id } = req.params;
 
     try {
