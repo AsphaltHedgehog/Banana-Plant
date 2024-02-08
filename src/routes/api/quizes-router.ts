@@ -28,7 +28,7 @@ quizRouter.post(
   quizController.addNewQuiz
 );
 
-quizRouter.put(
+quizRouter.patch(
     '/:id',
     isEmptyBody,
     authenticate,
