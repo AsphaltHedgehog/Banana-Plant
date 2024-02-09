@@ -27,6 +27,7 @@ const Quiz_1 = require("../models/Quiz");
 const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
 const mongoose_1 = __importDefault(require("mongoose"));
+const mongodb_1 = require("mongodb");
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, pageSize } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
@@ -64,14 +65,12 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     try {
         if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
-            return;
         }
         const result = yield Quiz_1.Quiz.findOne({
             _id: new mongoose_1.default.Types.ObjectId(id),
         });
         if (!result) {
             throw (0, index_1.HttpError)(404, 'Quiz not found');
-            return;
         }
         res.json(result);
     }
@@ -81,100 +80,47 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
-    console.log(req.query);
-    const currentPage = page ? parseInt(page.toString(), 10) : 1;
-    const itemsPerPage = pageSize
-        ? parseInt(pageSize.toString(), 10)
-        : 4;
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    let sortCriteria;
-    try {
-        const totalQuizzesCount = yield Quiz_1.Quiz.countDocuments({
-            ageGroup: category,
-        });
-        const resultQuizCategories = yield Quiz_1.QuizCategory.find({
-            ageGroup: category,
-        });
-        let resultQuizesByCategory;
-        if (Array.isArray(category)) {
-            resultQuizesByCategory = yield Quiz_1.Quiz.find({})
-                .skip(startIndex)
-                .limit(itemsPerPage);
-        }
-        else {
-            resultQuizesByCategory = yield Quiz_1.Quiz.find({
-                ageGroup: category,
-            })
-                .skip(startIndex)
-                .limit(itemsPerPage);
-        }
-        // let result;
-        // if (rating) {
-        //     result = resultQuizesByCategory
-        //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-        //         .find(a => a.rating < +rating);
-        // } else {
-        //     result = resultQuizesByCategory.sort((a, b) =>
-        //         a.finished > b.finished ? -1 : 1
-        //     );
-        // }
-        let newResult;
-        if (title) {
-            newResult = resultQuizCategories
-                .filter(a => (a.title === title ? a : null))
-                .map(a => a._id);
-        }
-        else {
-            newResult = resultQuizCategories;
-        }
-        //TODO: при умові відсутності title
-        const result = resultQuizesByCategory
-            .filter(a => inputText
-            ? a.theme.toLowerCase().includes(inputText.toLowerCase())
-            : a)
-            .map(res => {
-            res.category.toString() === newResult.toString() ? res : 1;
-        });
-        res.json({
-            data: result,
-            categories: resultQuizCategories,
-            currentPage,
-            pageSize: itemsPerPage,
-            totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
-            totalQuizzesCount,
-        });
+    const matchStage = {};
+    const pipeline = [];
+    if (category && typeof category === 'string') {
+        matchStage.ageGroup = category;
     }
-    catch (error) {
-        res.status(500).json({ message: error.message });
+    ;
+    if (rating && typeof rating === 'string') {
+        matchStage.rating = { $lte: parseInt(rating) };
     }
-    // if (category || rating || finished || title || inputText) {
-    //     const matchStage = {};
-    //     // Додавання фільтрів
-    //     if (category) {
-    //         matchStage.ageGroup = category;
-    //     }
-    //     if (title) {
-    //         matchStage.title = title;
-    //     }
-    //     pipeline.push(
-    //       {
-    //         $match: matchStage, 
-    //       },
-    //       {
-    //         $skip: startIndex,
-    //       },
-    //       {
-    //         $limit: itemsPerPage,
-    //       },
-    //       );
-    //     console.log(pipeline);
-    // }
-    // try {
-    //     const result = await Quiz.aggregate(pipeline);
-    //     res.json(result);
-    // } catch (error) {
-    //     res.status(500).json({ message: error.message });
-    // }
+    ;
+    if (title && typeof title === 'string') {
+        matchStage.category = new mongodb_1.ObjectId(title);
+    }
+    ;
+    if (inputText && typeof inputText === 'string') {
+        matchStage.theme = inputText;
+    }
+    ;
+    if (finished && typeof finished === 'string') {
+        matchStage.finished = { $lte: parseInt(finished) };
+    }
+    ;
+    pipeline.push({
+        $match: matchStage,
+    });
+    const totalResult = yield Quiz_1.Quiz.aggregate(pipeline);
+    if (page && typeof page === 'string') {
+        pipeline.push({ $skip: parseInt(page) - 1 });
+    }
+    if (pageSize && typeof pageSize === 'string') {
+        pipeline.push({ $limit: parseInt(pageSize) });
+    }
+    const result = yield Quiz_1.Quiz.aggregate(pipeline);
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result,
+            total: totalResult.length
+        }
+    });
 });
 const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { theme } = req.body;

@@ -1,8 +1,9 @@
-import { Quiz, QuizCategory, QuizeBy } from '../models/Quiz';
+import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const { page, pageSize } = req.query;
@@ -46,7 +47,6 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     try {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw HttpError(400, 'Invalid quiz ID');
-            return;
         }
 
         const result = await Quiz.findOne({
@@ -55,7 +55,6 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
 
         if (!result) {
             throw HttpError(404, 'Quiz not found');
-            return;
         }
         res.json(result);
     } catch (error: any) {
@@ -63,126 +62,182 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-const getQuizByCategory = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
-    const { category, page, pageSize, rating, finished, title, inputText } =
-      req.query;
-  console.log(req.query)
+// const getQuizByCategory = async (
+//     req: Request,
+//     res: Response
+// ): Promise<void> => {
+//     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
+//   console.log(req.query)
 
-    const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
-    const itemsPerPage: number = pageSize
-        ? parseInt(pageSize.toString(), 10)
-        : 4;
+//     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
+//     const itemsPerPage: number = pageSize
+//         ? parseInt(pageSize.toString(), 10)
+//         : 4;
 
-    const startIndex: number = (currentPage - 1) * itemsPerPage;
+//     const startIndex: number = (currentPage - 1) * itemsPerPage;
 
-    let sortCriteria: any | undefined;
+//     let sortCriteria: any | undefined;
 
-    try {
-        const totalQuizzesCount = await Quiz.countDocuments({
-            ageGroup: category,
-        });
+//     try {
+//         const totalQuizzesCount = await Quiz.countDocuments({
+//             ageGroup: category,
+//         });
 
-        const resultQuizCategories = await QuizCategory.find({
-            ageGroup: category,
-        });
+//         const resultQuizCategories = await QuizCategory.find({
+//             ageGroup: category,
+//         });
 
-        let resultQuizesByCategory;
+//         let resultQuizesByCategory;
 
-        if (Array.isArray(category)) {
-            resultQuizesByCategory = await Quiz.find({})
-                .skip(startIndex)
-                .limit(itemsPerPage);
-        } else {
-            resultQuizesByCategory = await Quiz.find({
-                ageGroup: category,
-            })
-                .skip(startIndex)
-                .limit(itemsPerPage);
-        }
+//         if (Array.isArray(category)) {
+//             resultQuizesByCategory = await Quiz.find({})
+//                 .skip(startIndex)
+//                 .limit(itemsPerPage);
+//         } else {
+//             resultQuizesByCategory = await Quiz.find({
+//                 ageGroup: category,
+//             })
+//                 .skip(startIndex)
+//                 .limit(itemsPerPage);
+//         }
 
-        // let result;
+//         // let result;
 
-        // if (rating) {
-        //     result = resultQuizesByCategory
-        //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-        //         .find(a => a.rating < +rating);
-        // } else {
-        //     result = resultQuizesByCategory.sort((a, b) =>
-        //         a.finished > b.finished ? -1 : 1
-        //     );
-      // }
-       let newResult;
-       if (title) {
-           newResult = resultQuizCategories
-               .filter(a => (a.title === title ? a : null))
-               .map(a => a._id);
-       } else {
-           newResult = resultQuizCategories;
-       }
+//         // if (rating) {
+//         //     result = resultQuizesByCategory
+//         //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+//         //         .find(a => a.rating < +rating);
+//         // } else {
+//         //     result = resultQuizesByCategory.sort((a, b) =>
+//         //         a.finished > b.finished ? -1 : 1
+//         //     );
+//       // }
+//        let newResult;
+//        if (title) {
+//            newResult = resultQuizCategories
+//                .filter(a => (a.title === title ? a : null))
+//                .map(a => a._id);
+//        } else {
+//            newResult = resultQuizCategories;
+//        }
 
-        //TODO: при умові відсутності title
-        const result = resultQuizesByCategory
-            .filter(a =>
-                inputText
-                    ? a.theme.toLowerCase().includes(inputText.toLowerCase())
-                    : a
-            )
-            .map(res => {
-                res.category.toString() === newResult.toString() ? res : 1;
-            });
+        // TODO: при умові відсутності title
+//         const result = resultQuizesByCategory
+//             .filter(a =>
+//                 inputText
+//                     ? a.theme.toLowerCase().includes(inputText.toLowerCase())
+//                     : a
+//             )
+//             .map(res => {
+//                 res.category.toString() === newResult.toString() ? res : 1;
+//             });
 
-        res.json({
-            data: result,
-            categories: resultQuizCategories,
-            currentPage,
-            pageSize: itemsPerPage,
-            totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
-            totalQuizzesCount,
-        });
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
-  
+//         res.json({
+//             data: result,
+//             categories: resultQuizCategories,
+//             currentPage,
+//             pageSize: itemsPerPage,
+//             totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
+//             totalQuizzesCount,
+//         });
+//     }
 
-   
-    // if (category || rating || finished || title || inputText) {
-    //     const matchStage = {};
+//     if (category || rating || finished || title || inputText) {
+//         const matchStage = {};
 
-    //     // Додавання фільтрів
-    //     if (category) {
-    //         matchStage.ageGroup = category;
-    //     }
+//         // Додавання фільтрів
+//         if (category) {
+//             matchStage.ageGroup = category;
+//         }
 
-    //     if (title) {
-    //         matchStage.title = title;
-    //     }
+//         if (title) {
+//             matchStage.title = title;
+//         }
         
-    //     pipeline.push(
-    //       {
-    //         $match: matchStage, 
-    //       },
-    //       {
-    //         $skip: startIndex,
-    //       },
-    //       {
-    //         $limit: itemsPerPage,
-    //       },
+//         pipeline.push(
+//           {
+//             $match: matchStage,
+//           },
+//           {
+//             $skip: startIndex,
+//           },
+//           {
+//             $limit: itemsPerPage,
+//           },
           
-    //       );
+//           );
           
          
-    //     console.log(pipeline);
-    // }
+//         console.log(pipeline);
+//     }
 
-    // try {
-    //     const result = await Quiz.aggregate(pipeline);
-    //     res.json(result);
-    // } catch (error) {
-    //     res.status(500).json({ message: error.message });
-    // }
+// const result = await Quiz.aggregate(pipeline);
+//         console.log(result);
+//         res.status(201).json(result);
+// };
+
+interface IMatchStage {
+    ageGroup?: string;
+    rating?: object;
+    category?: object;
+    theme?: string;
+    finished?: object;
+}
+
+const getQuizByCategory = async (req: Request, res: Response): Promise<void> => {
+    const { category, page, pageSize, rating, finished, title, inputText } = req.query;
+    const matchStage: IMatchStage = {};
+    const pipeline = [];
+
+    if (category && typeof category === 'string') {
+        matchStage.ageGroup = category;
+    };
+    
+    if (rating && typeof rating === 'string') {
+        matchStage.rating = { $lte: parseInt(rating) };
+    };
+
+    if (title && typeof title === 'string') {
+        matchStage.category = new ObjectId(title);
+    };
+
+    if (inputText && typeof inputText === 'string') {
+        matchStage.theme = inputText;
+    };
+
+    if (finished && typeof finished === 'string') {
+        matchStage.finished = { $lte: parseInt(finished) };
+    };
+
+
+    pipeline.push(
+        {
+            $match: matchStage,
+        }
+    );
+        
+
+    const totalResult = await Quiz.aggregate(pipeline);
+    
+    if (page && typeof page === 'string') {
+        pipeline.push({ $skip: parseInt(page as string) - 1 });
+    }
+    
+    if (pageSize && typeof pageSize === 'string') {
+        pipeline.push({ $limit: parseInt(pageSize as string) });
+    }
+    
+    const result = await Quiz.aggregate(pipeline);
+    
+
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result,
+            total: totalResult.length
+        }
+    });
 };
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
