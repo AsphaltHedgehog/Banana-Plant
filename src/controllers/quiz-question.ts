@@ -21,14 +21,13 @@ import { cloudinary } from '../conf/envConfs';
 const getAllQuestions = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
 
-    const allQuestions = await QuizQuestion.find({quiz: id})
+    const allQuestions = await QuizQuestion.find({ quiz: id })
+    
 
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: {
-            ...allQuestions
-        }
+        data: allQuestions
     })
 };
 
