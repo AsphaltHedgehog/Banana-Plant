@@ -264,6 +264,92 @@
                 }
             }
         },
+        "/api/user/info": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get user information",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User information retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "OK",
+                                            "description": "Response status"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 201,
+                                            "description": "Response code"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/UserInfo"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/update": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Update user information.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "The updated name of the user."
+                                    }
+                                },
+                                "example": "UpdatedName"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User information updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserInfo"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                    }
+                }
+            }
+        },
         "/api/quiz": {
             "get": {
                 "tags": ["Quizzes"],
@@ -1087,6 +1173,60 @@
                     }
                 }
             },
+            "UserRequestBody": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "The unique identifier of the user."
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "The name of the user."
+                            },
+                            "email": {
+                                "type": "string",
+                                "format": "email",
+                                "description": "The email address of the user."
+                            },
+                            "favorite": {
+                                "type": "string",
+                                "description": "The favorite item of the user."
+                            }
+                        }
+                    }
+                }
+            },
+            "UserInfo": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "example": "65c3bde2fc20d0414000fa4b",
+                        "description": "The unique identifier of the user."
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "userName",
+                        "description": "The name of the user."
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "The email address of the user."
+                    },
+                    "favorite": {
+                        "type": "array",
+                        "description": "The favorite items of the user.",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "Quiz": {
                 "type": "object",
                 "properties": {
@@ -1381,6 +1521,22 @@
                         "type": "string",
                         "description": "Error message",
                         "example": "Bad request"
+                    }
+                }
+            },
+            "errorUnauthorizedResponse": {
+                "type": "object",
+                "description": "Unauthorized access error.",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "description": "Error status code",
+                        "example": "401"
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Error message",
+                        "example": "Unauthorized"
                     }
                 }
             },
