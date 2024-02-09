@@ -53,7 +53,7 @@ const getAllQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: Object.assign({}, allQuestions)
+        data: allQuestions
     });
 });
 const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
