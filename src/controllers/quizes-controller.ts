@@ -227,13 +227,12 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
 
 
     pipeline.push(
-        {
-            $match: matchStage,
-        }
-);
+        { $match: matchStage });
         
 
     const totalResult = await Quiz.aggregate(pipeline);
+
+    const categoryCategory = await QuizCategory.find()
     
     if (page && typeof page === 'string') {
         pipeline.push({ $skip: parseInt(page as string) - 1 });
@@ -251,6 +250,7 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
         code: 200,
         data: {
             result,
+            category: categoryCategory,
             total: totalResult.length
         }
     });

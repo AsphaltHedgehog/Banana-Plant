@@ -207,10 +207,9 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
         matchStage.finished = { $lte: parseInt(finished) };
     }
     ;
-    pipeline.push({
-        $match: matchStage,
-    });
+    pipeline.push({ $match: matchStage });
     const totalResult = yield Quiz_1.Quiz.aggregate(pipeline);
+    const categoryCategory = yield Quiz_1.QuizCategory.find();
     if (page && typeof page === 'string') {
         pipeline.push({ $skip: parseInt(page) - 1 });
     }
@@ -223,6 +222,7 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
         code: 200,
         data: {
             result,
+            category: categoryCategory,
             total: totalResult.length
         }
     });
