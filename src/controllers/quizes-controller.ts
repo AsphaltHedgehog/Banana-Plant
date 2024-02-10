@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import QuizQuestion from '../models/QuizQuestion';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
@@ -63,200 +62,107 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
-// const getQuizByCategory = async (
-//     req: Request,
-//     res: Response
-// ): Promise<void> => {
-//     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
-//   console.log(req.query)
-
-//     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
-//     const itemsPerPage: number = pageSize
-//         ? parseInt(pageSize.toString(), 10)
-//         : 4;
-
-//     const startIndex: number = (currentPage - 1) * itemsPerPage;
-
-//     let sortCriteria: any | undefined;
-
-//     try {
-//         const totalQuizzesCount = await Quiz.countDocuments({
-//             ageGroup: category,
-//         });
-
-//         const resultQuizCategories = await QuizCategory.find({
-//             ageGroup: category,
-//         });
-
-//         let resultQuizesByCategory;
-
-//         if (Array.isArray(category)) {
-//             resultQuizesByCategory = await Quiz.find({})
-//                 .skip(startIndex)
-//                 .limit(itemsPerPage);
-//         } else {
-//             resultQuizesByCategory = await Quiz.find({
-//                 ageGroup: category,
-//             })
-//                 .skip(startIndex)
-//                 .limit(itemsPerPage);
-//         }
-
-//         // let result;
-
-//         // if (rating) {
-//         //     result = resultQuizesByCategory
-//         //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
-//         //         .find(a => a.rating < +rating);
-//         // } else {
-//         //     result = resultQuizesByCategory.sort((a, b) =>
-//         //         a.finished > b.finished ? -1 : 1
-//         //     );
-//       // }
-//        let newResult;
-//        if (title) {
-//            newResult = resultQuizCategories
-//                .filter(a => (a.title === title ? a : null))
-//                .map(a => a._id);
-//        } else {
-//            newResult = resultQuizCategories;
-//        }
-
-        // TODO: при умові відсутності title
-//         const result = resultQuizesByCategory
-//             .filter(a =>
-//                 inputText
-//                     ? a.theme.toLowerCase().includes(inputText.toLowerCase())
-//                     : a
-//             )
-//             .map(res => {
-//                 res.category.toString() === newResult.toString() ? res : 1;
-//             });
-
-//         res.json({
-//             data: result,
-//             categories: resultQuizCategories,
-//             currentPage,
-//             pageSize: itemsPerPage,
-//             totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
-//             totalQuizzesCount,
-//         });
-//     }
-
-//     if (category || rating || finished || title || inputText) {
-//         const matchStage = {};
-
-//         // Додавання фільтрів
-//         if (category) {
-//             matchStage.ageGroup = category;
-//         }
-
-//         if (title) {
-//             matchStage.title = title;
-//         }
-        
-//         pipeline.push(
-//           {
-//             $match: matchStage,
-//           },
-//           {
-//             $skip: startIndex,
-//           },
-//           {
-//             $limit: itemsPerPage,
-//           },
-          
-//           );
-          
-         
-//         console.log(pipeline);
-//     }
-
-// const result = await Quiz.aggregate(pipeline);
-//         console.log(result);
-//         res.status(201).json(result);
-// };
-
-
 const getAllCategory = async (req: Request, res: Response): Promise<void> => {
-
-    const result = await QuizCategory.find()
-    
-
-    res.status(200).json({
-        status: 'OK',
-        code: 200,
-        data: {
-            result
-        }
-    });
-};
-
-interface IMatchStage {
-    ageGroup?: string;
-    rating?: object;
-    category?: object;
-    theme?: string;
-    finished?: object;
-}
-
-const getQuizByCategory = async (req: Request, res: Response): Promise<void> => {
-    const { category, page, pageSize, rating, finished, title, inputText } = req.query;
-    const matchStage: IMatchStage = {};
-    const pipeline = [];
-
-    if (category && typeof category === 'string') {
-        matchStage.ageGroup = category;
-    };
-    
-    if (rating && typeof rating === 'string') {
-        matchStage.rating = { $lte: parseInt(rating) };
-    };
-
-    if (title && typeof title === 'string') {
-        matchStage.category = new ObjectId(title);
-    };
-
-    if (inputText && typeof inputText === 'string') {
-        matchStage.theme = inputText;
-    };
-
-    if (finished && typeof finished === 'string') {
-        matchStage.finished = { $lte: parseInt(finished) };
-    };
-
-
-    pipeline.push(
-        { $match: matchStage });
-        
-
-    const totalResult = await Quiz.aggregate(pipeline);
-
-    const categoryCategory = await QuizCategory.find({})
-    
-    if (page && typeof page === 'string') {
-        pipeline.push({ $skip: parseInt(page as string) - 1 });
-    }
-    
-    if (pageSize && typeof pageSize === 'string') {
-        pipeline.push({ $limit: parseInt(pageSize as string) });
-    }
-    
-    const result = await Quiz.aggregate(pipeline);
-    
+    const result = await QuizCategory.find();
 
     res.status(200).json({
         status: 'OK',
         code: 200,
         data: {
             result,
-            category: categoryCategory,
-            total: totalResult.length
-        }
+        },
     });
 };
 
+interface IMatchStage {
+    ageGroup?: string;
+    rating?: object;
+    // category?: mongoose.Types.ObjectId;
+    theme?: object;
+    finished?: object;
+}
 
+const getQuizByCategory = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const { ageGroup, page, pageSize, rating, finished, title, inputText } =
+        req.query;
+    const matchStage: IMatchStage = {};
+
+    if (ageGroup && typeof ageGroup === 'string') {
+        matchStage.ageGroup = ageGroup;
+    }
+
+    if (rating && typeof rating === 'string') {
+        matchStage.rating = { $lte: parseInt(rating) };
+    }
+
+    if (finished && typeof finished === 'string') {
+        matchStage.finished = { $lte: parseInt(finished) };
+    }
+
+    if (inputText && typeof inputText === 'string') {
+        matchStage.theme = {
+            $regex: new RegExp(inputText, 'i'),
+        };
+    }
+
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categoryInfo',
+            },
+        },
+        {
+            $match: {
+                $and: [
+                    matchStage,
+                    Array.isArray(title)
+                        ? { 'categoryInfo.title': { $in: title } } // Для масиву title
+                        : title
+                        ? {
+                              'categoryInfo.title': {
+                                  $regex: new RegExp(title, 'i'),
+                              },
+                          } // Для рядка title
+                        : {}, // Якщо title не вказано, пропускаємо цю умову
+                ],
+            },
+        },
+    ];
+
+    if (
+        page &&
+        typeof page === 'string' &&
+        pageSize &&
+        typeof pageSize === 'string'
+    ) {
+        const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+
+        pipeline.push({
+            $facet: {
+                pagination: [{ $skip: skip }, { $limit: limit }],
+            },
+        });
+    }
+
+    const result = await Quiz.aggregate(pipeline);
+
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result,
+            // category: categoryCategory,
+            // total: totalResult.length,
+        },
+    });
+};
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { theme } = req.body;
@@ -271,13 +177,13 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { _id, background, ageGroup } = result;
 
     const quizQuestion = {
-            quiz: _id,
-            time: '00:30',
-            descr: '',
-            type: 'full-text'
+        quiz: _id,
+        time: '00:30',
+        descr: '',
+        type: 'full-text',
     };
-    
-    await QuizQuestion.create(quizQuestion)
+
+    await QuizQuestion.create(quizQuestion);
 
     res.status(201).json({
         status: 'OK',
