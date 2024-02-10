@@ -69,11 +69,13 @@ const logout = async (req: Request, res: Response) => {
 const resetPassword = async (req: Request, res: Response) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
+
     if (!user) {
         throw HttpError(404, 'Account not found');
     }
+
     const resetToken = crypto.randomUUID();
-    await User.findOneAndUpdate({ email }, { $set: { resetToken } });
+    await User.findByIdAndUpdate(user._id, { $set: { resetToken } });
     const emailData: EmailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -90,7 +92,7 @@ const resetPassword = async (req: Request, res: Response) => {
     `,
     };
     await sendEmail(emailData);
-    res.json({ message: 'Message delivered' });
+    res.status(200).json({ message: 'Message delivered' });
 };
 
 const newPassword = async (req: Request, res: Response) => {
@@ -111,7 +113,7 @@ const newPassword = async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.json({ message: 'Password reset successful' });
+    res.status(201).json({ message: 'Password reset successful' });
 };
 
 export const ctrl = {
