@@ -31,7 +31,7 @@ const answerSchema = new mongoose_1.Schema({
 const quizQuestionSchema = new mongoose_1.Schema({
     quiz: { type: mongoose_1.Schema.Types.ObjectId, required: true },
     time: { type: String, required: true },
-    descr: { type: String, required: true },
+    descr: { type: String, required: false },
     answers: [answerSchema],
     validAnswer: { type: mongoose_1.Schema.Types.ObjectId },
     imageUrl: { type: String, required: false, default: '' },

@@ -23,7 +23,7 @@ const quizQuestionSchema = new Schema<QuizQuestion & Document>(
     {
         quiz: { type: Schema.Types.ObjectId, required: true },
         time: { type: String, required: true },
-        descr: { type: String, required: true },
+        descr: { type: String, required: false },
         answers: [answerSchema],
         validAnswer: { type: Schema.Types.ObjectId },
         imageUrl: { type: String, required: false, default: ''},

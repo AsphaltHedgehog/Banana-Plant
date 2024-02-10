@@ -52,7 +52,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const payload = {
         id: user._id,
     };
-    const token = jsonwebtoken_1.default.sign(payload, envConfs_1.default.secretKey, { expiresIn: '30m' });
+    const token = jsonwebtoken_1.default.sign(payload, envConfs_1.default.secretKey, { expiresIn: '6h' });
     yield User_1.default.findByIdAndUpdate(user._id, { token });
     res.json({ token });
 });

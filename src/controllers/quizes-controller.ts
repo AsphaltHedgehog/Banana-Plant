@@ -4,6 +4,7 @@ import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
+import QuizQuestion from '../models/QuizQuestion';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const { page, pageSize } = req.query;
@@ -231,7 +232,7 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
 
     const totalResult = await Quiz.aggregate(pipeline);
 
-    const categoryCategory = await QuizCategory.find()
+    const categoryCategory = await QuizCategory.find({})
     
     if (page && typeof page === 'string') {
         pipeline.push({ $skip: parseInt(page as string) - 1 });
@@ -268,6 +269,15 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
 
     const result = await Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
+
+    const quizQuestion = {
+            quiz: _id,
+            time: '00:30',
+            descr: '',
+            type: 'full-text'
+    };
+    
+    await QuizQuestion.create(quizQuestion)
 
     res.status(201).json({
         status: 'OK',

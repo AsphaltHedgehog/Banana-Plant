@@ -28,6 +28,7 @@ const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
 const mongoose_1 = __importDefault(require("mongoose"));
 const mongodb_1 = require("mongodb");
+const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, pageSize } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
@@ -208,7 +209,7 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
     ;
     pipeline.push({ $match: matchStage });
     const totalResult = yield Quiz_1.Quiz.aggregate(pipeline);
-    const categoryCategory = yield Quiz_1.QuizCategory.find();
+    const categoryCategory = yield Quiz_1.QuizCategory.find({});
     if (page && typeof page === 'string') {
         pipeline.push({ $skip: parseInt(page) - 1 });
     }
@@ -235,6 +236,13 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
     const result = yield Quiz_1.Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
+    const quizQuestion = {
+        quiz: _id,
+        time: '00:30',
+        descr: '',
+        type: 'full-text'
+    };
+    yield QuizQuestion_1.default.create(quizQuestion);
     res.status(201).json({
         status: 'OK',
         code: 201,
