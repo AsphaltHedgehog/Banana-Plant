@@ -174,7 +174,6 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 // };
 const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield Quiz_1.QuizCategory.find();
-    console.log(result);
     res.status(200).json({
         status: 'OK',
         code: 200,
