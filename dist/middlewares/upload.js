@@ -15,7 +15,7 @@ const multerTempStorage = multer_1.default.diskStorage({
     },
 });
 const limits = {
-    fileSize: 762 * 762,
+    fileSize: 5000 * 5000,
 };
 const upload = (0, multer_1.default)({
     storage: multerTempStorage,

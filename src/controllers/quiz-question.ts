@@ -186,14 +186,14 @@ const updateQuizQuestionById = async (req: Request, res: Response): Promise<void
 };
 
 const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const { _id } = req.params;
 
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
         throw HttpError(400, 'Invalid quiz ID');
     }
 
-    const result = await QuizQuestion.findByIdAndDelete(id);
+    const result = await QuizQuestion.findByIdAndDelete(_id);
 
     if (!result) {
         throw HttpError(404, 'Quiz not found');

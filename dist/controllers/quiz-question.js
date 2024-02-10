@@ -156,11 +156,11 @@ const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     });
 });
 const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+    const { _id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(_id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
-    const result = yield QuizQuestion_1.default.findByIdAndDelete(id);
+    const result = yield QuizQuestion_1.default.findByIdAndDelete(_id);
     if (!result) {
         throw (0, index_1.HttpError)(404, 'Quiz not found');
     }
