@@ -10,7 +10,7 @@ router.post('/login', ctrl.login);
 
 router.patch('/logout', authenticate, ctrl.logout);
 
-router.post('/resetPassword/', ctrl.resetPassword);
+router.post('/resetPassword', ctrl.resetPassword);
 
 router.patch('/newPassword/:resetToken', ctrl.newPassword);
 
