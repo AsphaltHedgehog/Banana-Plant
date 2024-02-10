@@ -71,7 +71,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         throw (0, helpers_1.HttpError)(404, 'Account not found');
     }
     const resetToken = crypto_1.default.randomUUID();
-    yield User_1.default.findOneAndUpdate({ email }, { $set: { resetToken } });
+    yield User_1.default.findByIdAndUpdate(user._id, { $set: { resetToken } });
     const emailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -88,7 +88,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     `,
     };
     yield (0, sendEmail_1.default)(emailData);
-    res.json({ message: 'Message delivered' });
+    res.status(200).json({ message: 'Message delivered' });
 });
 const newPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = req.params;
@@ -104,7 +104,7 @@ const newPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     user.password = hashPassword;
     user.resetToken = null;
     yield user.save();
-    res.json({ message: 'Password reset successful' });
+    res.status(201).json({ message: 'Password reset successful' });
 });
 exports.ctrl = {
     register: (0, index_1.ctrlWrapper)(register),

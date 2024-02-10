@@ -16,7 +16,8 @@ const quizRouter = express.Router();
 
 quizRouter.get("/", quizController.getAll);
 quizRouter.get('/rating', quizController.getAllByRating);
-quizRouter.get('/category', quizController.getQuizByCategory);
+quizRouter.get('/category', quizController.getAllCategory);
+quizRouter.get('/filter', quizController.getQuizByCategory);
 quizRouter.get('/:id', quizController.getQuizById);
 
 

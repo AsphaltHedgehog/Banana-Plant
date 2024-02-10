@@ -176,6 +176,22 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
 //         res.status(201).json(result);
 // };
 
+
+const getAllCategory = async (req: Request, res: Response): Promise<void> => {
+
+    const result = await QuizCategory.find()
+    console.log(result);
+    
+
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result
+        }
+    });
+};
+
 interface IMatchStage {
     ageGroup?: string;
     rating?: object;
@@ -214,7 +230,7 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
         {
             $match: matchStage,
         }
-    );
+);
         
 
     const totalResult = await Quiz.aggregate(pipeline);
@@ -239,6 +255,8 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
         }
     });
 };
+
+
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { theme } = req.body;
@@ -322,6 +340,7 @@ export default {
     getAll: ctrlWrapper(getAll),
     getAllByRating: ctrlWrapper(getAllByRating),
     getQuizById: ctrlWrapper(getQuizById),
+    getAllCategory: ctrlWrapper(getAllCategory),
     getQuizByCategory: ctrlWrapper(getQuizByCategory),
     addNewQuiz: ctrlWrapper(addNewQuiz),
     updateQuizById: ctrlWrapper(updateQuizById),

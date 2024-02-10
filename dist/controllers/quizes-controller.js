@@ -78,6 +78,111 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(500).json({ message: error.message });
     }
 });
+// const getQuizByCategory = async (
+//     req: Request,
+//     res: Response
+// ): Promise<void> => {
+//     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
+//   console.log(req.query)
+//     const currentPage: number = page ? parseInt(page.toString(), 10) : 1;
+//     const itemsPerPage: number = pageSize
+//         ? parseInt(pageSize.toString(), 10)
+//         : 4;
+//     const startIndex: number = (currentPage - 1) * itemsPerPage;
+//     let sortCriteria: any | undefined;
+//     try {
+//         const totalQuizzesCount = await Quiz.countDocuments({
+//             ageGroup: category,
+//         });
+//         const resultQuizCategories = await QuizCategory.find({
+//             ageGroup: category,
+//         });
+//         let resultQuizesByCategory;
+//         if (Array.isArray(category)) {
+//             resultQuizesByCategory = await Quiz.find({})
+//                 .skip(startIndex)
+//                 .limit(itemsPerPage);
+//         } else {
+//             resultQuizesByCategory = await Quiz.find({
+//                 ageGroup: category,
+//             })
+//                 .skip(startIndex)
+//                 .limit(itemsPerPage);
+//         }
+//         // let result;
+//         // if (rating) {
+//         //     result = resultQuizesByCategory
+//         //         .sort((a, b) => (a.rating > b.rating ? -1 : 1))
+//         //         .find(a => a.rating < +rating);
+//         // } else {
+//         //     result = resultQuizesByCategory.sort((a, b) =>
+//         //         a.finished > b.finished ? -1 : 1
+//         //     );
+//       // }
+//        let newResult;
+//        if (title) {
+//            newResult = resultQuizCategories
+//                .filter(a => (a.title === title ? a : null))
+//                .map(a => a._id);
+//        } else {
+//            newResult = resultQuizCategories;
+//        }
+// TODO: при умові відсутності title
+//         const result = resultQuizesByCategory
+//             .filter(a =>
+//                 inputText
+//                     ? a.theme.toLowerCase().includes(inputText.toLowerCase())
+//                     : a
+//             )
+//             .map(res => {
+//                 res.category.toString() === newResult.toString() ? res : 1;
+//             });
+//         res.json({
+//             data: result,
+//             categories: resultQuizCategories,
+//             currentPage,
+//             pageSize: itemsPerPage,
+//             totalPages: Math.ceil(totalQuizzesCount / itemsPerPage),
+//             totalQuizzesCount,
+//         });
+//     }
+//     if (category || rating || finished || title || inputText) {
+//         const matchStage = {};
+//         // Додавання фільтрів
+//         if (category) {
+//             matchStage.ageGroup = category;
+//         }
+//         if (title) {
+//             matchStage.title = title;
+//         }
+//         pipeline.push(
+//           {
+//             $match: matchStage,
+//           },
+//           {
+//             $skip: startIndex,
+//           },
+//           {
+//             $limit: itemsPerPage,
+//           },
+//           );
+//         console.log(pipeline);
+//     }
+// const result = await Quiz.aggregate(pipeline);
+//         console.log(result);
+//         res.status(201).json(result);
+// };
+const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield Quiz_1.QuizCategory.find();
+    console.log(result);
+    res.status(200).json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result
+        }
+    });
+});
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category, page, pageSize, rating, finished, title, inputText } = req.query;
     const matchStage = {};
@@ -185,6 +290,7 @@ exports.default = {
     getAll: (0, index_2.ctrlWrapper)(getAll),
     getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
     getQuizById: (0, index_2.ctrlWrapper)(getQuizById),
+    getAllCategory: (0, index_2.ctrlWrapper)(getAllCategory),
     getQuizByCategory: (0, index_2.ctrlWrapper)(getQuizByCategory),
     addNewQuiz: (0, index_2.ctrlWrapper)(addNewQuiz),
     updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),

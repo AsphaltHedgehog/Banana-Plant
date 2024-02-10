@@ -12,7 +12,8 @@ const authenticate_1 = __importDefault(require("../../middlewares/authenticate")
 const quizRouter = express_1.default.Router();
 quizRouter.get("/", quizes_controller_1.default.getAll);
 quizRouter.get('/rating', quizes_controller_1.default.getAllByRating);
-quizRouter.get('/category', quizes_controller_1.default.getQuizByCategory);
+quizRouter.get('/category', quizes_controller_1.default.getAllCategory);
+quizRouter.get('/filter', quizes_controller_1.default.getQuizByCategory);
 quizRouter.get('/:id', quizes_controller_1.default.getQuizById);
 quizRouter.post("/", authenticate_1.default, index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
