@@ -167,7 +167,7 @@ const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     res.status(204).json({});
 });
 const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
+    const { _id } = req.params;
     // Прикрути аутефикацию)
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
@@ -179,10 +179,10 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     // if (!user.ownTests.find(quizId)) {
     //   throw HttpError(401, "Unauthorized")
     // }
-    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+    if (!mongoose_1.default.Types.ObjectId.isValid(_id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
-    const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: '' });
+    const question = yield QuizQuestion_1.default.findByIdAndUpdate(_id, { imageUrl: '' });
     console.log(question);
     if (!question) {
         throw (0, index_1.HttpError)(404, 'Question not found');

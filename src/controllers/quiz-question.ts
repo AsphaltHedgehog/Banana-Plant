@@ -204,7 +204,7 @@ const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void
 };
 
 const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
+    const { _id } = req.params;
 
 
     // Прикрути аутефикацию)
@@ -220,11 +220,11 @@ const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<v
     //   throw HttpError(401, "Unauthorized")
     // }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
         throw HttpError(400, 'Invalid quiz ID');
     }
 
-    const question = await QuizQuestion.findByIdAndUpdate(id, { imageUrl: '' });
+    const question = await QuizQuestion.findByIdAndUpdate(_id, { imageUrl: '' });
     console.log(question);
     
 
