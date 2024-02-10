@@ -325,10 +325,10 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "description": "The updated name of the user."
+                                        "example": "Updated Name",
+                                        "description": "The new name of the user."
                                     }
-                                },
-                                "example": "UpdatedName"
+                                }
                             }
                         }
                     }
@@ -343,6 +343,70 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                    }
+                }
+            }
+        },
+        "/user/favorite": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Add or remove favorite item",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Adds or removes a favorite quiz for the authenticated user.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "favoriteID": {
+                                        "type": "string",
+                                        "example": "65b9bbe690b27011571e122f",
+                                        "description": "The ID of the quiz to add or remove from favorites."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Favorite item added successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "description": "Status of the operation.",
+                                            "example": "OK"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "description": "HTTP status code.",
+                                            "example": 201
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Message indicating the success of the operation.",
+                                            "example": "User favorite successfully added"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "Favorite item removed successfully."
                     },
                     "401": {
                         "$ref": "#/components/schemas/errorUnauthorizedResponse"
