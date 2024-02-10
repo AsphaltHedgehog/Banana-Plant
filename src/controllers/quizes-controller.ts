@@ -180,7 +180,6 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
 const getAllCategory = async (req: Request, res: Response): Promise<void> => {
 
     const result = await QuizCategory.find()
-    console.log(result);
     
 
     res.status(200).json({
