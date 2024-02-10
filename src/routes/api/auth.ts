@@ -12,6 +12,6 @@ router.patch('/logout', authenticate, ctrl.logout);
 
 router.post('/resetPassword', ctrl.resetPassword);
 
-router.patch('/newPassword/:token', ctrl.newPassword);
+router.patch('/newPassword/:resetToken', ctrl.newPassword);
 
 export default router;

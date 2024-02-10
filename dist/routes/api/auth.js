@@ -11,5 +11,5 @@ router.post('/register', auth_1.ctrl.register);
 router.post('/login', auth_1.ctrl.login);
 router.patch('/logout', middlewares_1.authenticate, auth_1.ctrl.logout);
 router.post('/resetPassword', auth_1.ctrl.resetPassword);
-router.patch('/newPassword/:token', auth_1.ctrl.newPassword);
+router.patch('/newPassword/:resetToken', auth_1.ctrl.newPassword);
 exports.default = router;
