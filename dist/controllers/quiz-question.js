@@ -156,18 +156,18 @@ const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     });
 });
 const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.params;
-    if (!mongoose_1.default.Types.ObjectId.isValid(_id)) {
+    const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
-    const result = yield QuizQuestion_1.default.findByIdAndDelete(_id);
+    const result = yield QuizQuestion_1.default.findByIdAndDelete(id);
     if (!result) {
         throw (0, index_1.HttpError)(404, 'Quiz not found');
     }
     res.status(204).json({});
 });
 const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.params;
+    const { id } = req.params;
     // Прикрути аутефикацию)
     // auth (Пока закоменчено чтобы не ломать ничего)
     // const user = req.body.user
@@ -179,10 +179,12 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     // if (!user.ownTests.find(quizId)) {
     //   throw HttpError(401, "Unauthorized")
     // }
-    if (!mongoose_1.default.Types.ObjectId.isValid(_id)) {
+    console.log(id);
+    console.log(req.params);
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
-    const question = yield QuizQuestion_1.default.findByIdAndUpdate(_id, { imageUrl: '' });
+    const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: '' });
     console.log(question);
     if (!question) {
         throw (0, index_1.HttpError)(404, 'Question not found');

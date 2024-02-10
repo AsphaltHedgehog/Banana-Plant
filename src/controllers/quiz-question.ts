@@ -186,14 +186,14 @@ const updateQuizQuestionById = async (req: Request, res: Response): Promise<void
 };
 
 const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void> => {
-    const { _id } = req.params;
+    const { id } = req.params;
 
 
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw HttpError(400, 'Invalid quiz ID');
     }
 
-    const result = await QuizQuestion.findByIdAndDelete(_id);
+    const result = await QuizQuestion.findByIdAndDelete(id);
 
     if (!result) {
         throw HttpError(404, 'Quiz not found');
@@ -204,7 +204,7 @@ const deleteQuizQuestionById = async (req: Request, res: Response): Promise<void
 };
 
 const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<void> => {
-    const { _id } = req.params;
+    const { id } = req.params;
 
 
     // Прикрути аутефикацию)
@@ -220,11 +220,16 @@ const deleteQuizQuestionImgById = async (req: Request, res: Response): Promise<v
     //   throw HttpError(401, "Unauthorized")
     // }
 
-    if (!mongoose.Types.ObjectId.isValid(_id)) {
+    console.log(id);
+    console.log(req.params);
+    
+    
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
         throw HttpError(400, 'Invalid quiz ID');
     }
 
-    const question = await QuizQuestion.findByIdAndUpdate(_id, { imageUrl: '' });
+    const question = await QuizQuestion.findByIdAndUpdate(id, { imageUrl: '' });
     console.log(question);
     
 
