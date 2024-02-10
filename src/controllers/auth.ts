@@ -75,7 +75,9 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     const resetToken = crypto.randomUUID();
-    await User.findByIdAndUpdate(user._id, { $set: { resetToken } });
+    const expires = Date.now() + (1000 * 60 * 60);
+
+    await User.findByIdAndUpdate(user._id, {$set: { resetToken, resetTokenExpires: expires } });
     const emailData: EmailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -96,10 +98,10 @@ const resetPassword = async (req: Request, res: Response) => {
 };
 
 const newPassword = async (req: Request, res: Response) => {
-    const { token } = req.params;
+    const { resetToken } = req.params;
     const { newPassword } = req.body;
 
-    const user = await User.findOne({ resetToken: token });
+    const user = await User.findOne({ resetToken: resetToken });
 
     if (!user) {
         throw HttpError(401, 'Invalid or expired token');

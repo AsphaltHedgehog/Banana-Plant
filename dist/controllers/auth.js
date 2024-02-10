@@ -71,7 +71,8 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         throw (0, helpers_1.HttpError)(404, 'Account not found');
     }
     const resetToken = crypto_1.default.randomUUID();
-    yield User_1.default.findByIdAndUpdate(user._id, { $set: { resetToken } });
+    const expires = Date.now() + (1000 * 60 * 60);
+    yield User_1.default.findByIdAndUpdate(user._id, { $set: { resetToken, resetTokenExpires: expires } });
     const emailData = {
         subject: 'Password reset',
         to: [{ email }],
@@ -80,7 +81,7 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             <h2 style="color: #333;">Password Reset</h2>
             <p>Dear User,</p>
             <p>We have received a notification that your current password may be compromised or unsafe. To ensure the security of your account, we recommend you reset your password.</p>
-            <p>Please use the <a href="${envConfs_1.default.frontendResetLink}?token=${resetToken}" style="color: #007BFF; text-decoration: none;">following link</a> to set a new password.</p>
+            <p>Please use the <a href="${envConfs_1.default.frontendResetLink}/${resetToken}" style="color: #007BFF; text-decoration: none;">following link</a> to set a new password.</p>
             <p>If you did not initiate this request, please ignore this message.</p>
             <p>Thank you for your understanding and prompt action.</p>
             <p>Best regards,<br>Your Support Team</p>
@@ -91,9 +92,9 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.status(200).json({ message: 'Message delivered' });
 });
 const newPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { token } = req.params;
+    const { resetToken } = req.params;
     const { newPassword } = req.body;
-    const user = yield User_1.default.findOne({ resetToken: token });
+    const user = yield User_1.default.findOne({ resetToken: resetToken });
     if (!user) {
         throw (0, helpers_1.HttpError)(401, 'Invalid or expired token');
     }

@@ -14,11 +14,13 @@ const userSchema = new mongoose_1.Schema({
         match: emailRegex,
         required: [true, 'An email is necessary'],
         unique: true,
+        minlength: 8,
+        maxlength: 64,
     },
     password: {
         type: String,
         required: [true, "Set user's password"],
-        minlength: 1,
+        minlength: 8,
         maxlength: 64,
     },
     avatarURL: {
