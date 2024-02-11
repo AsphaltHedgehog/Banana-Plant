@@ -53,7 +53,7 @@ const login = async (req: Request, res: Response) => {
         id: user._id,
     };
 
-    const token = jwt.sign(payload, envsConfig.secretKey, { expiresIn: '6h' });
+    const token = jwt.sign(payload, envsConfig.secretKey, { expiresIn: '23h' });
     await User.findByIdAndUpdate(user._id, { token });
     res.json({ token });
 };
@@ -75,9 +75,11 @@ const resetPassword = async (req: Request, res: Response) => {
     }
 
     const resetToken = crypto.randomUUID();
-    const expires = Date.now() + (1000 * 60 * 60);
+    const expires = Date.now() + 1000 * 60 * 60;
 
-    await User.findByIdAndUpdate(user._id, {$set: { resetToken, resetTokenExpires: expires } });
+    await User.findByIdAndUpdate(user._id, {
+        $set: { resetToken, resetTokenExpires: expires },
+    });
     const emailData: EmailData = {
         subject: 'Password reset',
         to: [{ email }],
