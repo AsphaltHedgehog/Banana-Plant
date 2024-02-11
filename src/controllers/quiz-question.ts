@@ -217,7 +217,7 @@ const updateQuizQuestionById = async (
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: { ...existingQuiz },
+        data: [existingQuiz],
     });
 };
 

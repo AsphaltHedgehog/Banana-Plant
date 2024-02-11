@@ -60,7 +60,6 @@ const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, funct
     const { id } = req.params;
     function answersDefault(req) {
         if (req.body.type === 'true-or-false') {
-            console.log(req.body.type);
             return [
                 {
                     descr: '',
@@ -71,7 +70,6 @@ const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, funct
             ];
         }
         else {
-            console.log(req.body.type);
             return [
                 {
                     descr: '',
@@ -179,7 +177,7 @@ const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: Object.assign({}, existingQuiz),
+        data: [existingQuiz],
     });
 });
 const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
