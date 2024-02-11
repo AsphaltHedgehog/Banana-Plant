@@ -9,7 +9,7 @@ const answerSchema = new Schema<Answer>({
     descr: { type: String, required: false },
 });
 
-interface QuizQuestion {
+export interface IQuizQuestion {
     quiz: Schema.Types.ObjectId;
     time: string;
     descr: string;
@@ -19,7 +19,7 @@ interface QuizQuestion {
     type: 'full-text' | 'true-or-false';
 }
 
-const quizQuestionSchema = new Schema<QuizQuestion & Document>(
+const quizQuestionSchema = new Schema<IQuizQuestion & Document>(
     {
         quiz: { type: Schema.Types.ObjectId, required: false },
         time: { type: String, required: false },
@@ -36,7 +36,7 @@ const quizQuestionSchema = new Schema<QuizQuestion & Document>(
     { timestamps: true, versionKey: false }
 );
 
-const QuizQuestion = mongoose.model<QuizQuestion & Document>(
+const QuizQuestion = mongoose.model<IQuizQuestion & Document>(
     'quizQuestion',
     quizQuestionSchema
 );

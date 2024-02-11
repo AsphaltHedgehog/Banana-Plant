@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import mongoose, { Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import fs from 'fs/promises';
 import { promisify } from 'util';
 
@@ -8,7 +8,7 @@ import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 
 // models
-import QuizQuestion from '../models/QuizQuestion';
+import QuizQuestion, { IQuizQuestion } from '../models/QuizQuestion';
 // import User from '../models/User';
 // import Quiz from '../models/Quiz';
 
@@ -61,10 +61,10 @@ const addNewQuizQuestion = async (
     }
     const answersDefaultArray = answersDefault(req);
     const {
-        time,
+        time = '0:45',
         imageUrl = '',
         type,
-        descr,
+        descr = '',
         answers = answersDefaultArray,
         validAnswerIndex,
     } = req.body;
@@ -185,31 +185,30 @@ const updateQuizQuestionById = async (
     //   throw HttpError(401, "Unauthorized")
     // }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        throw HttpError(404, 'Bad Request');
-    }
+        
 
+    // if (!mongoose.Types.ObjectId.isValid(id)) {
+    //     throw HttpError(404, 'Bad Request');
+    // }
+    
     const newData = req.body;
 
-    if (newData.answers & newData.validAnswerIndex) {
-        interface DescriptionObject {
-            descr: string;
+    if (newData.answers && newData.validAnswerIndex) {
+        newData.validAnswer = newData.answers[newData.validAnswerIndex]._id;
+        delete newData.validAnswerIndex;
+    } else if (newData.validAnswerIndex) {
+        const question: IQuizQuestion | null = await QuizQuestion.findById(id)
+
+        if (!question) {
+            throw HttpError(404, 'Question not found')
         }
 
-        const arrayOfDescriptions = newData.answers.map(
-            (obj: DescriptionObject) => ({
-                ...(obj as DescriptionObject),
-                _id: new Types.ObjectId(),
-            })
-        );
-        newData.answers = arrayOfDescriptions;
+        newData.validAnswer = question.answers[req.body.validAnswerIndex]._id;
         delete newData.validAnswerIndex;
-        newData.validAnswer = arrayOfDescriptions[newData.validAnswerIndex]._id;
     }
 
-    const existingQuiz = await QuizQuestion.findByIdAndUpdate(id, newData, {
-        new: true,
-    });
+    const existingQuiz = await QuizQuestion.findByIdAndUpdate(id, { ...newData }, { new: true });
+
     if (!existingQuiz) {
         throw HttpError(404, 'Bad Request');
     }
@@ -259,9 +258,6 @@ const deleteQuizQuestionImgById = async (
     //   throw HttpError(401, "Unauthorized")
     // }
 
-    console.log(id);
-    console.log(req.params);
-
     if (!mongoose.Types.ObjectId.isValid(id)) {
         throw HttpError(400, 'Invalid quiz ID');
     }
@@ -276,7 +272,6 @@ const deleteQuizQuestionImgById = async (
     if (question.imageUrl === '') {
         throw HttpError(404, 'Image not found');
     }
-    console.log(question.imageUrl);
 
     const cloudinaryDeletion = promisify(cloudinary.uploader.destroy);
     const result = await cloudinaryDeletion(question.imageUrl);
