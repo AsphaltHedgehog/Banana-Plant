@@ -2,7 +2,7 @@ import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import QuizQuestion from '../models/QuizQuestion';
 
@@ -44,15 +44,30 @@ const getAllByRating = async (req: Request, res: Response): Promise<void> => {
 
 const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
+    interface IMatchStage {
+        _id: object;
+        answers: object;
+}
 
     try {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw HttpError(400, 'Invalid quiz ID');
-        }
+        const pipline = []
+        const matchStage: IMatchStage = {
+            _id: {},
+            answers: {},
+        };
 
-        const result = await Quiz.findOne({
-            _id: new mongoose.Types.ObjectId(id),
-        });
+        matchStage._id = new mongoose.Types.ObjectId(id);
+
+        const questions = await QuizQuestion.find({quiz: id})
+
+        matchStage.answers = new mongoose.Types.ObjectId()
+        pipline.push({ $match: matchStage });
+        
+
+
+        const result = await Quiz.aggregate(pipline);
+
+
 
         if (!result) {
             throw HttpError(404, 'Quiz not found');
@@ -226,8 +241,7 @@ const getQuizByCategory = async (req: Request, res: Response): Promise<void> => 
     };
 
 
-    pipeline.push(
-        { $match: matchStage });
+    pipeline.push({ $match: matchStage });
         
 
     const totalResult = await Quiz.aggregate(pipeline);

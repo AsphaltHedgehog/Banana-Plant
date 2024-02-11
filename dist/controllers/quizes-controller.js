@@ -64,12 +64,16 @@ const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function*
 const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
-        }
-        const result = yield Quiz_1.Quiz.findOne({
-            _id: new mongoose_1.default.Types.ObjectId(id),
-        });
+        const pipline = [];
+        const matchStage = {
+            _id: {},
+            answers: {},
+        };
+        matchStage._id = new mongoose_1.default.Types.ObjectId(id);
+        const questions = yield QuizQuestion_1.default.find({ quiz: id });
+        matchStage.answers = new mongoose_1.default.Types.ObjectId();
+        pipline.push({ $match: matchStage });
+        const result = yield Quiz_1.Quiz.aggregate(pipline);
         if (!result) {
             throw (0, index_1.HttpError)(404, 'Quiz not found');
         }
