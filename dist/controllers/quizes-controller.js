@@ -144,14 +144,22 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
     const result = yield Quiz_1.Quiz.aggregate(pipeline);
+    const totalResult = yield Quiz_1.Quiz.aggregate([
+        { $match: { ageGroup: ageGroup } },
+        { $count: 'total' },
+    ]);
+    const categoryCategory = yield Quiz_1.QuizCategory.aggregate([
+        {
+            $match: { ageGroup: ageGroup },
+        },
+    ]);
+    console.log(categoryCategory);
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: {
-            result,
-            // category: categoryCategory,
-            // total: totalResult.length,
-        },
+        result: result[0].pagination,
+        category: categoryCategory,
+        total: totalResult,
     });
 });
 const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

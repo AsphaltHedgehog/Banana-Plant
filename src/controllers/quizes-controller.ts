@@ -152,15 +152,26 @@ const getQuizByCategory = async (
     }
 
     const result = await Quiz.aggregate(pipeline);
+    const totalResult = await Quiz.aggregate([
+        { $match: { ageGroup: ageGroup } },
+        { $count: 'total' },
+    ]);
+
+    const categoryCategory = await QuizCategory.aggregate([
+        {
+            $match: { ageGroup: ageGroup },
+        },
+    ]);
+
+    console.log(categoryCategory);
 
     res.status(200).json({
         status: 'OK',
         code: 200,
-        data: {
-            result,
-            // category: categoryCategory,
-            // total: totalResult.length,
-        },
+            result: result[0].pagination,
+            category: categoryCategory,
+            total: totalResult,
+        
     });
 };
 
