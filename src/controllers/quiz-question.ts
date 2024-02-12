@@ -115,28 +115,33 @@ const addNewQuizQuestion = async (
 
 const questionImg = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    // authenticate
-    const user = req.body.user
     
-    const quiz = await Quiz.findById(id);
-
+    // authenticate
+    const user = req.body.user;
+    const quizQuestion = await QuizQuestion.findById(id);
+    
+    if (!quizQuestion) {
+        throw HttpError(400, "Bad Request")
+    };
+    
+    const quiz = await Quiz.findById(quizQuestion.quiz);
+    
     if (!quiz) {
         throw HttpError(400, "Bad Request")
     };
 
     if (quiz.owner.toString() !== user._id.toString()) {
         throw HttpError(401, "Unauthorized")
-    }
-    // 
+    };
 
     // work with img
     if (!req.file || !req.file.path) {
         throw HttpError(400, 'Bad Request');
-    }
+    };
 
     const cloudinaryUpload = promisify(cloudinary.uploader.upload);
     const result = await cloudinaryUpload(req.file.path);
-
+    
     await fs.unlink(req.file.path);
 
     if (!result) {
