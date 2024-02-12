@@ -43,8 +43,7 @@ const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
 // models
 const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
-// import User from '../models/User';
-// import Quiz from '../models/Quiz';
+const Quiz_1 = require("../models/Quiz");
 // img handlers
 const envConfs_1 = require("../conf/envConfs");
 const getAllQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,6 +57,17 @@ const getAllQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    // authenticate
+    const user = req.body.user;
+    const quiz = yield Quiz_1.Quiz.findById(id);
+    if (!quiz) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    if (quiz.owner.toString() !== user._id.toString()) {
+        throw (0, index_1.HttpError)(401, "Unauthorized");
+    }
+    // 
     function answersDefault(req) {
         if (req.body.type === 'true-or-false') {
             return [
@@ -108,16 +118,17 @@ const addNewQuizQuestion = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    // auth (Пока закоменчено чтобы не ломать ничего)
-    // const user = req.body.user
-    // const quiz = await Quiz.findById(quizId);
-    // if (!quiz ) {
-    //   throw HttpError(400, "Bad Request")
-    // };
-    // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
-    // if (!user.ownTests.find(quizId)) {
-    //   throw HttpError(401, "Unauthorized")
-    // }
+    // authenticate
+    const user = req.body.user;
+    const quiz = yield Quiz_1.Quiz.findById(id);
+    if (!quiz) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    if (quiz.owner.toString() !== user._id.toString()) {
+        throw (0, index_1.HttpError)(401, "Unauthorized");
+    }
+    // 
     // work with img
     if (!req.file || !req.file.path) {
         throw (0, index_1.HttpError)(400, 'Bad Request');
@@ -145,22 +156,22 @@ const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Прикрутить авторизацию
     const { id } = req.params;
-    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-        throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+    // authenticate
+    const user = req.body.user;
+    const question = yield QuizQuestion_1.default.findById(id);
+    if (!question) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
     }
-    // auth (Пока закоменчено чтобы не ломать ничего)
-    // const user = req.body.user
-    // const quiz = await Quiz.findById(id);
-    // if (!quiz ) {
-    //   throw HttpError(400, "Bad Request")
-    // };
-    // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
-    // if (!user.ownTests.find(quizId)) {
-    //   throw HttpError(401, "Unauthorized")
-    // }
-    // if (!mongoose.Types.ObjectId.isValid(id)) {
-    //     throw HttpError(404, 'Bad Request');
-    // }
+    ;
+    const isQuizExists = yield Quiz_1.Quiz.findById(question.quiz);
+    if (!isQuizExists) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    if (isQuizExists.owner.toString() !== user._id.toString()) {
+        throw (0, index_1.HttpError)(401, "Unauthorized");
+    }
+    // 
     const newData = req.body;
     if (newData.answers && newData.validAnswerIndex) {
         newData.validAnswer = newData.answers[newData.validAnswerIndex]._id;
@@ -186,6 +197,17 @@ const updateQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    // authenticate
+    const user = req.body.user;
+    const quiz = yield Quiz_1.Quiz.findById(id);
+    if (!quiz) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    if (quiz.owner.toString() !== user._id.toString()) {
+        throw (0, index_1.HttpError)(401, "Unauthorized");
+    }
+    // 
     if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
         throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
     }
@@ -197,20 +219,17 @@ const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
 });
 const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    // Прикрути аутефикацию)
-    // auth (Пока закоменчено чтобы не ломать ничего)
-    // const user = req.body.user
-    // const quiz = await Quiz.findById(id);
-    // if (!quiz) {
-    //   throw HttpError(400, "Bad Request")
-    // };
-    // Уточнить момент где будет храниться владелец Теста, в самом Тесте или в Юзере!?
-    // if (!user.ownTests.find(quizId)) {
-    //   throw HttpError(401, "Unauthorized")
-    // }
-    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-        throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+    // authenticate
+    const user = req.body.user;
+    const quiz = yield Quiz_1.Quiz.findById(id);
+    if (!quiz) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
     }
+    ;
+    if (quiz.owner.toString() !== user._id.toString()) {
+        throw (0, index_1.HttpError)(401, "Unauthorized");
+    }
+    // 
     const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: '' });
     console.log(question);
     if (!question) {
