@@ -133,6 +133,7 @@ const getQuizByCategory = async (
                 ],
             },
         },
+        
     ];
 
     if (
@@ -154,7 +155,12 @@ const getQuizByCategory = async (
     const result = await Quiz.aggregate(pipeline);
     const totalResult = await Quiz.aggregate([
         { $match: { ageGroup: ageGroup } },
-        { $count: 'total' },
+        {
+            $group: {
+                _id: '$ageGroup', // Групуємо за полем "ageGroup"
+                count: { $sum: 1 }, // Підрахунок кількості документів у кожній групі
+            },
+        },
     ]);
 
     const categoryCategory = await QuizCategory.aggregate([
@@ -167,11 +173,13 @@ const getQuizByCategory = async (
 
     res.status(200).json({
         status: 'OK',
-        code: 200,
-            result: result[0].pagination,
-            category: categoryCategory,
-            total: totalResult,
-        
+      code: 200,
+      data: {
+        result: result[0].pagination,
+        category: categoryCategory,
+        total: totalResult,
+          
+        }
     });
 };
 
