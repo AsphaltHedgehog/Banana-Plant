@@ -18,7 +18,12 @@ const Review_1 = __importDefault(require("../models/Review"));
 const decorators_1 = require("../decorators");
 const Quiz_1 = require("../models/Quiz");
 const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const reviews = yield Review_1.default.find().sort({ createdAt: -1 });
+    const { page = 1, limit = 6 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const reviews = yield Review_1.default.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit));
     res.status(200).json({
         status: 'OK',
         code: 200,

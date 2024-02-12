@@ -52,7 +52,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const payload = {
         id: user._id,
     };
-    const token = jsonwebtoken_1.default.sign(payload, envConfs_1.default.secretKey, { expiresIn: '6h' });
+    const token = jsonwebtoken_1.default.sign(payload, envConfs_1.default.secretKey, { expiresIn: '23h' });
     yield User_1.default.findByIdAndUpdate(user._id, { token });
     res.json({ token });
 });
@@ -71,8 +71,10 @@ const resetPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         throw (0, helpers_1.HttpError)(404, 'Account not found');
     }
     const resetToken = crypto_1.default.randomUUID();
-    const expires = Date.now() + (1000 * 60 * 60);
-    yield User_1.default.findByIdAndUpdate(user._id, { $set: { resetToken, resetTokenExpires: expires } });
+    const expires = Date.now() + 1000 * 60 * 60;
+    yield User_1.default.findByIdAndUpdate(user._id, {
+        $set: { resetToken, resetTokenExpires: expires },
+    });
     const emailData = {
         subject: 'Password reset',
         to: [{ email }],

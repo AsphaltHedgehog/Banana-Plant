@@ -6,7 +6,12 @@ import { ctrlWrapper } from '../decorators';
 import { Quiz } from '../models/Quiz';
 
 const getReviews = async (req: Request, res: Response): Promise<void> => {
-    const reviews = await Review.find().sort({ createdAt: -1 });
+    const { page = 1, limit = 6 } = req.query;
+    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const reviews = await Review.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit as string));
 
     res.status(200).json({
         status: 'OK',
@@ -51,7 +56,7 @@ const addReview = async (req: Request, res: Response): Promise<void> => {
         status: 'OK',
         code: 201,
         data: newReview,
-        });
+    });
 };
 
 export const reviewsController = {
