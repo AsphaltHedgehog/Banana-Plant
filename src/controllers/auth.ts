@@ -31,7 +31,7 @@ const register = async (req: Request, res: Response) => {
     res.status(201).json({
         name: newUser.name,
         email: newUser.email,
-        avatarUrl:newUser.avatarUrl
+        avatarURL:newUser.avatarURL
     });
 };
 
