@@ -120,7 +120,12 @@ const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const { id } = req.params;
     // authenticate
     const user = req.body.user;
-    const quiz = yield Quiz_1.Quiz.findById(id);
+    const quizQuestion = yield QuizQuestion_1.default.findById(id);
+    if (!quizQuestion) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    const quiz = yield Quiz_1.Quiz.findById(quizQuestion.quiz);
     if (!quiz) {
         throw (0, index_1.HttpError)(400, "Bad Request");
     }
@@ -128,11 +133,12 @@ const questionImg = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     if (quiz.owner.toString() !== user._id.toString()) {
         throw (0, index_1.HttpError)(401, "Unauthorized");
     }
-    // 
+    ;
     // work with img
     if (!req.file || !req.file.path) {
         throw (0, index_1.HttpError)(400, 'Bad Request');
     }
+    ;
     const cloudinaryUpload = (0, util_1.promisify)(envConfs_1.cloudinary.uploader.upload);
     const result = yield cloudinaryUpload(req.file.path);
     yield promises_1.default.unlink(req.file.path);

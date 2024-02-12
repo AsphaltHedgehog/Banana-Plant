@@ -9,7 +9,7 @@ const index_js_1 = require("../../middlewares/index.js");
 const quizQuestionRoute = express_1.default.Router();
 quizQuestionRoute.get("/:id", quiz_question_js_1.default.getAllQuestions);
 quizQuestionRoute.post("/:id", index_js_1.isEmptyBody, index_js_1.authenticate, quiz_question_js_1.default.addNewQuizQuestion);
-quizQuestionRoute.patch("/img/:id", index_js_1.authenticate, index_js_1.upload.single("questionPoster"), quiz_question_js_1.default.questionImg);
+quizQuestionRoute.patch("/img/:id", index_js_1.upload.single("questionPoster"), index_js_1.authenticate, quiz_question_js_1.default.questionImg);
 quizQuestionRoute.patch('/:id', index_js_1.isEmptyBody, index_js_1.authenticate, quiz_question_js_1.default.updateQuizQuestionById);
 quizQuestionRoute.delete('/:id', index_js_1.authenticate, quiz_question_js_1.default.deleteQuizQuestionById);
 quizQuestionRoute.delete('/img/:id', index_js_1.authenticate, quiz_question_js_1.default.deleteQuizQuestionImgById);

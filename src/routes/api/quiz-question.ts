@@ -15,8 +15,9 @@ quizQuestionRoute.get("/:id",
 quizQuestionRoute.post("/:id", isEmptyBody, authenticate,
   quizQuestion.addNewQuizQuestion);
 
-quizQuestionRoute.patch("/img/:id", authenticate, 
+quizQuestionRoute.patch("/img/:id",  
   upload.single("questionPoster"),
+  authenticate,
   quizQuestion.questionImg);
 
 quizQuestionRoute.patch('/:id', isEmptyBody, authenticate,
