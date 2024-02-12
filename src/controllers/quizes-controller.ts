@@ -133,6 +133,9 @@ const getQuizByCategory = async (
                 ],
             },
         },
+        {
+            $sort: { rating: -1 }, // Сортування за рейтингом у спадному порядку
+        },
     ];
 
     if (

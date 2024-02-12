@@ -130,6 +130,9 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 ],
             },
         },
+        {
+            $sort: { rating: -1 }, // Сортування за рейтингом у спадному порядку
+        },
     ];
     if (page &&
         typeof page === 'string' &&
