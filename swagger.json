@@ -36,7 +36,6 @@
         "/api/auth/register": {
             "post": {
                 "tags": ["Auth"],
-                "operationId": "register",
                 "summary": "Register new user",
                 "parameters": [],
                 "requestBody": {
@@ -45,7 +44,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/RegisterDto"
+                                "$ref": "#/components/schemas/RegisterRequest"
                             }
                         }
                     }
@@ -61,18 +60,15 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Validation error",
+                    "409": {
+                        "description": "User with such email already exists",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                    "$ref": "#/components/schemas/errorConflictResponse"
                                 }
                             }
                         }
-                    },
-                    "409": {
-                        "description": "User with such email already exists"
                     }
                 }
             }
@@ -80,7 +76,6 @@
         "/api/auth/login": {
             "post": {
                 "tags": ["Auth"],
-                "operationId": "login",
                 "summary": "Sign in existing user",
                 "parameters": [],
                 "requestBody": {
@@ -89,7 +84,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/LoginDto"
+                                "$ref": "#/components/schemas/LoginRequest"
                             }
                         }
                     }
@@ -105,18 +100,15 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Validation error",
+                    "401": {
+                        "description": "Incorrect email or password",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "Incorrect email or password"
                     }
                 }
             }
@@ -124,8 +116,8 @@
         "/api/auth/logout": {
             "patch": {
                 "tags": ["Auth"],
-                "operationId": "logout",
                 "summary": "Log out user",
+                "description": "Logs out the authenticated user by clearing the token associated with their session.",
                 "parameters": [],
                 "security": [
                     {
@@ -141,16 +133,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "description": "Description of the error."
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "message": "Unauthorized"
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -162,12 +145,12 @@
             "post": {
                 "tags": ["Auth"],
                 "summary": "Reset Password",
-                "description": "Request to reset the user's password.",
+                "description": "Resets the password for the user account and sends an email for password reset.",
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ResetPasswordDto"
+                                "$ref": "#/components/schemas/ResetPasswordRequst"
                             }
                         }
                     }
@@ -218,6 +201,7 @@
             "post": {
                 "tags": ["Auth"],
                 "summary": "Set a new password for the user's account.",
+                "description": "Set a new password using the reset token received via email.",
                 "parameters": [
                     {
                         "in": "path",
@@ -257,6 +241,16 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid or expired token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1139,7 +1133,7 @@
             }
         },
         "schemas": {
-            "RegisterDto": {
+            "RegisterRequest": {
                 "type": "object",
                 "properties": {
                     "name": {
@@ -1172,7 +1166,7 @@
                     }
                 }
             },
-            "LoginDto": {
+            "LoginRequest": {
                 "type": "object",
                 "properties": {
                     "email": {
@@ -1196,7 +1190,7 @@
                 },
                 "required": ["token"]
             },
-            "ResetPasswordDto": {
+            "ResetPasswordRequst": {
                 "type": "object",
                 "properties": {
                     "email": {
@@ -1592,11 +1586,6 @@
                 "type": "object",
                 "description": "Unauthorized access error.",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "description": "Error status code",
-                        "example": "401"
-                    },
                     "message": {
                         "type": "string",
                         "description": "Error message",
@@ -1616,6 +1605,16 @@
                         "type": "string",
                         "description": "Error message",
                         "example": "Not Found"
+                    }
+                }
+            },
+            "errorConflictResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "description": "The error message indicating a conflict.",
+                        "example": "Email already in use"
                     }
                 }
             }
