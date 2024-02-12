@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongodb';
 import QuizQuestion from '../models/QuizQuestion';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
@@ -76,75 +75,120 @@ const getAllCategory = async (req: Request, res: Response): Promise<void> => {
         status: 'OK',
         code: 200,
         data: {
-            result
-        }
+            result,
+        },
     });
 };
 
 interface IMatchStage {
     ageGroup?: string;
     rating?: object;
-    category?: object;
-    theme?: string;
+    // category?: mongoose.Types.ObjectId;
+    theme?: object;
     finished?: object;
 }
 
-const getQuizByCategory = async (req: Request, res: Response): Promise<void> => {
-    const { category, page, pageSize, rating, finished, title, inputText } = req.query;
+const getQuizByCategory = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const { ageGroup, page, pageSize, rating, finished, title, inputText } =
+        req.query;
     const matchStage: IMatchStage = {};
-    const pipeline = [];
 
-    if (category && typeof category === 'string') {
-        matchStage.ageGroup = category;
-    };
-    
+    if (ageGroup && typeof ageGroup === 'string') {
+        matchStage.ageGroup = ageGroup;
+    }
+
     if (rating && typeof rating === 'string') {
         matchStage.rating = { $lte: parseInt(rating) };
-    };
-
-    if (title && typeof title === 'string') {
-        matchStage.category = new ObjectId(title);
-    };
-
-    if (inputText && typeof inputText === 'string') {
-        matchStage.theme = inputText;
-    };
+    }
 
     if (finished && typeof finished === 'string') {
         matchStage.finished = { $lte: parseInt(finished) };
-    };
+    }
 
+    if (inputText && typeof inputText === 'string') {
+        matchStage.theme = {
+            $regex: new RegExp(inputText, 'i'),
+        };
+    }
 
-    pipeline.push({ $match: matchStage });
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categoryInfo',
+            },
+        },
+        {
+            $match: {
+                $and: [
+                    matchStage,
+                    Array.isArray(title)
+                        ? { 'categoryInfo.title': { $in: title } } // Для масиву title
+                        : title
+                        ? {
+                              'categoryInfo.title': {
+                                  $regex: new RegExp(title, 'i'),
+                              },
+                          } // Для рядка title
+                        : {}, // Якщо title не вказано, пропускаємо цю умову
+                ],
+            },
+        },
+
         
+    ];
 
-    const totalResult = await Quiz.aggregate(pipeline);
+    if (
+        page &&
+        typeof page === 'string' &&
+        pageSize &&
+        typeof pageSize === 'string'
+    ) {
+        const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
 
-    const categoryCategory = await QuizCategory.find({})
-    
-    if (page && typeof page === 'string') {
-        pipeline.push({ $skip: parseInt(page as string) - 1 });
+        pipeline.push({
+            $facet: {
+                pagination: [{ $skip: skip }, { $limit: limit }],
+            },
+        });
     }
-    
-    if (pageSize && typeof pageSize === 'string') {
-        pipeline.push({ $limit: parseInt(pageSize as string) });
-    }
-    
+
     const result = await Quiz.aggregate(pipeline);
-    
+    const totalResult = await Quiz.aggregate([
+        { $match: { ageGroup: ageGroup } },
+        {
+            $group: {
+                _id: '$ageGroup', // Групуємо за полем "ageGroup"
+                count: { $sum: 1 }, // Підрахунок кількості документів у кожній групі
+            },
+        },
+    ]);
+
+    const categoryCategory = await QuizCategory.aggregate([
+        {
+            $match: { ageGroup: ageGroup },
+        },
+    ]);
+
+    console.log(categoryCategory);
 
     res.status(200).json({
         status: 'OK',
-        code: 200,
-        data: {
-            result,
-            category: categoryCategory,
-            total: totalResult.length
+      code: 200,
+      data: {
+        result: result[0].pagination,
+        category: categoryCategory,
+        total: totalResult,
+          
         }
     });
 };
-
-
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { theme } = req.body;
@@ -159,13 +203,13 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { _id, background, ageGroup } = result;
 
     const quizQuestion = {
-            quiz: _id,
-            time: '00:30',
-            descr: '',
-            type: 'full-text'
+        quiz: _id,
+        time: '00:30',
+        descr: '',
+        type: 'full-text',
     };
-    
-    await QuizQuestion.create(quizQuestion)
+
+    await QuizQuestion.create(quizQuestion);
 
     res.status(201).json({
         status: 'OK',
