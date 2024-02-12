@@ -6,17 +6,3 @@ const reviewsRouter = (0, express_1.Router)();
 reviewsRouter.get('/getReviews', reviews_controller_1.reviewsController.getReviews);
 reviewsRouter.post('/:id/addReview', reviews_controller_1.reviewsController.addReview);
 exports.default = reviewsRouter;
-// reviewsRouter.get('/own', reviewsController.getOneReview);
-// reviewsRouter.post(
-//     '/own',
-//     authenticate,
-//     reviewsValidation.addReviewValidate,
-//     reviewsController.addOneReview
-// );
-// reviewsRouter.patch(
-//     '/own',
-//     authenticate,
-//     reviewsValidation.updateReviewValidate,
-//     reviewsController.updateOneReview
-// );
-// reviewsRouter.delete('/own', authenticate, reviewsController.removeOneReview);

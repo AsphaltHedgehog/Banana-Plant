@@ -62,21 +62,26 @@ const getAllByRating = (req, res) => __awaiter(void 0, void 0, void 0, function*
 });
 const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    try {
-        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
-            throw (0, index_1.HttpError)(400, 'Invalid quiz ID');
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose_1.default.Types.ObjectId(id)
+            }
+        },
+        {
+            $lookup: {
+                from: "quizquestions",
+                localField: "_id",
+                foreignField: "quiz",
+                as: "questions"
+            }
         }
-        const result = yield Quiz_1.Quiz.findOne({
-            _id: new mongoose_1.default.Types.ObjectId(id),
-        });
-        if (!result) {
-            throw (0, index_1.HttpError)(404, 'Quiz not found');
-        }
-        res.json(result);
+    ];
+    const result = yield Quiz_1.Quiz.aggregate(pipeline);
+    if (!result) {
+        throw (0, index_1.HttpError)(404, 'Quiz not found');
     }
-    catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+    res.status(200).json(...result);
 });
 const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield Quiz_1.QuizCategory.find();
