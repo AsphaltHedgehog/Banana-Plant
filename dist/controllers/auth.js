@@ -34,6 +34,7 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.status(201).json({
         name: newUser.name,
         email: newUser.email,
+        avatarURL: newUser.avatarURL
     });
 });
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
