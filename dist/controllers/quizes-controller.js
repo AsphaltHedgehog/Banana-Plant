@@ -84,17 +84,38 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     res.status(200).json(...result);
 });
 const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield Quiz_1.QuizCategory.find();
-    res.status(200).json({
-        status: 'OK',
-        code: 200,
-        data: {
-            result,
-        },
-    });
+    try {
+        const result = yield Quiz_1.QuizCategory.find();
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const getFavoritesQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { favorites } = req.body;
+    try {
+        const result = yield Quiz_1.Quiz.find({ _id: { $in: favorites } });
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ageGroup, page, pageSize, rating, finished, title, inputText } = req.query;
+    const { ageGroup, page, pageSize, rating, finished, title, inputText, favorites, } = req.query;
     const matchStage = {};
     if (ageGroup && typeof ageGroup === 'string') {
         matchStage.ageGroup = ageGroup;
@@ -124,14 +145,14 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 $and: [
                     matchStage,
                     Array.isArray(title)
-                        ? { 'categoryInfo.title': { $in: title } } // Для масиву title
+                        ? { 'categoryInfo.title': { $in: title } }
                         : title
                             ? {
                                 'categoryInfo.title': {
                                     $regex: new RegExp(title, 'i'),
                                 },
-                            } // Для рядка title
-                            : {}, // Якщо title не вказано, пропускаємо цю умову
+                            }
+                            : {},
                 ],
             },
         },
@@ -151,31 +172,28 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
             },
         });
     }
-    const result = yield Quiz_1.Quiz.aggregate(pipeline);
-    const totalResult = yield Quiz_1.Quiz.aggregate([
-        { $match: { ageGroup: ageGroup } },
-        {
-            $group: {
-                _id: '$ageGroup', // Групуємо за полем "ageGroup"
-                count: { $sum: 1 }, // Підрахунок кількості документів у кожній групі
+    try {
+        const result = yield Quiz_1.Quiz.aggregate(pipeline);
+        const totalResult = yield Quiz_1.Quiz.aggregate([
+            { $match: { ageGroup: ageGroup } },
+            { $count: 'total' },
+        ]);
+        const categoryCategory = yield Quiz_1.QuizCategory.aggregate([
+            {
+                $match: { ageGroup: ageGroup },
             },
-        },
-    ]);
-    const categoryCategory = yield Quiz_1.QuizCategory.aggregate([
-        {
-            $match: { ageGroup: ageGroup },
-        },
-    ]);
-    console.log(categoryCategory);
-    res.status(200).json({
-        status: 'OK',
-        code: 200,
-        data: {
+        ]);
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
             result: result[0].pagination,
             category: categoryCategory,
             total: totalResult,
-        }
-    });
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { theme } = req.body;
@@ -252,4 +270,5 @@ exports.default = {
     addNewQuiz: (0, index_2.ctrlWrapper)(addNewQuiz),
     updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),
     deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
+    getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
 };
