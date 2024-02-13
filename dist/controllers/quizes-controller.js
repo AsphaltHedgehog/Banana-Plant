@@ -186,9 +186,11 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(200).json({
             status: 'OK',
             code: 200,
-            result: result[0].pagination,
-            category: categoryCategory,
-            total: totalResult,
+            data: {
+                result: result[0].pagination,
+                category: categoryCategory,
+                total: totalResult,
+            }
         });
     }
     catch (error) {
