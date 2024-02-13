@@ -1,20 +1,20 @@
 import express from 'express';
 import { userController } from './../../controllers/user';
-import { authenticate } from '../../middlewares';
+import { authenticate, upload } from '../../middlewares';
 
 const userRouter = express.Router();
 
-userRouter.get('/info',
-  authenticate,
-  userController.userInfo);
+userRouter.get('/info', authenticate, userController.userInfo);
 
-userRouter.patch('/update',
-  authenticate, userController.updateInfo);
+userRouter.patch('/update', authenticate, userController.updateInfo);
 
-userRouter.patch('/favorite',
-  authenticate,
-  userController.favorite);
+userRouter.patch('/favorite', authenticate, userController.favorite);
 
-
+userRouter.patch(
+    '/update/avatarURL',
+    upload.single('userAvatar'),
+    authenticate,
+    userController.updateAvatar
+);
 
 export default userRouter;
