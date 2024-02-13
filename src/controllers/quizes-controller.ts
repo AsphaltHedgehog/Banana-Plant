@@ -63,21 +63,46 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getAllCategory = async (req: Request, res: Response): Promise<void> => {
-    const result = await QuizCategory.find();
+    try {
+        const result = await QuizCategory.find();
 
-    res.status(200).json({
-        status: 'OK',
-        code: 200,
-        data: {
-            result,
-        },
-    });
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getFavoritesQuizes = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const { favorites } = req.body;
+
+    try {
+        const result = await Quiz.find({ _id: { $in: favorites } });
+
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 interface IMatchStage {
     ageGroup?: string;
     rating?: object;
-    // category?: mongoose.Types.ObjectId;
+    quizIds?: string[];
     theme?: object;
     finished?: object;
 }
@@ -86,8 +111,16 @@ const getQuizByCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { ageGroup, page, pageSize, rating, finished, title, inputText } =
-        req.query;
+    const {
+        ageGroup,
+        page,
+        pageSize,
+        rating,
+        finished,
+        title,
+        inputText,
+        favorites,
+    } = req.query;
     const matchStage: IMatchStage = {};
 
     if (ageGroup && typeof ageGroup === 'string') {
@@ -122,14 +155,14 @@ const getQuizByCategory = async (
                 $and: [
                     matchStage,
                     Array.isArray(title)
-                        ? { 'categoryInfo.title': { $in: title } } // Для масиву title
+                        ? { 'categoryInfo.title': { $in: title } }
                         : title
                         ? {
                               'categoryInfo.title': {
                                   $regex: new RegExp(title, 'i'),
                               },
-                          } // Для рядка title
-                        : {}, // Якщо title не вказано, пропускаємо цю умову
+                          }
+                        : {},
                 ],
             },
         },
@@ -154,28 +187,29 @@ const getQuizByCategory = async (
         });
     }
 
-    const result = await Quiz.aggregate(pipeline);
-    const totalResult = await Quiz.aggregate([
-        { $match: { ageGroup: ageGroup } },
-        { $count: 'total' },
-    ]);
+    try {
+        const result = await Quiz.aggregate(pipeline);
+        const totalResult = await Quiz.aggregate([
+            { $match: { ageGroup: ageGroup } },
+            { $count: 'total' },
+        ]);
 
-    const categoryCategory = await QuizCategory.aggregate([
-        {
-            $match: { ageGroup: ageGroup },
-        },
-    ]);
+        const categoryCategory = await QuizCategory.aggregate([
+            {
+                $match: { ageGroup: ageGroup },
+            },
+        ]);
 
-    console.log(categoryCategory);
-
-    res.status(200).json({
-        status: 'OK',
-        code: 200,
+        res.status(200).json({
+            status: 'OK',
+            code: 200,
             result: result[0].pagination,
             category: categoryCategory,
             total: totalResult,
-        
-    });
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
@@ -240,7 +274,8 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    res.status(200).json(existingQuiz);
+  res.status(200).json(existingQuiz);
+  
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
@@ -274,4 +309,5 @@ export default {
     addNewQuiz: ctrlWrapper(addNewQuiz),
     updateQuizById: ctrlWrapper(updateQuizById),
     deleteQuizById: ctrlWrapper(deleteQuizById),
+    getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
 };
