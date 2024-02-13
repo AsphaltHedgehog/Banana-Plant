@@ -209,10 +209,12 @@ const getQuizByCategory = async (
 
         res.status(200).json({
             status: 'OK',
-            code: 200,
+          code: 200,
+          data: {
             result: result[0].pagination,
             category: categoryCategory,
             total: totalResult,
+          }
         });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
