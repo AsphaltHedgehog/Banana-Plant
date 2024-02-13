@@ -4,11 +4,11 @@ import { HttpError } from '../helpers';
 import { ctrlWrapper } from '../decorators/index';
 
 const userInfo = async (req: Request, res: Response) => {
-    const { _id, name, email, favorite } = req.body.user;
+    const { _id, name, avatarURL, email, favorite } = req.body.user;
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, email, favorite } },
+        data: { user: { _id, name, avatarURL, email, favorite } },
     });
 };
 
