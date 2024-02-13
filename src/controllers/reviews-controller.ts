@@ -21,7 +21,7 @@ const getReviews = async (req: Request, res: Response): Promise<void> => {
 };
 
 const addReview = async (req: Request, res: Response): Promise<void> => {
-    const { userName, email, rating, review } = req.body;
+    const { userName, rating, review } = req.body;
 
     const quizId = req.params.id;
     const quiz = await Quiz.findById(quizId);
@@ -40,7 +40,7 @@ const addReview = async (req: Request, res: Response): Promise<void> => {
         ratingQuantity: newRatingQuantity,
     });
 
-    const avatarUrl = gravatar.url(email, {
+    const avatarUrl = gravatar.url(userName, {
         s: '200',
         r: 'pg',
         d: 'identicon',

@@ -35,6 +35,8 @@ const reviewSchema = new mongoose_1.Schema({
     review: {
         type: String,
         required: true,
+        minlength: 8,
+        maxlength: 256,
     },
 }, { versionKey: false, timestamps: true });
 const Review = mongoose_1.default.model('review', reviewSchema);

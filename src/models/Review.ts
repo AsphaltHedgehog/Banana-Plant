@@ -6,19 +6,24 @@ interface IReview extends Document {
     review: string;
 }
 
-const reviewSchema = new Schema<IReview>({
-    userName: {
-        type: String,
-        required: true,
+const reviewSchema = new Schema<IReview>(
+    {
+        userName: {
+            type: String,
+            required: true,
+        },
+        avatarUrl: {
+            type: String,
+        },
+        review: {
+            type: String,
+            required: true,
+            minlength: 8,
+            maxlength: 256,
+        },
     },
-    avatarUrl: {
-        type: String,
-    },
-    review: {
-        type: String,
-        required: true,
-    },
-}, { versionKey: false, timestamps: true });
+    { versionKey: false, timestamps: true }
+);
 
 const Review = mongoose.model<IReview>('review', reviewSchema);
 

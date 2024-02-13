@@ -31,7 +31,7 @@ const getReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     });
 });
 const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userName, email, rating, review } = req.body;
+    const { userName, rating, review } = req.body;
     const quizId = req.params.id;
     const quiz = yield Quiz_1.Quiz.findById(quizId);
     if (!quiz) {
@@ -45,7 +45,7 @@ const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         rating: newQuizRating,
         ratingQuantity: newRatingQuantity,
     });
-    const avatarUrl = gravatar_1.default.url(email, {
+    const avatarUrl = gravatar_1.default.url(userName, {
         s: '200',
         r: 'pg',
         d: 'identicon',
