@@ -429,12 +429,12 @@
                             "type": "integer",
                             "minimum": 1
                         },
-                        "description": "The number of items per page for pagination."
+                        "description": "The number of items per page for pagination"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of quizzes.",
+                        "description": "Successful operation, a list of quizzes.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -541,6 +541,25 @@
                                     "items": {
                                         "$ref": "#/components/schemas/QuizListResponse"
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/cat": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quiz categories",
+                "description": "Retrieve a list of all quiz categories",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryList"
                                 }
                             }
                         }
@@ -1163,6 +1182,10 @@
                     "email": {
                         "type": "string",
                         "example": "alex@gmail.com"
+                    },
+                    "avatarURL": {
+                        "type": "string",
+                        "description": "URL to user avatar"
                     }
                 }
             },
@@ -1280,7 +1303,8 @@
                         "type": "array",
                         "description": "The favorite items of the user.",
                         "items": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "favoriteItem1"
                         }
                     }
                 }
@@ -1450,6 +1474,51 @@
                     "totalPages": 0,
                     "totalQuizzesCount": 0
                 }
+            },
+            "CategoryList": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 200
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": ["status", "code", "data"]
+            },
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the category."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group associated with the category."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The title/name of the category."
+                    }
+                },
+                "required": ["_id", "ageGroup", "title"]
             },
             "QuizQuestionDto": {
                 "type": "object",
