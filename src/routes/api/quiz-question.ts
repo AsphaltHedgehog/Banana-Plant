@@ -3,33 +3,30 @@ import express from "express";
 import quizQuestion from "../../controllers/quiz-question.js";
 
 import {
-  // authenticate,
+  authenticate,
   isEmptyBody, upload
 } from "../../middlewares/index.js";
-
-
-
-// Пока не добавляю аутефикацию чтобы фронту было удобнее работать
 
 const quizQuestionRoute = express.Router();
 
 quizQuestionRoute.get("/:id",
   quizQuestion.getAllQuestions);
 
-quizQuestionRoute.post("/:id", isEmptyBody, //authenticate,
+quizQuestionRoute.post("/:id", isEmptyBody, authenticate,
   quizQuestion.addNewQuizQuestion);
 
-quizQuestionRoute.patch("/img/:id", //authenticate, 
+quizQuestionRoute.patch("/img/:id",  
   upload.single("questionPoster"),
+  authenticate,
   quizQuestion.questionImg);
 
-quizQuestionRoute.patch('/:id', isEmptyBody, //authenticate,
+quizQuestionRoute.patch('/:id', isEmptyBody, authenticate,
   quizQuestion.updateQuizQuestionById);
 
-quizQuestionRoute.delete('/:id', //authenticate,
+quizQuestionRoute.delete('/:id', authenticate,
   quizQuestion.deleteQuizQuestionById);
 
-quizQuestionRoute.delete('/img/:id', //authenticate,
+quizQuestionRoute.delete('/img/:id', authenticate,
   quizQuestion.deleteQuizQuestionImgById);
 
 export default quizQuestionRoute;

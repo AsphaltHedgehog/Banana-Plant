@@ -43,23 +43,29 @@ const getAllByRating = async (req: Request, res: Response): Promise<void> => {
 
 const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-
-    try {
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            throw HttpError(400, 'Invalid quiz ID');
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(id)
+            }
+        },
+        {
+            $lookup: {
+                from: "quizquestions",
+                localField: "_id",
+                foreignField: "quiz",
+                as: "questions"
+            }
         }
+    ];
 
-        const result = await Quiz.findOne({
-            _id: new mongoose.Types.ObjectId(id),
-        });
+    const result = await Quiz.aggregate(pipeline);
 
-        if (!result) {
-            throw HttpError(404, 'Quiz not found');
-        }
-        res.json(result);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
+    if (!result) {
+        throw HttpError(404, 'Quiz not found');
     }
+    
+    res.status(200).json(...result);
 };
 
 const getAllCategory = async (req: Request, res: Response): Promise<void> => {
@@ -166,6 +172,7 @@ const getQuizByCategory = async (
                 ],
             },
         },
+
         {
             $sort: { rating: -1 }, // Сортування за рейтингом у спадному порядку
         },
