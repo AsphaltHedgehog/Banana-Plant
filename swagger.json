@@ -429,12 +429,12 @@
                             "type": "integer",
                             "minimum": 1
                         },
-                        "description": "The number of items per page for pagination."
+                        "description": "The number of items per page for pagination"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of quizzes.",
+                        "description": "Successful operation, a list of quizzes.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -548,36 +548,54 @@
                 }
             }
         },
+        "/api/quiz/cat": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get all quiz categories",
+                "description": "Retrieve a list of all quiz categories",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryList"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quiz/category": {
             "get": {
                 "tags": ["Quizzes"],
-                "summary": "Get quizzes by category.",
+                "summary": "Get quizzes by category",
+                "description": "Retrieve quizzes based on specified filters.\n\nOptionally provide additional filters:\n- `ageGroup` specifies the age group for which quizzes are requested\n- `page` and `pageSize` for pagination.\n- `rating` to filter quizzes by maximum rating.\n- `finished` to filter quizzes by maximum number of finished attempts.\n- `title` to filter quizzes by category titles. This can be a single string or an array of strings.\n- `favorites` to filter quizzes by favorite IDs.\n\nThe response contains a list of quizzes matching the specified criteria.\n",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "category",
+                        "name": "ageGroup",
                         "schema": {
                             "type": "string"
                         },
-                        "description": "The category of quizzes to retrieve."
+                        "description": "Age group for filtering quizzes"
                     },
                     {
                         "in": "query",
                         "name": "page",
                         "schema": {
-                            "type": "integer",
-                            "minimum": 1
+                            "type": "integer"
                         },
-                        "description": "The page number for pagination. (Optional)"
+                        "description": "Page number for pagination"
                     },
                     {
                         "in": "query",
                         "name": "pageSize",
                         "schema": {
-                            "type": "integer",
-                            "minimum": 1
+                            "type": "integer"
                         },
-                        "description": "The number of items per page for pagination. (Optional)"
+                        "description": "Number of items per page for pagination"
                     },
                     {
                         "in": "query",
@@ -585,7 +603,7 @@
                         "schema": {
                             "type": "integer"
                         },
-                        "description": "Sort by rating. Positive value for ascending, negative for descending. (Optional)"
+                        "description": "Maximum rating for filtering quizzes"
                     },
                     {
                         "in": "query",
@@ -593,16 +611,32 @@
                         "schema": {
                             "type": "integer"
                         },
-                        "description": "Sort by number of finished quizzes. Positive value for ascending, negative for descending. (Optional)"
+                        "description": "Maximum finished count for filtering quizzes"
+                    },
+                    {
+                        "in": "query",
+                        "name": "title",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Title of the category to filter quizzes by"
+                    },
+                    {
+                        "in": "query",
+                        "name": "favorites",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Array of favorite quiz IDs"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved quizzes by category.",
+                        "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/QuizzesCategoryResponse"
+                                    "$ref": "#/components/schemas/QuizzesByCategoryResponse"
                                 }
                             }
                         }
@@ -1163,6 +1197,10 @@
                     "email": {
                         "type": "string",
                         "example": "alex@gmail.com"
+                    },
+                    "avatarURL": {
+                        "type": "string",
+                        "description": "URL to user avatar"
                     }
                 }
             },
@@ -1280,7 +1318,8 @@
                         "type": "array",
                         "description": "The favorite items of the user.",
                         "items": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "favoriteItem1"
                         }
                     }
                 }
@@ -1450,6 +1489,91 @@
                     "totalPages": 0,
                     "totalQuizzesCount": 0
                 }
+            },
+            "CategoryList": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 200
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": ["status", "code", "data"]
+            },
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the category."
+                    },
+                    "ageGroup": {
+                        "type": "string",
+                        "description": "The age group associated with the category."
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "The name of the category."
+                    }
+                },
+                "required": ["_id", "ageGroup", "title"]
+            },
+            "QuizzesByCategoryResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response",
+                        "example": "200"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                },
+                                "description": "List of quizzes matching the criteria"
+                            },
+                            "category": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Category"
+                                },
+                                "description": "List of categories matching the age group"
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": "totalResult",
+                                "description": "Total number of quizzes in the specified age group"
+                            }
+                        }
+                    }
+                },
+                "required": ["status", "code", "data"]
             },
             "QuizQuestionDto": {
                 "type": "object",
