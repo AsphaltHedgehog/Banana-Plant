@@ -13,8 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
+const util_1 = require("util");
 const User_1 = __importDefault(require("../models/User"));
+const helpers_1 = require("../helpers");
 const index_1 = require("../decorators/index");
+const envConfs_1 = require("../conf/envConfs");
+const promises_1 = __importDefault(require("fs/promises"));
 const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id, name, avatarURL, email, favorite } = req.body.user;
     res.status(201).json({
@@ -53,8 +57,35 @@ const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     return;
 });
+const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body.user;
+    // work with img
+    if (!req.file || !req.file.path) {
+        throw (0, helpers_1.HttpError)(400, 'Bad Request');
+    }
+    const cloudinaryUpload = (0, util_1.promisify)(envConfs_1.cloudinary.uploader.upload);
+    const result = yield cloudinaryUpload(req.file.path);
+    yield promises_1.default.unlink(req.file.path);
+    if (!result) {
+        throw (0, helpers_1.HttpError)(500, 'file upload failed');
+    }
+    const updatedUser = yield User_1.default.findByIdAndUpdate(_id, { avatarURL: result.public_id }, { new: true });
+    if (!updatedUser) {
+        throw (0, helpers_1.HttpError)(400, 'User not found');
+    }
+    const { avatarURL } = updatedUser;
+    res.status(201).json({
+        status: 'OK',
+        code: 201,
+        data: {
+            _id,
+            avatarURL,
+        },
+    });
+});
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
     userInfo: (0, index_1.ctrlWrapper)(userInfo),
     updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
+    updateAvatar: (0, index_1.ctrlWrapper)(updateAvatar),
 };

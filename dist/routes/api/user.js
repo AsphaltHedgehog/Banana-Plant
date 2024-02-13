@@ -10,4 +10,5 @@ const userRouter = express_1.default.Router();
 userRouter.get('/info', middlewares_1.authenticate, user_1.userController.userInfo);
 userRouter.patch('/update', middlewares_1.authenticate, user_1.userController.updateInfo);
 userRouter.patch('/favorite', middlewares_1.authenticate, user_1.userController.favorite);
+userRouter.patch('/update/avatarURL', middlewares_1.upload.single('userAvatar'), middlewares_1.authenticate, user_1.userController.updateAvatar);
 exports.default = userRouter;
