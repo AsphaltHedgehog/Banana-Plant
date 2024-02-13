@@ -16,11 +16,11 @@ exports.userController = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const index_1 = require("../decorators/index");
 const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, name, email, favorite } = req.body.user;
+    const { _id, name, avatarURL, email, favorite } = req.body.user;
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, email, favorite } },
+        data: { user: { _id, name, avatarURL, email, favorite } },
     });
 });
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
