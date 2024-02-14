@@ -20,16 +20,16 @@
             "description": "User endpoints"
         },
         {
-            "name": "Reviews",
-            "description": "Reviews endpoints"
-        },
-        {
             "name": "Quizzes",
             "description": "Quizzes endpoints"
         },
         {
             "name": "Questions",
             "description": "Questions endpoints"
+        },
+        {
+            "name": "Reviews",
+            "description": "Reviews endpoints"
         }
     ],
     "paths": {
@@ -340,6 +340,76 @@
                     },
                     "401": {
                         "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                    }
+                }
+            }
+        },
+        "/api/user/update/avatarURL": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Update user avatar URL",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Uploads a new avatar image for the user and updates the avatar URL in the user profile.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userAvatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateAvatarResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1156,6 +1226,142 @@
                 },
                 "tags": ["Questions"]
             }
+        },
+        "/api/reviews/getReviews": {
+            "get": {
+                "tags": ["Reviews"],
+                "summary": "Get reviews",
+                "description": "Retrieve a list of reviews with pagination.",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "The page number for pagination (default is 1).",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The maximum number of reviews per page (default is 6).",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ReviewsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reviews/{id}/addReview": {
+            "post": {
+                "tags": ["Reviews"],
+                "summary": "Add a review to a quiz",
+                "description": "Add a new review to the quiz.",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "The ID of the quiz",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "userName",
+                        "in": "query",
+                        "description": "The name of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "The rating given in the review.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "review",
+                        "in": "query",
+                        "description": "The content of the review.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Review added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddReviewResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1269,33 +1475,6 @@
                     }
                 }
             },
-            "UserRequestBody": {
-                "type": "object",
-                "properties": {
-                    "user": {
-                        "type": "object",
-                        "properties": {
-                            "_id": {
-                                "type": "string",
-                                "description": "The unique identifier of the user."
-                            },
-                            "name": {
-                                "type": "string",
-                                "description": "The name of the user."
-                            },
-                            "email": {
-                                "type": "string",
-                                "format": "email",
-                                "description": "The email address of the user."
-                            },
-                            "favorite": {
-                                "type": "string",
-                                "description": "The favorite item of the user."
-                            }
-                        }
-                    }
-                }
-            },
             "UserInfo": {
                 "type": "object",
                 "properties": {
@@ -1320,6 +1499,34 @@
                         "items": {
                             "type": "string",
                             "example": "favoriteItem1"
+                        }
+                    }
+                }
+            },
+            "UpdateAvatarResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 201
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "The unique identifier of the user."
+                            },
+                            "avatarURL": {
+                                "type": "string",
+                                "description": "The URL of the updated user avatar."
+                            }
                         }
                     }
                 }
@@ -1691,6 +1898,75 @@
                     }
                 }
             },
+            "ReviewsResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response."
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response."
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Review"
+                        }
+                    }
+                }
+            },
+            "AddReviewResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 201
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Review"
+                    }
+                }
+            },
+            "Review": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier."
+                    },
+                    "userName": {
+                        "type": "string",
+                        "description": "The name of the user who left the review."
+                    },
+                    "avatarUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the user's avatar image."
+                    },
+                    "review": {
+                        "type": "string",
+                        "description": "The text of the review."
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time when the review was created."
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The date and time when the review was last updated."
+                    }
+                }
+            },
             "errorBadRequestResponse": {
                 "type": "object",
                 "properties": {
@@ -1720,11 +1996,6 @@
             "errorNotFoundResponse": {
                 "type": "object",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "description": "Error status code",
-                        "example": "404"
-                    },
                     "message": {
                         "type": "string",
                         "description": "Error message",
