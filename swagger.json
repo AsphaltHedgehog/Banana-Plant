@@ -344,6 +344,76 @@
                 }
             }
         },
+        "/api/user/update/avatarURL": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Update user avatar URL",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Uploads a new avatar image for the user and updates the avatar URL in the user profile.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userAvatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateAvatarResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/favorite": {
             "patch": {
                 "tags": ["Users"],
@@ -1324,6 +1394,34 @@
                     }
                 }
             },
+            "UpdateAvatarResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Status of the response.",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 201
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "The unique identifier of the user."
+                            },
+                            "avatarURL": {
+                                "type": "string",
+                                "description": "The URL of the updated user avatar."
+                            }
+                        }
+                    }
+                }
+            },
             "Quiz": {
                 "type": "object",
                 "properties": {
@@ -1720,11 +1818,6 @@
             "errorNotFoundResponse": {
                 "type": "object",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "description": "Error status code",
-                        "example": "404"
-                    },
                     "message": {
                         "type": "string",
                         "description": "Error message",
