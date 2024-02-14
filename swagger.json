@@ -2190,6 +2190,20 @@
                     }
                 }
             },
+            "QuizQuestionImageResponse": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The ID of the updated quiz question."
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "The URL of the updated image associated with the quiz question."
+                    }
+                }
+            },
             "ReviewsResponse": {
                 "type": "object",
                 "properties": {
