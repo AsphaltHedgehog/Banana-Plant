@@ -267,7 +267,13 @@ const deleteQuizQuestionImgById = async (
     // authenticate
     const user = req.body.user
     
-    const quiz = await Quiz.findById(id);
+    const quizQuestion = await QuizQuestion.findById(id);
+
+    if (!quizQuestion) {
+        throw HttpError(400, "Bad Request")
+    };
+
+    const quiz = await Quiz.findById(quizQuestion.quiz)
 
     if (!quiz) {
         throw HttpError(400, "Bad Request")
@@ -279,7 +285,6 @@ const deleteQuizQuestionImgById = async (
     // 
 
     const question = await QuizQuestion.findByIdAndUpdate(id, { imageUrl: '' });
-    console.log(question);
 
     if (!question) {
         throw HttpError(404, 'Question not found');
