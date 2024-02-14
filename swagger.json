@@ -60,6 +60,16 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
                     "409": {
                         "description": "User with such email already exists",
                         "content": {
@@ -100,6 +110,16 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Incorrect email or password",
                         "content": {
@@ -128,12 +148,32 @@
                     "204": {
                         "description": "User signed out"
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "description": "Bearer auth failed - invalid token. If the request does not contain a valid token or the token has already expired, the server will return a response with HTTP status code 401 Unauthorized.",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Account not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
                                 }
                             }
                         }
@@ -236,7 +276,7 @@
                         }
                     },
                     "400": {
-                        "description": "Bad request.",
+                        "description": "New password is required",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -297,6 +337,16 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -338,8 +388,25 @@
                             }
                         }
                     },
+                    "400": {
+                        "description": "Bad request.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
                     "401": {
-                        "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -472,8 +539,35 @@
                     "204": {
                         "description": "Favorite item removed successfully."
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
                     "401": {
-                        "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -590,6 +684,36 @@
                                             "description": "Background information for the quiz."
                                         }
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorNotFoundResponse"
                                 }
                             }
                         }
@@ -741,16 +865,6 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid quiz ID.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/errorBadRequestResponse"
-                                }
-                            }
-                        }
-                    },
                     "404": {
                         "description": "Quiz not found.",
                         "content": {
@@ -763,7 +877,7 @@
                     }
                 }
             },
-            "put": {
+            "patch": {
                 "tags": ["Quizzes"],
                 "summary": "Update a quiz by ID.",
                 "security": [
@@ -832,6 +946,16 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Quiz not found.",
                         "content": {
@@ -847,6 +971,11 @@
             "delete": {
                 "tags": ["Quizzes"],
                 "summary": "Delete a quiz by ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -886,22 +1015,33 @@
                 }
             }
         },
-        "/api/quiz/question": {
+        "/api/quiz/question/{id}": {
             "post": {
-                "operationId": "postQuestion",
-                "summary": "adding a test question to the collection",
+                "tags": ["Questions"],
+                "summary": "Add a new quiz question",
                 "security": [
                     {
                         "bearerAuth": []
                     }
                 ],
+                "description": "Add a new quiz question to a specific quiz by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "The ID of the quiz to which the question belongs.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
-                    "description": "# Description of request parameters:\n\n**time** - string, time to answer questions\n\n**description** - string, text question of the test\n\n**answers** - array, options for answering questions\n\n**validAnswer** - string, correct answer option;\n            \n**imageUrl** - string\n\n**type:** - 'full-text' or 'true-or-false'\n",
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/QuizQuestionDto"
+                                "$ref": "#/components/schemas/AddQuizQuestionRequest"
                             }
                         }
                     }
@@ -955,12 +1095,38 @@
                             }
                         }
                     }
-                },
-                "tags": ["Questions"]
-            }
-        },
-        "/api/quiz/question/{id}": {
+                }
+            },
+            "get": {
+                "tags": ["Questions"],
+                "summary": "Get all questions for a quiz",
+                "description": "Retrieve all questions associated with a specific quiz ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "ID of the quiz to retrieve questions"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful request. Questions for the specified quiz are returned.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuizQuestionsResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
+                "tags": ["Questions"],
                 "summary": "Update a quiz question by ID",
                 "security": [
                     {
@@ -1084,8 +1250,7 @@
                             }
                         }
                     }
-                },
-                "tags": ["Questions"]
+                }
             },
             "delete": {
                 "summary": "Delete a quiz question by ID",
@@ -1161,7 +1326,105 @@
             }
         },
         "/api/quiz/question/img/{id}": {
+            "patch": {
+                "tags": ["Questions"],
+                "summary": "Update image of a quiz question",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "description": "Update the image associated with a specific quiz question by ID.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "The ID of the quiz question to update.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "questionPoster": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Image updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuizQuestionImageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A description of the error."
+                                        }
+                                    },
+                                    "example": {
+                                        "message": "Unauthorized"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz question not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "A description of the error."
+                                        }
+                                    },
+                                    "example": {
+                                        "message": "Quiz question not found"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "delete": {
+                "tags": ["Questions"],
                 "summary": "Delete the image associated with a quiz question",
                 "description": "Delete the image associated with a quiz question by ID.",
                 "security": [
@@ -1223,8 +1486,7 @@
                             }
                         }
                     }
-                },
-                "tags": ["Questions"]
+                }
             }
         },
         "/api/reviews/getReviews": {
@@ -1658,45 +1920,6 @@
                     "title": "Comics"
                 }
             },
-            "QuizzesCategoryResponse": {
-                "type": "object",
-                "properties": {
-                    "data": {
-                        "type": "array",
-                        "items": {},
-                        "description": "List of quizzes."
-                    },
-                    "categories": {
-                        "type": "array",
-                        "items": {},
-                        "description": "List of quiz categories."
-                    },
-                    "currentPage": {
-                        "type": "integer",
-                        "description": "The current page number."
-                    },
-                    "pageSize": {
-                        "type": "integer",
-                        "description": "The number of items per page."
-                    },
-                    "totalPages": {
-                        "type": "integer",
-                        "description": "The total number of pages."
-                    },
-                    "totalQuizzesCount": {
-                        "type": "integer",
-                        "description": "The total number of quizzes."
-                    }
-                },
-                "example": {
-                    "data": [],
-                    "categories": [],
-                    "currentPage": 1,
-                    "pageSize": 1,
-                    "totalPages": 0,
-                    "totalQuizzesCount": 0
-                }
-            },
             "CategoryList": {
                 "type": "object",
                 "properties": {
@@ -1782,7 +2005,7 @@
                 },
                 "required": ["status", "code", "data"]
             },
-            "QuizQuestionDto": {
+            "AddQuizQuestionRequest": {
                 "type": "object",
                 "properties": {
                     "time": {
@@ -1837,6 +2060,75 @@
                         "description": "'full-text' or 'true-or-false'",
                         "example": "true-or-false",
                         "enum": ["full-text", "true-or-false"]
+                    }
+                }
+            },
+            "QuizQuestionsResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": "200"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Question"
+                        }
+                    }
+                }
+            },
+            "Question": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "string",
+                        "description": "The unique identifier of the question."
+                    },
+                    "quiz": {
+                        "type": "string",
+                        "description": "The ID of the quiz this question belongs to."
+                    },
+                    "time": {
+                        "type": "string",
+                        "description": "The time for answering this question."
+                    },
+                    "descr": {
+                        "type": "string",
+                        "description": "The description of the question."
+                    },
+                    "answers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Answer"
+                        },
+                        "description": "The array of possible answers for the question."
+                    },
+                    "validAnswer": {
+                        "type": "string",
+                        "description": "The ID of the valid answer for this question."
+                    },
+                    "imageUrl": {
+                        "type": "string",
+                        "description": "The URL of the image for the question"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["full-text", "true-or-false"],
+                        "description": "The type of question, either 'full-text' or 'true-or-false'."
+                    }
+                }
+            },
+            "Answer": {
+                "type": "object",
+                "properties": {
+                    "descr": {
+                        "type": "string",
+                        "description": "The description or text of the answer."
                     }
                 }
             },
@@ -1970,11 +2262,6 @@
             "errorBadRequestResponse": {
                 "type": "object",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "description": "Error status code",
-                        "example": "400"
-                    },
                     "message": {
                         "type": "string",
                         "description": "Error message",
