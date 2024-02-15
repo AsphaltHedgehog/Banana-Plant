@@ -65,17 +65,17 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const pipeline = [
         {
             $match: {
-                _id: new mongoose_1.default.Types.ObjectId(id)
-            }
+                _id: new mongoose_1.default.Types.ObjectId(id),
+            },
         },
         {
             $lookup: {
-                from: "quizquestions",
-                localField: "_id",
-                foreignField: "quiz",
-                as: "questions"
-            }
-        }
+                from: 'quizquestions',
+                localField: '_id',
+                foreignField: 'quiz',
+                as: 'questions',
+            },
+        },
     ];
     const result = yield Quiz_1.Quiz.aggregate(pipeline);
     if (!result) {
@@ -190,8 +190,18 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 result: result[0].pagination,
                 category: categoryCategory,
                 total: totalResult,
-            }
+            },
         });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const getQuizesByOwner = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { owner } = req.body;
+    try {
+        const result = yield Quiz_1.Quiz.find({ owner: { $in: owner } });
+        res.json(result);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -273,4 +283,5 @@ exports.default = {
     updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),
     deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
     getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
+    getQuizesByOwner: (0, index_2.ctrlWrapper)(getQuizesByOwner),
 };

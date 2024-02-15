@@ -46,17 +46,17 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const pipeline = [
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(id)
-            }
+                _id: new mongoose.Types.ObjectId(id),
+            },
         },
         {
             $lookup: {
-                from: "quizquestions",
-                localField: "_id",
-                foreignField: "quiz",
-                as: "questions"
-            }
-        }
+                from: 'quizquestions',
+                localField: '_id',
+                foreignField: 'quiz',
+                as: 'questions',
+            },
+        },
     ];
 
     const result = await Quiz.aggregate(pipeline);
@@ -64,7 +64,7 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     if (!result) {
         throw HttpError(404, 'Quiz not found');
     }
-    
+
     res.status(200).json(...result);
 };
 
@@ -209,13 +209,25 @@ const getQuizByCategory = async (
 
         res.status(200).json({
             status: 'OK',
-          code: 200,
-          data: {
-            result: result[0].pagination,
-            category: categoryCategory,
-            total: totalResult,
-          }
+            code: 200,
+            data: {
+                result: result[0].pagination,
+                category: categoryCategory,
+                total: totalResult,
+            },
         });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getQuizesByOwner = async (req: Request, res: Response): Promise<void> => {
+    const { owner } = req.body;
+
+    try {
+        const result = await Quiz.find({ owner: { $in: owner } });
+
+        res.json(result);
     } catch (error: any) {
         res.status(500).json({ message: error.message });
     }
@@ -283,8 +295,7 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-  res.status(200).json(existingQuiz);
-  
+    res.status(200).json(existingQuiz);
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
@@ -319,4 +330,5 @@ export default {
     updateQuizById: ctrlWrapper(updateQuizById),
     deleteQuizById: ctrlWrapper(deleteQuizById),
     getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
+    getQuizesByOwner: ctrlWrapper(getQuizesByOwner),
 };
