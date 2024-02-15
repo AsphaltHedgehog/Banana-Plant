@@ -2,7 +2,7 @@ import { Quiz, QuizCategory } from '../models/Quiz';
 import { Request, Response } from 'express';
 import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
-import mongoose from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import QuizQuestion from '../models/QuizQuestion';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
@@ -233,11 +233,32 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const result = await Quiz.create({ theme, owner: id });
     const { _id, background, ageGroup } = result;
 
+    const answerArray = [
+                {
+                    descr: '',
+                    _id: new Types.ObjectId(),
+                },
+                {
+                    descr: '',
+                    _id: new Types.ObjectId(),
+                },
+                {
+                    descr: '',
+                    _id: new Types.ObjectId(),
+                },
+                {
+                    descr: '',
+                    _id: new Types.ObjectId(),
+                },
+        ]
+
     const quizQuestion = {
         quiz: _id,
         time: '00:30',
         descr: '',
         type: 'full-text',
+        answers: answerArray,
+        validAnswer: answerArray[0]._id
     };
 
     await QuizQuestion.create(quizQuestion);
@@ -283,8 +304,7 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-  res.status(200).json(existingQuiz);
-  
+    res.status(200).json(existingQuiz);
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
