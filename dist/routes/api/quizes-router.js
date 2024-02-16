@@ -14,9 +14,9 @@ quizRouter.get('/', quizes_controller_1.default.getAll);
 quizRouter.get('/rating', quizes_controller_1.default.getAllByRating);
 quizRouter.get('/cat', quizes_controller_1.default.getAllCategory);
 quizRouter.get('/category', quizes_controller_1.default.getQuizByCategory);
+quizRouter.get('/favorites', authenticate_1.default, quizes_controller_1.default.getFavoritesQuizes);
+quizRouter.get('/myQuizes', authenticate_1.default, quizes_controller_1.default.getMyQuizes);
 quizRouter.get('/:id', quizes_controller_1.default.getQuizById);
-quizRouter.post('/favorites', authenticate_1.default, quizes_controller_1.default.getFavoritesQuizes);
-quizRouter.post('/myQuizes', authenticate_1.default, quizes_controller_1.default.getMyQuizes);
 quizRouter.post('/', authenticate_1.default, index_js_1.isEmptyBody, 
 // validateBody(quizAddSchema),
 quizes_controller_1.default.addNewQuiz);
