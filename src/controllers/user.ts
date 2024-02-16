@@ -40,7 +40,7 @@ const favorite = async (req: Request, res: Response) => {
         res.status(201).json({
             status: 'OK',
             code: 201,
-            message: 'user favorite succsessfuly added',
+            message: 'user favorite successfully added',
         });
     } else {
         await User.findByIdAndUpdate(
@@ -92,9 +92,93 @@ const updateAvatar = async (req: Request, res: Response) => {
     });
 };
 
+const addPassedQuiz = async (req: Request, res: Response) => {
+    const { _id } = req.body.user;
+    const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+        throw HttpError(400, 'User not found');
+    }
+
+    const { passedQuizzes } = user;
+
+    const isPassedQuiz = passedQuizzes.find(quiz => quiz.quizId === quizId);
+
+    if (isPassedQuiz) {
+        await User.findByIdAndUpdate(isPassedQuiz._id, {
+            quantityQuestions,
+            correctAnswers,
+            rating,
+        });
+    }
+
+    const result = await User.findByIdAndUpdate(
+        _id,
+        {
+            $addToSet: { passedQuizzes: req.body },
+            $inc: {
+                totalQuestions: quantityQuestions,
+                totalAnswers: correctAnswers,
+            },
+        },
+        {
+            new: true,
+            select: 'totalAnswers totalQuestions average passedQuizzes',
+        }
+    );
+
+    if (!result) {
+        throw HttpError(400, 'User not found');
+    }
+
+    result.average = Math.round(
+        (result.totalAnswers / result.totalQuestions) * 100
+    );
+    await user.save();
+    res.json(result);
+};
+
+const updatePassedQuiz = async (req: Request, res: Response) => {
+    const { _id } = req.body.user;
+    const { quizId, quantityQuestions, correctAnswers } = req.body;
+    const user = await User.findById(_id);
+    if (!user) {
+        throw HttpError(400, 'User not found');
+    }
+
+    const passedQuizIndex = user.passedQuizzes.findIndex(
+        item => item.quizId === quizId
+    );
+
+    if (passedQuizIndex === -1) {
+        throw HttpError(
+            404,
+            `Quiz with ID ${quizId} was not found among the provided quizzes.`
+        );
+    }
+
+    user.passedQuizzes[passedQuizIndex].quantityQuestions = quantityQuestions;
+    user.passedQuizzes[passedQuizIndex].correctAnswers = correctAnswers;
+    user.totalQuestions += quantityQuestions;
+    user.totalAnswers += correctAnswers;
+    user.average = Math.round((user.totalAnswers / user.totalQuestions) * 100);
+    await user.save();
+
+    res.json({
+        totalAnswers: user.totalAnswers,
+        totalQuestions: user.totalQuestions,
+        average: user.average,
+        passedQuizzes: user.passedQuizzes,
+    });
+};
+
 export const userController = {
     favorite: ctrlWrapper(favorite),
     userInfo: ctrlWrapper(userInfo),
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
+    addPassedQuiz: ctrlWrapper(addPassedQuiz),
+    updatePassedQuiz: ctrlWrapper(updatePassedQuiz),
 };

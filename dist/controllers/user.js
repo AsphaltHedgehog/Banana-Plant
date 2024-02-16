@@ -48,7 +48,7 @@ const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json({
             status: 'OK',
             code: 201,
-            message: 'user favorite succsessfuly added',
+            message: 'user favorite successfully added',
         });
     }
     else {
@@ -83,9 +83,42 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         },
     });
 });
+const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body.user;
+    const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+    const user = yield User_1.default.findById(_id);
+    if (!user) {
+        throw (0, helpers_1.HttpError)(400, 'User not found');
+    }
+    const { passedQuizzes } = user;
+    const isPassedQuiz = passedQuizzes.find(quiz => quiz.quizId === quizId);
+    if (isPassedQuiz) {
+        yield User_1.default.findByIdAndUpdate(isPassedQuiz._id, {
+            quantityQuestions,
+            correctAnswers,
+            rating,
+        });
+    }
+    const result = yield User_1.default.findByIdAndUpdate(_id, {
+        $addToSet: { passedQuizzes: req.body },
+        $inc: {
+            totalQuestions: quantityQuestions,
+            totalAnswers: correctAnswers,
+        },
+    }, {
+        new: true,
+        select: 'totalAnswers totalQuestions average passedQuizzes',
+    });
+    if (!result) {
+        throw (0, helpers_1.HttpError)(400, 'User not found');
+    }
+    result.average = Math.round((result.totalAnswers / result.totalQuestions) * 100);
+    res.json(result);
+});
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
     userInfo: (0, index_1.ctrlWrapper)(userInfo),
     updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
     updateAvatar: (0, index_1.ctrlWrapper)(updateAvatar),
+    addPassedQuiz: (0, index_1.ctrlWrapper)(addPassedQuiz),
 };
