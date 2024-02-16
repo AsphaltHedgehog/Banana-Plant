@@ -12,10 +12,12 @@ export interface User extends Document {
     };
     favorite: Schema.Types.ObjectId[];
     passedQuizzes: passedQuizSchema[];
-    average: number; 
+    average: number;
+    totalAnswers: number;
+    totalQuestions: number;
 }
 
-export interface passedQuizSchema extends Document{
+export interface passedQuizSchema extends Document {
     quizId: string;
     quantityQuestions: number;
     correctAnswers: number;
@@ -23,21 +25,21 @@ export interface passedQuizSchema extends Document{
 }
 
 const emailRegex =
-/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
+    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
 
 const passedQuizSchema = new Schema<passedQuizSchema>({
-  quizId: {
-    type: String,
-  },
-  quantityQuestions: {
-    type: Number,
-  },
-  correctAnswers: {
-    type: Number,
+    quizId: {
+        type: String,
+    },
+    quantityQuestions: {
+        type: Number,
+    },
+    correctAnswers: {
+        type: Number,
     },
     rating: {
-      type: Number,
-  }
+        type: Number,
+    },
 });
 
 const userSchema = new Schema<User>(
@@ -53,7 +55,7 @@ const userSchema = new Schema<User>(
             match: emailRegex,
             required: [true, 'An email is necessary'],
             unique: true,
-             minlength: 8,
+            minlength: 8,
             maxlength: 64,
         },
         password: {
@@ -83,19 +85,27 @@ const userSchema = new Schema<User>(
                 default: [],
             },
         ],
-        passedQuizzes: [{
-            type: passedQuizSchema,
-            default: []
-        }],
+        passedQuizzes: [
+            {
+                type: passedQuizSchema,
+                default: [],
+            },
+        ],
         average: {
             type: Number,
-            default: 0
+            default: 0,
         },
-        
+        totalAnswers: {
+            type: Number,
+            default: 0,
+        },
+        totalQuestions: {
+            type: Number,
+            default: 0,
+        },
     },
     { versionKey: false, timestamps: true }
 );
-
 
 const User: Model<User> = model<User>('user', userSchema);
 

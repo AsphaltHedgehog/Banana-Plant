@@ -12,6 +12,9 @@ const passedQuizSchema = new mongoose_1.Schema({
     correctAnswers: {
         type: Number,
     },
+    rating: {
+        type: Number,
+    },
 });
 const userSchema = new mongoose_1.Schema({
     name: {
@@ -53,20 +56,23 @@ const userSchema = new mongoose_1.Schema({
             default: [],
         },
     ],
-    passedQuizzes: {
-        type: [passedQuizSchema],
-    },
-    totalQuestions: {
+    passedQuizzes: [
+        {
+            type: passedQuizSchema,
+            default: [],
+        },
+    ],
+    average: {
         type: Number,
-        default: 0
+        default: 0,
     },
     totalAnswers: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    average: {
+    totalQuestions: {
         type: Number,
-        default: 0
+        default: 0,
     },
 }, { versionKey: false, timestamps: true });
 const User = (0, mongoose_1.model)('user', userSchema);

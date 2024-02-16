@@ -48,7 +48,7 @@ const favorite = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(201).json({
             status: 'OK',
             code: 201,
-            message: 'user favorite succsessfuly added',
+            message: 'user favorite successfully added',
         });
     }
     else {
@@ -84,19 +84,31 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     });
 });
 const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { passedQuizzes = [] } = (_a = yield User_1.default.findById(req.body.user._id)) !== null && _a !== void 0 ? _a : {};
-    const isPassedQuiz = passedQuizzes.find(quiz => quiz.quizId === req.body.quizId);
-    if (isPassedQuiz) {
-        throw (0, helpers_1.HttpError)(409, `The quiz ${req.body.quizId} has already been completed`);
+    const { _id } = req.body.user;
+    const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+    const user = yield User_1.default.findById(_id);
+    if (!user) {
+        throw (0, helpers_1.HttpError)(400, 'User not found');
     }
-    const result = yield User_1.default.findByIdAndUpdate(req.body.user._id, {
+    const { passedQuizzes } = user;
+    const isPassedQuiz = passedQuizzes.find(quiz => quiz.quizId === quizId);
+    if (isPassedQuiz) {
+        yield User_1.default.findByIdAndUpdate(isPassedQuiz._id, {
+            quantityQuestions,
+            correctAnswers,
+            rating,
+        });
+    }
+    const result = yield User_1.default.findByIdAndUpdate(_id, {
         $addToSet: { passedQuizzes: req.body },
         $inc: {
-            totalQuestions: req.body.quantityQuestions,
-            totalAnswers: req.body.correctAnswers,
+            totalQuestions: quantityQuestions,
+            totalAnswers: correctAnswers,
         },
-    }, { new: true, select: 'totalAnswers totalQuestions average passedQuizzes' });
+    }, {
+        new: true,
+        select: 'totalAnswers totalQuestions average passedQuizzes',
+    });
     if (!result) {
         throw (0, helpers_1.HttpError)(400, 'User not found');
     }
@@ -108,5 +120,5 @@ exports.userController = {
     userInfo: (0, index_1.ctrlWrapper)(userInfo),
     updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
     updateAvatar: (0, index_1.ctrlWrapper)(updateAvatar),
-    addPassedQuiz: (0, index_1.ctrlWrapper)(addPassedQuiz)
+    addPassedQuiz: (0, index_1.ctrlWrapper)(addPassedQuiz),
 };
