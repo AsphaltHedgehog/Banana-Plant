@@ -136,7 +136,42 @@ const addPassedQuiz = async (req: Request, res: Response) => {
     result.average = Math.round(
         (result.totalAnswers / result.totalQuestions) * 100
     );
+    await user.save();
     res.json(result);
+};
+
+const updatePassedQuiz = async (req: Request, res: Response) => {
+    const { _id } = req.body.user;
+    const { quizId, quantityQuestions, correctAnswers } = req.body;
+    const user = await User.findById(_id);
+    if (!user) {
+        throw HttpError(400, 'User not found');
+    }
+
+    const passedQuizIndex = user.passedQuizzes.findIndex(
+        item => item.quizId === quizId
+    );
+
+    if (passedQuizIndex === -1) {
+        throw HttpError(
+            404,
+            `Quiz with ID ${quizId} was not found among the provided quizzes.`
+        );
+    }
+
+    user.passedQuizzes[passedQuizIndex].quantityQuestions = quantityQuestions;
+    user.passedQuizzes[passedQuizIndex].correctAnswers = correctAnswers;
+    user.totalQuestions += quantityQuestions;
+    user.totalAnswers += correctAnswers;
+    user.average = Math.round((user.totalAnswers / user.totalQuestions) * 100);
+    await user.save();
+
+    res.json({
+        totalAnswers: user.totalAnswers,
+        totalQuestions: user.totalQuestions,
+        average: user.average,
+        passedQuizzes: user.passedQuizzes,
+    });
 };
 
 export const userController = {
@@ -145,4 +180,5 @@ export const userController = {
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
     addPassedQuiz: ctrlWrapper(addPassedQuiz),
+    updatePassedQuiz: ctrlWrapper(updatePassedQuiz),
 };
