@@ -2,6 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
+const passedQuizSchema = new mongoose_1.Schema({
+    quizId: {
+        type: String,
+    },
+    quantityQuestions: {
+        type: Number,
+    },
+    correctAnswers: {
+        type: Number,
+    },
+});
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -42,6 +53,21 @@ const userSchema = new mongoose_1.Schema({
             default: [],
         },
     ],
+    passedQuizzes: {
+        type: [passedQuizSchema],
+    },
+    totalQuestions: {
+        type: Number,
+        default: 0
+    },
+    totalAnswers: {
+        type: Number,
+        default: 0
+    },
+    average: {
+        type: Number,
+        default: 0
+    },
 }, { versionKey: false, timestamps: true });
 const User = (0, mongoose_1.model)('user', userSchema);
 exports.default = User;

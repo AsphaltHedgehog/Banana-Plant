@@ -17,4 +17,10 @@ userRouter.patch(
     userController.updateAvatar
 );
 
+userRouter.patch(
+  '/passed-quiz',
+  authenticate,
+  userController.addPassedQuiz
+);
+
 export default userRouter;

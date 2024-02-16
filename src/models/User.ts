@@ -11,10 +11,34 @@ export interface User extends Document {
         additionalEmail: string;
     };
     favorite: Schema.Types.ObjectId[];
+    passedQuizzes: passedQuizSchema[];
+    average: number; 
+}
+
+export interface passedQuizSchema extends Document{
+    quizId: string;
+    quantityQuestions: number;
+    correctAnswers: number;
+    rating: number;
 }
 
 const emailRegex =
-    /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
+/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@((([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})|(\[IPv6:[^\]]+\]))$/i;
+
+const passedQuizSchema = new Schema<passedQuizSchema>({
+  quizId: {
+    type: String,
+  },
+  quantityQuestions: {
+    type: Number,
+  },
+  correctAnswers: {
+    type: Number,
+    },
+    rating: {
+      type: Number,
+  }
+});
 
 const userSchema = new Schema<User>(
     {
@@ -59,9 +83,19 @@ const userSchema = new Schema<User>(
                 default: [],
             },
         ],
+        passedQuizzes: [{
+            type: passedQuizSchema,
+            default: []
+        }],
+        average: {
+            type: Number,
+            default: 0
+        },
+        
     },
     { versionKey: false, timestamps: true }
 );
+
 
 const User: Model<User> = model<User>('user', userSchema);
 

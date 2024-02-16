@@ -92,9 +92,39 @@ const updateAvatar = async (req: Request, res: Response) => {
     });
 };
 
+const addPassedQuiz = async (req: Request, res: Response) => {
+    const { _id } = req.body.user
+    const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+  const { passedQuizzes } = await User.findById(_id)
+  const isPassedQuiz = passedQuizzes.find(
+    quiz => quiz.quizId === quizId
+  );
+        if (isPassedQuiz) {
+            await User.findByIdAndUpdate(isPassedQuiz._id, {quantityQuestions, correctAnswers, rating})
+        }
+
+const result = await User.findByIdAndUpdate(
+_id,
+    {
+      $addToSet: { passedQuizzes: req.body },
+    },
+    { new: true, select: 'totalAnswers totalQuestions average passedQuizzes' }
+);
+
+if (!result) {
+    throw HttpError(400, 'User not found');
+}
+
+result.average = Math.round(
+    (result.totalAnswers / result.totalQuestions) * 100
+);
+
+res.json(result); }
+
 export const userController = {
     favorite: ctrlWrapper(favorite),
     userInfo: ctrlWrapper(userInfo),
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
+    addPassedQuiz: ctrlWrapper(addPassedQuiz)
 };
