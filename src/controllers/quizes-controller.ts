@@ -4,6 +4,8 @@ import { HttpError } from '../helpers/index';
 import { ctrlWrapper } from '../decorators/index';
 import mongoose, { Types } from 'mongoose';
 import QuizQuestion from '../models/QuizQuestion';
+import { ctrl } from './auth';
+import { Pipeline } from '@getbrevo/brevo';
 
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const { page, pageSize } = req.query;
@@ -88,7 +90,7 @@ const getFavoritesQuizes = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { favorites } = req.body;
+  const { favorites } = req.body;
 
     try {
         const result = await Quiz.find({ _id: { $in: favorites } });
@@ -104,6 +106,47 @@ const getFavoritesQuizes = async (
         res.status(500).json({ message: error.message });
     }
 };
+
+const getMyQuizes = async (req: Request, res: Response): Promise<void> => {
+  const { _id } = req.body.user
+  const { page, pageSize } = req.query;
+
+  const pipeline = [{
+    $match: {
+  "owner": _id,
+}
+  }]
+
+  if (
+      page &&
+      typeof page === 'string' &&
+      pageSize &&
+      typeof pageSize === 'string'
+  ) {
+      const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+      const limit = pageSize ? parseInt(pageSize) : 10;
+
+      pipeline.push({
+          $facet: {
+              pagination: [{ $skip: skip }, { $limit: limit }],
+          },
+      });
+  }
+  try {
+    const result = await Quiz.aggregate(pipeline)
+    
+    res.json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result,
+        },
+    });
+  } catch (error: any) {
+      res.status(500).json({ message: error.message });
+  }
+  
+ }
 
 interface IMatchStage {
     ageGroup?: string;
@@ -339,4 +382,5 @@ export default {
     updateQuizById: ctrlWrapper(updateQuizById),
     deleteQuizById: ctrlWrapper(deleteQuizById),
     getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
+    getMyQuizes: ctrlWrapper(getMyQuizes),
 };

@@ -137,6 +137,40 @@ const getFavoritesQuizes = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).json({ message: error.message });
     }
 });
+const getMyQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body.user;
+    const { page, pageSize } = req.query;
+    const pipeline = [{
+            $match: {
+                "owner": _id,
+            }
+        }];
+    if (page &&
+        typeof page === 'string' &&
+        pageSize &&
+        typeof pageSize === 'string') {
+        const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+        pipeline.push({
+            $facet: {
+                pagination: [{ $skip: skip }, { $limit: limit }],
+            },
+        });
+    }
+    try {
+        const result = yield Quiz_1.Quiz.aggregate(pipeline);
+        res.json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ageGroup, page, pageSize, rating, finished, title, inputText, favorites, } = req.query;
     const matchStage = {};
@@ -316,4 +350,5 @@ exports.default = {
     updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),
     deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
     getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
+    getMyQuizes: (0, index_2.ctrlWrapper)(getMyQuizes),
 };

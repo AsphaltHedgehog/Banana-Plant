@@ -227,7 +227,12 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     const { id } = req.params;
     // authenticate
     const user = req.body.user;
-    const quiz = yield Quiz_1.Quiz.findById(id);
+    const quizQuestion = yield QuizQuestion_1.default.findById(id);
+    if (!quizQuestion) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    const quiz = yield Quiz_1.Quiz.findById(quizQuestion.quiz);
     if (!quiz) {
         throw (0, index_1.HttpError)(400, "Bad Request");
     }
@@ -237,7 +242,6 @@ const deleteQuizQuestionImgById = (req, res) => __awaiter(void 0, void 0, void 0
     }
     // 
     const question = yield QuizQuestion_1.default.findByIdAndUpdate(id, { imageUrl: '' });
-    console.log(question);
     if (!question) {
         throw (0, index_1.HttpError)(404, 'Question not found');
     }
