@@ -88,17 +88,17 @@ const getQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const pipeline = [
         {
             $match: {
-                _id: new mongoose_1.default.Types.ObjectId(id)
-            }
+                _id: new mongoose_1.default.Types.ObjectId(id),
+            },
         },
         {
             $lookup: {
-                from: "quizquestions",
-                localField: "_id",
-                foreignField: "quiz",
-                as: "questions"
-            }
-        }
+                from: 'quizquestions',
+                localField: '_id',
+                foreignField: 'quiz',
+                as: 'questions',
+            },
+        },
     ];
     const result = yield Quiz_1.Quiz.aggregate(pipeline);
     if (!result) {
@@ -126,6 +126,40 @@ const getFavoritesQuizes = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const result = yield Quiz_1.Quiz.find({ _id: { $in: favorites } });
         res.status(200).json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+const getMyQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body.user;
+    const { page, pageSize } = req.query;
+    const pipeline = [{
+            $match: {
+                "owner": _id,
+            }
+        }];
+    if (page &&
+        typeof page === 'string' &&
+        pageSize &&
+        typeof pageSize === 'string') {
+        const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+        pipeline.push({
+            $facet: {
+                pagination: [{ $skip: skip }, { $limit: limit }],
+            },
+        });
+    }
+    try {
+        const result = yield Quiz_1.Quiz.aggregate(pipeline);
+        res.json({
             status: 'OK',
             code: 200,
             data: {
@@ -213,7 +247,7 @@ const getQuizByCategory = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 result: result[0].pagination,
                 category: categoryCategory,
                 total: totalResult,
-            }
+            },
         });
     }
     catch (error) {
@@ -316,4 +350,5 @@ exports.default = {
     updateQuizById: (0, index_2.ctrlWrapper)(updateQuizById),
     deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
     getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
+    getMyQuizes: (0, index_2.ctrlWrapper)(getMyQuizes),
 };

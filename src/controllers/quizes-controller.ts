@@ -46,17 +46,17 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     const pipeline = [
         {
             $match: {
-                _id: new mongoose.Types.ObjectId(id)
-            }
+                _id: new mongoose.Types.ObjectId(id),
+            },
         },
         {
             $lookup: {
-                from: "quizquestions",
-                localField: "_id",
-                foreignField: "quiz",
-                as: "questions"
-            }
-        }
+                from: 'quizquestions',
+                localField: '_id',
+                foreignField: 'quiz',
+                as: 'questions',
+            },
+        },
     ];
 
     const result = await Quiz.aggregate(pipeline);
@@ -64,7 +64,7 @@ const getQuizById = async (req: Request, res: Response): Promise<void> => {
     if (!result) {
         throw HttpError(404, 'Quiz not found');
     }
-    
+
     res.status(200).json(...result);
 };
 
@@ -88,7 +88,7 @@ const getFavoritesQuizes = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const { favorites } = req.body;
+  const { favorites } = req.body;
 
     try {
         const result = await Quiz.find({ _id: { $in: favorites } });
@@ -104,6 +104,47 @@ const getFavoritesQuizes = async (
         res.status(500).json({ message: error.message });
     }
 };
+
+const getMyQuizes = async (req: Request, res: Response): Promise<void> => {
+  const { _id } = req.body.user
+  const { page, pageSize } = req.query;
+
+  const pipeline = [{
+    $match: {
+  "owner": _id,
+}
+  }]
+
+  if (
+      page &&
+      typeof page === 'string' &&
+      pageSize &&
+      typeof pageSize === 'string'
+  ) {
+      const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+      const limit = pageSize ? parseInt(pageSize) : 10;
+
+      pipeline.push({
+          $facet: {
+              pagination: [{ $skip: skip }, { $limit: limit }],
+          },
+      });
+  }
+  try {
+    const result = await Quiz.aggregate(pipeline)
+    
+    res.json({
+        status: 'OK',
+        code: 200,
+        data: {
+            result,
+        },
+    });
+  } catch (error: any) {
+      res.status(500).json({ message: error.message });
+  }
+  
+ }
 
 interface IMatchStage {
     ageGroup?: string;
@@ -209,12 +250,12 @@ const getQuizByCategory = async (
 
         res.status(200).json({
             status: 'OK',
-          code: 200,
-          data: {
-            result: result[0].pagination,
-            category: categoryCategory,
-            total: totalResult,
-          }
+            code: 200,
+            data: {
+                result: result[0].pagination,
+                category: categoryCategory,
+                total: totalResult,
+            },
         });
     } catch (error: any) {
         res.status(500).json({ message: error.message });
@@ -339,4 +380,5 @@ export default {
     updateQuizById: ctrlWrapper(updateQuizById),
     deleteQuizById: ctrlWrapper(deleteQuizById),
     getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
+    getMyQuizes: ctrlWrapper(getMyQuizes),
 };

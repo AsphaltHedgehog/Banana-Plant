@@ -1,12 +1,10 @@
-import express from "express";
+import express from 'express';
 
-import quizController from "../../controllers/quizes-controller";
+import quizController from '../../controllers/quizes-controller';
 
-import {
-  isEmptyBody,
-} from "../../middlewares/index.js";
+import { isEmptyBody } from '../../middlewares/index.js';
 
-import  authenticate  from "../../middlewares/authenticate"
+import authenticate from '../../middlewares/authenticate';
 
 // import { validateBody } from "../../decorators/index.js";
 
@@ -14,19 +12,20 @@ import  authenticate  from "../../middlewares/authenticate"
 
 const quizRouter = express.Router();
 
-quizRouter.get("/", quizController.getAll);
+quizRouter.get('/', quizController.getAll);
 quizRouter.get('/rating', quizController.getAllByRating);
 quizRouter.get('/cat', quizController.getAllCategory);
 quizRouter.get('/category', quizController.getQuizByCategory);
 quizRouter.get('/:id', quizController.getQuizById);
-quizRouter.post('/favorites', quizController.getFavoritesQuizes);
+quizRouter.post('/favorites', authenticate, quizController.getFavoritesQuizes);
+quizRouter.post('/myQuizes', authenticate, quizController.getMyQuizes);
 
 quizRouter.post(
-  "/",
-  authenticate,
-  isEmptyBody,
-  // validateBody(quizAddSchema),
-  quizController.addNewQuiz
+    '/',
+    authenticate,
+    isEmptyBody,
+    // validateBody(quizAddSchema),
+    quizController.addNewQuiz
 );
 
 quizRouter.patch(
