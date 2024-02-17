@@ -12,4 +12,5 @@ userRouter.patch('/update', middlewares_1.authenticate, user_1.userController.up
 userRouter.patch('/favorite', middlewares_1.authenticate, user_1.userController.favorite);
 userRouter.patch('/update/avatarURL', middlewares_1.upload.single('userAvatar'), middlewares_1.authenticate, user_1.userController.updateAvatar);
 userRouter.patch('/passed-quiz', middlewares_1.authenticate, user_1.userController.addPassedQuiz);
+userRouter.patch('/retake-passed-quiz', middlewares_1.authenticate, user_1.userController.updatePassedQuiz);
 exports.default = userRouter;

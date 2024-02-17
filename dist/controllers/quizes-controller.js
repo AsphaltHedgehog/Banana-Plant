@@ -122,9 +122,16 @@ const getAllCategory = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const getFavoritesQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { favorites } = req.body;
+    console.log(req.query);
+    const { favorite } = req.body.user;
+    const pipeline = [
+        {
+            $match: { _id: { $in: favorite } },
+        },
+    ];
     try {
-        const result = yield Quiz_1.Quiz.find({ _id: { $in: favorites } });
+        const result = yield Quiz_1.Quiz.aggregate(pipeline);
+        console.log(result);
         res.status(200).json({
             status: 'OK',
             code: 200,
@@ -140,11 +147,13 @@ const getFavoritesQuizes = (req, res) => __awaiter(void 0, void 0, void 0, funct
 const getMyQuizes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
     const { page, pageSize } = req.query;
-    const pipeline = [{
+    const pipeline = [
+        {
             $match: {
-                "owner": _id,
-            }
-        }];
+                owner: _id,
+            },
+        },
+    ];
     if (page &&
         typeof page === 'string' &&
         pageSize &&
@@ -287,7 +296,7 @@ const addNewQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         descr: '',
         type: 'full-text',
         answers: answerArray,
-        validAnswer: answerArray[0]._id
+        validAnswer: answerArray[0]._id,
     };
     yield QuizQuestion_1.default.create(quizQuestion);
     res.status(201).json({
