@@ -19,10 +19,4 @@ userRouter.patch(
 
 userRouter.patch('/passed-quiz', authenticate, userController.addPassedQuiz);
 
-userRouter.patch(
-    '/retake-passed-quiz',
-    authenticate,
-    userController.updatePassedQuiz
-);
-
 export default userRouter;
