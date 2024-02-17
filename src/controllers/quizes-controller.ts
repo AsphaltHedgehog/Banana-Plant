@@ -88,10 +88,18 @@ const getFavoritesQuizes = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-  const { favorites } = req.body;
+    console.log(req.query);
+    const { favorite } = req.body.user;
+
+    const pipeline = [
+        {
+            $match: { _id: { $in: favorite } },
+        },
+    ];
 
     try {
-        const result = await Quiz.find({ _id: { $in: favorites } });
+        const result = await Quiz.aggregate(pipeline);
+        console.log(result);
 
         res.status(200).json({
             status: 'OK',
@@ -106,45 +114,46 @@ const getFavoritesQuizes = async (
 };
 
 const getMyQuizes = async (req: Request, res: Response): Promise<void> => {
-  const { _id } = req.body.user
-  const { page, pageSize } = req.query;
+    const { _id } = req.body.user;
+    const { page, pageSize } = req.query;
 
-  const pipeline = [{
-    $match: {
-  "owner": _id,
-}
-  }]
-
-  if (
-      page &&
-      typeof page === 'string' &&
-      pageSize &&
-      typeof pageSize === 'string'
-  ) {
-      const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
-      const limit = pageSize ? parseInt(pageSize) : 10;
-
-      pipeline.push({
-          $facet: {
-              pagination: [{ $skip: skip }, { $limit: limit }],
-          },
-      });
-  }
-  try {
-    const result = await Quiz.aggregate(pipeline)
-    
-    res.json({
-        status: 'OK',
-        code: 200,
-        data: {
-            result,
+    const pipeline = [
+        {
+            $match: {
+                owner: _id,
+            },
         },
-    });
-  } catch (error: any) {
-      res.status(500).json({ message: error.message });
-  }
-  
- }
+    ];
+
+    if (
+        page &&
+        typeof page === 'string' &&
+        pageSize &&
+        typeof pageSize === 'string'
+    ) {
+        const skip = page ? (parseInt(page) - 1) * parseInt(pageSize) : 0;
+        const limit = pageSize ? parseInt(pageSize) : 10;
+
+        pipeline.push({
+            $facet: {
+                pagination: [{ $skip: skip }, { $limit: limit }],
+            },
+        });
+    }
+    try {
+        const result = await Quiz.aggregate(pipeline);
+
+        res.json({
+            status: 'OK',
+            code: 200,
+            data: {
+                result,
+            },
+        });
+    } catch (error: any) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 interface IMatchStage {
     ageGroup?: string;
@@ -275,23 +284,23 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
     const { _id, background, ageGroup } = result;
 
     const answerArray = [
-                {
-                    descr: '',
-                    _id: new Types.ObjectId(),
-                },
-                {
-                    descr: '',
-                    _id: new Types.ObjectId(),
-                },
-                {
-                    descr: '',
-                    _id: new Types.ObjectId(),
-                },
-                {
-                    descr: '',
-                    _id: new Types.ObjectId(),
-                },
-        ]
+        {
+            descr: '',
+            _id: new Types.ObjectId(),
+        },
+        {
+            descr: '',
+            _id: new Types.ObjectId(),
+        },
+        {
+            descr: '',
+            _id: new Types.ObjectId(),
+        },
+        {
+            descr: '',
+            _id: new Types.ObjectId(),
+        },
+    ];
 
     const quizQuestion = {
         quiz: _id,
@@ -299,7 +308,7 @@ const addNewQuiz = async (req: Request, res: Response): Promise<void> => {
         descr: '',
         type: 'full-text',
         answers: answerArray,
-        validAnswer: answerArray[0]._id
+        validAnswer: answerArray[0]._id,
     };
 
     await QuizQuestion.create(quizQuestion);
