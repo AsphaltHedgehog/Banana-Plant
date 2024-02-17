@@ -7,11 +7,33 @@ import { cloudinary } from '../conf/envConfs';
 import fs from 'fs/promises';
 
 const userInfo = async (req: Request, res: Response) => {
-    const { _id, name, avatarURL, email, favorite } = req.body.user;
+    const {
+        _id,
+        name,
+        avatarURL,
+        email,
+        favorite,
+        passedQuizzes,
+        average,
+        totalAnswers,
+        totalQuestions,
+    } = req.body.user;
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, avatarURL, email, favorite } },
+        data: {
+            user: {
+                _id,
+                name,
+                avatarURL,
+                email,
+                favorite,
+                passedQuizzes,
+                average,
+                totalAnswers,
+                totalQuestions,
+            },
+        },
     });
 };
 
@@ -95,6 +117,7 @@ const updateAvatar = async (req: Request, res: Response) => {
 const addPassedQuiz = async (req: Request, res: Response) => {
     const { _id } = req.body.user;
     const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+    console.log(1);
 
     const user = await User.findById(_id);
 
@@ -117,7 +140,14 @@ const addPassedQuiz = async (req: Request, res: Response) => {
     const result = await User.findByIdAndUpdate(
         _id,
         {
-            $addToSet: { passedQuizzes: req.body },
+            $addToSet: {
+                passedQuizzes: {
+                    quizId,
+                    quantityQuestions,
+                    correctAnswers,
+                    rating,
+                },
+            },
             $inc: {
                 totalQuestions: quantityQuestions,
                 totalAnswers: correctAnswers,
@@ -136,42 +166,7 @@ const addPassedQuiz = async (req: Request, res: Response) => {
     result.average = Math.round(
         (result.totalAnswers / result.totalQuestions) * 100
     );
-    await user.save();
     res.json(result);
-};
-
-const updatePassedQuiz = async (req: Request, res: Response) => {
-    const { _id } = req.body.user;
-    const { quizId, quantityQuestions, correctAnswers } = req.body;
-    const user = await User.findById(_id);
-    if (!user) {
-        throw HttpError(400, 'User not found');
-    }
-
-    const passedQuizIndex = user.passedQuizzes.findIndex(
-        item => item.quizId === quizId
-    );
-
-    if (passedQuizIndex === -1) {
-        throw HttpError(
-            404,
-            `Quiz with ID ${quizId} was not found among the provided quizzes.`
-        );
-    }
-
-    user.passedQuizzes[passedQuizIndex].quantityQuestions = quantityQuestions;
-    user.passedQuizzes[passedQuizIndex].correctAnswers = correctAnswers;
-    user.totalQuestions += quantityQuestions;
-    user.totalAnswers += correctAnswers;
-    user.average = Math.round((user.totalAnswers / user.totalQuestions) * 100);
-    await user.save();
-
-    res.json({
-        totalAnswers: user.totalAnswers,
-        totalQuestions: user.totalQuestions,
-        average: user.average,
-        passedQuizzes: user.passedQuizzes,
-    });
 };
 
 export const userController = {
@@ -180,5 +175,4 @@ export const userController = {
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
     addPassedQuiz: ctrlWrapper(addPassedQuiz),
-    updatePassedQuiz: ctrlWrapper(updatePassedQuiz),
 };

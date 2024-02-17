@@ -86,6 +86,7 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
     const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
+    console.log(1);
     const user = yield User_1.default.findById(_id);
     if (!user) {
         throw (0, helpers_1.HttpError)(400, 'User not found');
@@ -100,7 +101,14 @@ const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     const result = yield User_1.default.findByIdAndUpdate(_id, {
-        $addToSet: { passedQuizzes: req.body },
+        $addToSet: {
+            passedQuizzes: {
+                quizId,
+                quantityQuestions,
+                correctAnswers,
+                rating,
+            },
+        },
         $inc: {
             totalQuestions: quantityQuestions,
             totalAnswers: correctAnswers,
@@ -113,32 +121,7 @@ const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         throw (0, helpers_1.HttpError)(400, 'User not found');
     }
     result.average = Math.round((result.totalAnswers / result.totalQuestions) * 100);
-    yield user.save();
     res.json(result);
-});
-const updatePassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id } = req.body.user;
-    const { quizId, quantityQuestions, correctAnswers } = req.body;
-    const user = yield User_1.default.findById(_id);
-    if (!user) {
-        throw (0, helpers_1.HttpError)(400, 'User not found');
-    }
-    const passedQuizIndex = user.passedQuizzes.findIndex(item => item.quizId === quizId);
-    if (passedQuizIndex === -1) {
-        throw (0, helpers_1.HttpError)(404, `Quiz with ID ${quizId} was not found among the provided quizzes.`);
-    }
-    user.passedQuizzes[passedQuizIndex].quantityQuestions = quantityQuestions;
-    user.passedQuizzes[passedQuizIndex].correctAnswers = correctAnswers;
-    user.totalQuestions += quantityQuestions;
-    user.totalAnswers += correctAnswers;
-    user.average = Math.round((user.totalAnswers / user.totalQuestions) * 100);
-    yield user.save();
-    res.json({
-        totalAnswers: user.totalAnswers,
-        totalQuestions: user.totalQuestions,
-        average: user.average,
-        passedQuizzes: user.passedQuizzes,
-    });
 });
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
@@ -146,5 +129,4 @@ exports.userController = {
     updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
     updateAvatar: (0, index_1.ctrlWrapper)(updateAvatar),
     addPassedQuiz: (0, index_1.ctrlWrapper)(addPassedQuiz),
-    updatePassedQuiz: (0, index_1.ctrlWrapper)(updatePassedQuiz),
 };
