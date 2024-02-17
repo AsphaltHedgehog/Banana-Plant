@@ -7,11 +7,33 @@ import { cloudinary } from '../conf/envConfs';
 import fs from 'fs/promises';
 
 const userInfo = async (req: Request, res: Response) => {
-    const { _id, name, avatarURL, email, favorite } = req.body.user;
+    const {
+        _id,
+        name,
+        avatarURL,
+        email,
+        favorite,
+        passedQuizzes,
+        average,
+        totalAnswers,
+        totalQuestions,
+    } = req.body.user;
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, avatarURL, email, favorite } },
+        data: {
+            user: {
+                _id,
+                name,
+                avatarURL,
+                email,
+                favorite,
+                passedQuizzes,
+                average,
+                totalAnswers,
+                totalQuestions,
+            },
+        },
     });
 };
 
