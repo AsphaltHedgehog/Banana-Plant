@@ -340,7 +340,7 @@ const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const getCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { ageGroup } = req.body;
+    const { ageGroup } = req.query;
     const result = yield Quiz_1.QuizCategory.find({ ageGroup });
     res.status(200).json(result);
 });
