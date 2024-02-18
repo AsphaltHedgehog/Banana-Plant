@@ -194,16 +194,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "description": "Status message indicating the success of the password reset request."
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "message": "Message delivered"
+                                    "$ref": "#/components/schemas/ResetPasswordResponse"
                                 }
                             }
                         }
@@ -378,7 +369,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserInfo"
+                                    "$ref": "#/components/schemas/UpdateUserInfoResponse"
                                 }
                             }
                         }
@@ -476,7 +467,7 @@
                 }
             }
         },
-        "/user/favorite": {
+        "/api/user/favorite": {
             "patch": {
                 "tags": ["Users"],
                 "summary": "Add or remove favorite item",
@@ -513,7 +504,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "string",
-                                            "description": "Status of the operation.",
+                                            "description": "Status of the response.",
                                             "example": "OK"
                                         },
                                         "code": {
@@ -560,6 +551,53 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorNotFoundResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/passed-quiz": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Add passed quiz information",
+                "description": "Add information about a quiz that the user has passed.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PassedQuizRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Information about the passed quiz added successfully. The response body contains updated user information, including the total number of answers, the total number of questions, the average score, and an array of passed quizzes."
+                    },
+                    "400": {
+                        "description": "Bad Request. User not found or invalid data provided.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1640,7 +1678,10 @@
                 "properties": {
                     "message": {
                         "type": "string",
-                        "description": "Status message indicating the success of the password reset request."
+                        "description": "Status message indicating the success of the password reset request.",
+                        "example": {
+                            "message": "Message delivered"
+                        }
                     }
                 }
             },
@@ -1681,7 +1722,12 @@
                     "email": {
                         "type": "string",
                         "format": "email",
+                        "example": "userName@example.com",
                         "description": "The email address of the user."
+                    },
+                    "avatarURL": {
+                        "type": "string",
+                        "description": "The URL of the user's avatar image."
                     },
                     "favorite": {
                         "type": "array",
@@ -1689,6 +1735,47 @@
                         "items": {
                             "type": "string",
                             "example": "favoriteItem1"
+                        }
+                    },
+                    "passedQuizzes": {
+                        "type": "integer",
+                        "description": "The number of quizzes passed by the user."
+                    },
+                    "average": {
+                        "type": "number",
+                        "description": "The average score."
+                    },
+                    "totalAnswers": {
+                        "type": "integer",
+                        "description": "The total number of answers."
+                    },
+                    "totalQuestions": {
+                        "type": "integer",
+                        "description": "The total number of questions."
+                    }
+                }
+            },
+            "UpdateUserInfoResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Updated Name",
+                                "description": "Updated name of the user."
+                            }
                         }
                     }
                 }
@@ -1718,6 +1805,27 @@
                                 "description": "The URL of the updated user avatar."
                             }
                         }
+                    }
+                }
+            },
+            "PassedQuizRequest": {
+                "type": "object",
+                "properties": {
+                    "quizId": {
+                        "type": "string",
+                        "description": "The ID of the quiz that the user has passed."
+                    },
+                    "quantityQuestions": {
+                        "type": "integer",
+                        "description": "The number of questions in the quiz."
+                    },
+                    "correctAnswers": {
+                        "type": "integer",
+                        "description": "The number of correct answers given by the user."
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "description": "The rating or score achieved by the user in the quiz."
                     }
                 }
             },
