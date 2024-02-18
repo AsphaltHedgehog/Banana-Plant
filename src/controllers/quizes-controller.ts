@@ -383,6 +383,16 @@ const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
 };
 
 
+const getCategory = async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const result = await QuizCategory.find({})
+
+    res.status(200).json(result)
+};
+
+
 export default {
     getAll: ctrlWrapper(getAll),
     getAllByRating: ctrlWrapper(getAllByRating),
@@ -394,4 +404,5 @@ export default {
     deleteQuizById: ctrlWrapper(deleteQuizById),
     getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
     getMyQuizes: ctrlWrapper(getMyQuizes),
+    getCategory: ctrlWrapper(getCategory),
 };

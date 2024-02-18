@@ -339,6 +339,10 @@ const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(500).json({ message: error.message });
     }
 });
+const getCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield Quiz_1.QuizCategory.find({});
+    res.status(200).json(result);
+});
 exports.default = {
     getAll: (0, index_2.ctrlWrapper)(getAll),
     getAllByRating: (0, index_2.ctrlWrapper)(getAllByRating),
@@ -350,4 +354,5 @@ exports.default = {
     deleteQuizById: (0, index_2.ctrlWrapper)(deleteQuizById),
     getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
     getMyQuizes: (0, index_2.ctrlWrapper)(getMyQuizes),
+    getCategory: (0, index_2.ctrlWrapper)(getCategory),
 };

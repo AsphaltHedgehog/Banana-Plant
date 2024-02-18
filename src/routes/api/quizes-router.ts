@@ -13,6 +13,7 @@ import authenticate from '../../middlewares/authenticate';
 const quizRouter = express.Router();
 
 quizRouter.get('/', quizController.getAll);
+quizRouter.get('/category/all', quizController.getCategory);
 quizRouter.get('/rating', quizController.getAllByRating);
 quizRouter.get('/cat', quizController.getAllCategory);
 quizRouter.get('/category', quizController.getQuizByCategory);
@@ -35,6 +36,7 @@ quizRouter.patch(
     // validateBody(quizUpdateSchema),
     quizController.updateQuizById
 );
+
 
 quizRouter.delete('/:id', quizController.deleteQuizById);
 
