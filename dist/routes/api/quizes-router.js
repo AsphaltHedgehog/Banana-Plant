@@ -11,6 +11,7 @@ const authenticate_1 = __importDefault(require("../../middlewares/authenticate")
 // import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 const quizRouter = express_1.default.Router();
 quizRouter.get('/', quizes_controller_1.default.getAll);
+quizRouter.get('/category/all', quizes_controller_1.default.getCategory);
 quizRouter.get('/rating', quizes_controller_1.default.getAllByRating);
 quizRouter.get('/cat', quizes_controller_1.default.getAllCategory);
 quizRouter.get('/category', quizes_controller_1.default.getQuizByCategory);
