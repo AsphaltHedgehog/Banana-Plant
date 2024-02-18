@@ -198,11 +198,11 @@ const getPassedQuiz = async (req: Request, res: Response): Promise<void> => {
         .populate('category', '-_id categoryName')
         .sort('-createdAt');
 
-    const totalPassed = await Quiz.find({
+    const passedQuizzes = await Quiz.find({
         _id: { $in: passedQuizzesIds },
     }).countDocuments();
 
-    res.json({ data: quizzes, totalPassed });
+    res.json({ data: quizzes, passedQuizzes });
 };
 
 export const userController = {

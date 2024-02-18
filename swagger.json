@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "API documentation for project QuizMaster",
+        "title": "API documentation for team project QuizMaster",
         "description": "API documentation for QuizMaster backend [GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)  \n\n\nThis application serves as a platform for creating and taking quizzes, offering an interactive space for users to assess their knowledge.\n\nThe project provides for the possibility of user registration, authentication and authorization. Users can create and pass and delete tests, filter them by category, view statistics and reviews.\n\nThe application has a friendly and clear user interface that allows you to conveniently and quickly perform all the necessary actions.\n\nThe project also ensures user security through password encryption and token-based identification.\n\n## Key Features:\n\n**User Registration and Authentication:** Securely manage user access and identification through registration and authentication processes.    \n**Quiz Management:** Create and delete quizzes  \n**Diverse Question Types:** Multiple Choice, True/False, etc.  \n**Quiz Taking:** Participants receive immediate scoring and have the option to leave feedback.  \n\n\n## Technology Stack:\n\n**Node.js:** JavaScript runtime environment on the server  \n**Express.js:** Framework for building web applications on Node.js  \n**MongoDB:** NoSQL database for storing quiz data  \n**Mongoose:** Library for interfacing with MongoDB in Node.js  \n**React.js:** Front-end library for creating user interfaces  \n**Redux:** State management library for React applications  ",
         "version": "1.0.1"
     },
@@ -41,7 +41,7 @@
                 "parameters": [],
                 "requestBody": {
                     "required": true,
-                    "description": "# Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "description": "### Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, user password. \n",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -52,7 +52,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Successful registration. Returns the registered user's name and email.",
+                        "description": "Successful registration. Returns the registered user's name, email and avatarURL automatically generated using Gravatar",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -92,7 +92,7 @@
                 "parameters": [],
                 "requestBody": {
                     "required": true,
-                    "description": "# Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "description": "### Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -103,7 +103,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Created session for existing user. Returns an authentication token. Еoken is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.",
+                        "description": "Successful authentication and generation of authentication token. Returns an authentication token. Token is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -169,16 +169,6 @@
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "Account not found.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/errorNotFoundResponse"
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -204,16 +194,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "description": "Status message indicating the success of the password reset request."
-                                        }
-                                    }
-                                },
-                                "example": {
-                                    "message": "Message delivered"
+                                    "$ref": "#/components/schemas/ResetPasswordResponse"
                                 }
                             }
                         }
@@ -241,7 +222,7 @@
             }
         },
         "/api/auth/newPassword/{token}": {
-            "post": {
+            "patch": {
                 "tags": ["Auth"],
                 "summary": "Set a new password for the user's account.",
                 "description": "Set a new password using the reset token received via email.",
@@ -388,7 +369,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/UserInfo"
+                                    "$ref": "#/components/schemas/UpdateUserInfoResponse"
                                 }
                             }
                         }
@@ -486,7 +467,7 @@
                 }
             }
         },
-        "/user/favorite": {
+        "/api/user/favorite": {
             "patch": {
                 "tags": ["Users"],
                 "summary": "Add or remove favorite item",
@@ -523,7 +504,7 @@
                                     "properties": {
                                         "status": {
                                             "type": "string",
-                                            "description": "Status of the operation.",
+                                            "description": "Status of the response.",
                                             "example": "OK"
                                         },
                                         "code": {
@@ -577,10 +558,57 @@
                 }
             }
         },
+        "/api/user/passed-quiz": {
+            "patch": {
+                "tags": ["Users"],
+                "summary": "Add passed quiz information",
+                "description": "Add information about a quiz that the user has passed.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PassedQuizRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Information about the passed quiz added successfully. The response body contains updated user information, including the total number of answers, the total number of questions, the average score, and an array of passed quizzes."
+                    },
+                    "400": {
+                        "description": "Bad Request. User not found or invalid data provided.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quiz": {
             "get": {
                 "tags": ["Quizzes"],
-                "summary": "Get all quizzes.",
+                "summary": "Get paginated list of quizzes.",
                 "description": "Retrieve a list of all quizzes with pagination.",
                 "parameters": [
                     {
@@ -599,7 +627,7 @@
                             "type": "integer",
                             "minimum": 1
                         },
-                        "description": "The number of items per page for pagination"
+                        "description": "The number of items per page for pagination."
                     }
                 ],
                 "responses": {
@@ -655,8 +683,7 @@
                                         "example": "none",
                                         "description": "Background information for the quiz."
                                     }
-                                },
-                                "required": ["theme", "ageGroup"]
+                                }
                             }
                         }
                     }
@@ -669,13 +696,17 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "The ID of the created quiz."
+                                        },
                                         "theme": {
                                             "type": "string",
                                             "description": "The theme of the quiz."
                                         },
                                         "ageGroup": {
                                             "type": "string",
-                                            "enum": ["adult", "children"],
+                                            "enum": ["adults", "children"],
                                             "description": "The age group for which the quiz is intended."
                                         },
                                         "category": {
@@ -756,7 +787,7 @@
                 "description": "Retrieve a list of all quiz categories",
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
+                        "description": "Successful operation. List of quiz categories retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -829,6 +860,14 @@
                             "type": "string"
                         },
                         "description": "Array of favorite quiz IDs"
+                    },
+                    {
+                        "in": "query",
+                        "name": "inputText",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The input text for filtering quizzes based on theme."
                     }
                 ],
                 "responses": {
@@ -838,6 +877,92 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/QuizzesByCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/favorites": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get favorite quizzes",
+                "description": "Retrieve favorite quizzes of the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite quizzes retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FavoriteQuizzesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/myQuizes": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get user's quizzes",
+                "description": "Retrieve quizzes created by the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The page number for pagination."
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The number of items per page for pagination."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User's quizzes retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyQuizzesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -864,11 +989,11 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A quiz object.",
+                        "description": "Quiz retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Quiz"
+                                    "$ref": "#/components/schemas/QuizResponse"
                                 }
                             }
                         }
@@ -1008,6 +1133,16 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1214,6 +1349,16 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found. Quiz question with the given ID not found.",
                         "content": {
@@ -1267,6 +1412,16 @@
                                 },
                                 "example": {
                                     "message": "Invalid quiz ID"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1369,7 +1524,7 @@
             },
             "delete": {
                 "tags": ["Questions"],
-                "summary": "Delete the image associated with a quiz question",
+                "summary": "Delete the image of a quiz question",
                 "description": "Delete the image associated with a quiz question by ID.",
                 "security": [
                     {
@@ -1405,6 +1560,16 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found. Quiz question or image not found.",
                         "content": {
@@ -1433,7 +1598,9 @@
                         "description": "The page number for pagination (default is 1).",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
                         }
                     },
                     {
@@ -1442,7 +1609,9 @@
                         "description": "The maximum number of reviews per page (default is 6).",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 6
                         }
                     }
                 ],
@@ -1494,35 +1663,34 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "userName",
-                        "in": "query",
-                        "description": "The name of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "rating",
-                        "in": "query",
-                        "description": "The rating given in the review.",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "review",
-                        "in": "query",
-                        "description": "The content of the review.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "description": "The name of the user."
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 5,
+                                        "description": "The rating given by the user for the quiz."
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "description": "The text of the review."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "Review added successfully",
@@ -1597,12 +1765,14 @@
                     },
                     "email": {
                         "type": "string",
+                        "description": "User email",
                         "format": "email",
                         "example": "alex@gmail.com"
                     },
                     "avatarURL": {
                         "type": "string",
-                        "description": "URL to user avatar"
+                        "description": "URL to user avatar",
+                        "example": "//www.gravatar.com/avatar/8ac60021f7a220624d9613d24631b62d"
                     }
                 }
             },
@@ -1648,7 +1818,10 @@
                 "properties": {
                     "message": {
                         "type": "string",
-                        "description": "Status message indicating the success of the password reset request."
+                        "description": "Status message indicating the success of the password reset request.",
+                        "example": {
+                            "message": "Message delivered"
+                        }
                     }
                 }
             },
@@ -1689,7 +1862,12 @@
                     "email": {
                         "type": "string",
                         "format": "email",
+                        "example": "userName@example.com",
                         "description": "The email address of the user."
+                    },
+                    "avatarURL": {
+                        "type": "string",
+                        "description": "The URL of the user's avatar image."
                     },
                     "favorite": {
                         "type": "array",
@@ -1697,6 +1875,47 @@
                         "items": {
                             "type": "string",
                             "example": "favoriteItem1"
+                        }
+                    },
+                    "passedQuizzes": {
+                        "type": "integer",
+                        "description": "The number of quizzes passed by the user."
+                    },
+                    "average": {
+                        "type": "number",
+                        "description": "The average score."
+                    },
+                    "totalAnswers": {
+                        "type": "integer",
+                        "description": "The total number of answers."
+                    },
+                    "totalQuestions": {
+                        "type": "integer",
+                        "description": "The total number of questions."
+                    }
+                }
+            },
+            "UpdateUserInfoResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Updated Name",
+                                "description": "Updated name of the user."
+                            }
                         }
                     }
                 }
@@ -1726,6 +1945,27 @@
                                 "description": "The URL of the updated user avatar."
                             }
                         }
+                    }
+                }
+            },
+            "PassedQuizRequest": {
+                "type": "object",
+                "properties": {
+                    "quizId": {
+                        "type": "string",
+                        "description": "The ID of the quiz that the user has passed."
+                    },
+                    "quantityQuestions": {
+                        "type": "integer",
+                        "description": "The number of questions in the quiz."
+                    },
+                    "correctAnswers": {
+                        "type": "integer",
+                        "description": "The number of correct answers given by the user."
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "description": "The rating or score achieved by the user in the quiz."
                     }
                 }
             },
@@ -1787,6 +2027,24 @@
                     "ratingQuantity": 84,
                     "rating": 3.9,
                     "finished": 165
+                }
+            },
+            "QuizResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Quiz"
+                    }
                 }
             },
             "QuizListResponse": {
@@ -1938,8 +2196,61 @@
                             }
                         }
                     }
-                },
-                "required": ["status", "code", "data"]
+                }
+            },
+            "FavoriteQuizzesResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                },
+                                "description": "A list of favorite quizzes."
+                            }
+                        }
+                    }
+                }
+            },
+            "MyQuizzesResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                },
+                                "description": "A list of quizzes created by the user."
+                            }
+                        }
+                    }
+                }
             },
             "AddQuizQuestionRequest": {
                 "type": "object",
@@ -2131,14 +2442,29 @@
             "QuizQuestionImageResponse": {
                 "type": "object",
                 "properties": {
-                    "_id": {
+                    "status": {
                         "type": "string",
-                        "description": "The ID of the updated quiz question."
+                        "description": "Status of the response.",
+                        "example": "OK"
                     },
-                    "imageUrl": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "The URL of the updated image associated with the quiz question."
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 201
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "The ID of the updated quiz question."
+                            },
+                            "imageUrl": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "The URL of the updated image associated with the quiz question."
+                            }
+                        }
                     }
                 }
             },
@@ -2147,11 +2473,13 @@
                 "properties": {
                     "status": {
                         "type": "string",
-                        "description": "Status of the response."
+                        "description": "Status of the response.",
+                        "example": "OK"
                     },
                     "code": {
                         "type": "integer",
-                        "description": "HTTP status code of the response."
+                        "description": "HTTP status code of the response.",
+                        "example": 200
                     },
                     "data": {
                         "type": "array",
