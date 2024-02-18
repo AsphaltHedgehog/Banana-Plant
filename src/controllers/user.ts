@@ -175,7 +175,7 @@ const getPassedQuiz = async (req: Request, res: Response): Promise<void> => {
     const limitNumber = parseInt(limit as string, 10);
     const skip = (pageNumber - 1) * limitNumber;
     const options = { skip, limit: limitNumber };
-        
+
     const { _id } = req.body.user;
     const user = await User.findById(_id);
 
@@ -189,16 +189,21 @@ const getPassedQuiz = async (req: Request, res: Response): Promise<void> => {
         res.json([]);
         return;
     }
-    
-    const quizzes = await Quiz.find({ _id: { $in: passedQuizzesIds } }, '', options)
-        .populate('quizCategory', '-_id categoryName')
+
+    const quizzes = await Quiz.find(
+        { _id: { $in: passedQuizzesIds } },
+        '',
+        options
+    )
+        .populate('category', '-_id categoryName')
         .sort('-createdAt');
 
-    const totalPassed = await Quiz.find({ _id: { $in: passedQuizzesIds } }).countDocuments();
+    const totalPassed = await Quiz.find({
+        _id: { $in: passedQuizzesIds },
+    }).countDocuments();
 
     res.json({ data: quizzes, totalPassed });
-}
-
+};
 
 export const userController = {
     favorite: ctrlWrapper(favorite),
@@ -206,5 +211,5 @@ export const userController = {
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
     addPassedQuiz: ctrlWrapper(addPassedQuiz),
-    getPassedQuiz: ctrlWrapper(getPassedQuiz)
+    getPassedQuiz: ctrlWrapper(getPassedQuiz),
 };
