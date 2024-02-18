@@ -387,7 +387,8 @@ const getCategory = async (
     req: Request,
     res: Response
 ): Promise<void> => {
-    const result = await QuizCategory.find({})
+    const { ageGroup } = req.body;
+    const result = await QuizCategory.find({ageGroup})
 
     res.status(200).json(result)
 };
