@@ -31,17 +31,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -321,15 +310,16 @@ const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     if (quiz.owner.toString() !== user._id.toString()) {
         throw (0, index_1.HttpError)(401, 'Unauthorized');
     }
-    const updatedData = __rest(req.body, []);
-    const existingQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { updatedData }, {
+    console.log(req.body);
+    const { theme, category, background, ageGroup } = req.body;
+    const updatedQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { theme, category, background, ageGroup }, {
         new: true,
     });
-    if (!existingQuiz) {
+    if (!updatedQuiz) {
         res.status(404).json({ error: 'Quiz not found' });
         return;
     }
-    res.status(200).json(existingQuiz);
+    res.status(200).json(updatedQuiz);
 });
 const deleteQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
