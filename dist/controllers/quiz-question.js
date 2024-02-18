@@ -205,7 +205,12 @@ const deleteQuizQuestionById = (req, res) => __awaiter(void 0, void 0, void 0, f
     const { id } = req.params;
     // authenticate
     const user = req.body.user;
-    const quiz = yield Quiz_1.Quiz.findById(id);
+    const quizId = yield QuizQuestion_1.default.findById(id);
+    if (!quizId) {
+        throw (0, index_1.HttpError)(400, "Bad Request");
+    }
+    ;
+    const quiz = yield Quiz_1.Quiz.findById(quizId.quiz);
     if (!quiz) {
         throw (0, index_1.HttpError)(400, "Bad Request");
     }

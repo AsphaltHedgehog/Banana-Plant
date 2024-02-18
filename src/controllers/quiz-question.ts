@@ -230,12 +230,14 @@ const deleteQuizQuestionById = async (
     res: Response
 ): Promise<void> => {
     const { id } = req.params;
-
         // authenticate
     const user = req.body.user
-    
-    const quiz = await Quiz.findById(id);
+    const quizId = await QuizQuestion.findById(id)
+    if (!quizId) {
+        throw HttpError(400, "Bad Request")
+    };
 
+    const quiz = await Quiz.findById(quizId.quiz);
     if (!quiz) {
         throw HttpError(400, "Bad Request")
     };
