@@ -379,6 +379,7 @@ const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
     }
 };
 
+
 export default {
     getAll: ctrlWrapper(getAll),
     getAllByRating: ctrlWrapper(getAllByRating),

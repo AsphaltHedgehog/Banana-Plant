@@ -19,4 +19,6 @@ userRouter.patch(
 
 userRouter.patch('/passed-quiz', authenticate, userController.addPassedQuiz);
 
+userRouter.get('/get-passed', authenticate, userController.getPassedQuiz);
+
 export default userRouter;

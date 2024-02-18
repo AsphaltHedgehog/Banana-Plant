@@ -19,12 +19,25 @@ const helpers_1 = require("../helpers");
 const index_1 = require("../decorators/index");
 const envConfs_1 = require("../conf/envConfs");
 const promises_1 = __importDefault(require("fs/promises"));
+const Quiz_1 = require("../models/Quiz");
 const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { _id, name, avatarURL, email, favorite } = req.body.user;
+    const { _id, name, avatarURL, email, favorite, passedQuizzes, average, totalAnswers, totalQuestions, } = req.body.user;
     res.status(201).json({
         status: 'OK',
         code: 201,
-        data: { user: { _id, name, avatarURL, email, favorite } },
+        data: {
+            user: {
+                _id,
+                name,
+                avatarURL,
+                email,
+                favorite,
+                passedQuizzes,
+                average,
+                totalAnswers,
+                totalQuestions,
+            },
+        },
     });
 });
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -86,7 +99,6 @@ const updateAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
     const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
-    console.log(1);
     const user = yield User_1.default.findById(_id);
     if (!user) {
         throw (0, helpers_1.HttpError)(400, 'User not found');
@@ -123,10 +135,33 @@ const addPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     result.average = Math.round((result.totalAnswers / result.totalQuestions) * 100);
     res.json(result);
 });
+const getPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let { page = 1, limit = 8 } = req.query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+    const options = { skip, limit: limitNumber };
+    const { _id } = req.body.user;
+    const user = yield User_1.default.findById(_id);
+    if (!user) {
+        throw (0, helpers_1.HttpError)(400, 'User not found');
+    }
+    const passedQuizzesIds = user.passedQuizzes.map(item => item.quizId);
+    if (passedQuizzesIds.length === 0) {
+        res.json([]);
+        return;
+    }
+    const quizzes = yield Quiz_1.Quiz.find({ _id: { $in: passedQuizzesIds } }, '', options)
+        .populate('quizCategory', '-_id categoryName')
+        .sort('-createdAt');
+    const totalPassed = yield Quiz_1.Quiz.find({ _id: { $in: passedQuizzesIds } }).countDocuments();
+    res.json({ data: quizzes, totalPassed });
+});
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
     userInfo: (0, index_1.ctrlWrapper)(userInfo),
     updateInfo: (0, index_1.ctrlWrapper)(updateInfo),
     updateAvatar: (0, index_1.ctrlWrapper)(updateAvatar),
     addPassedQuiz: (0, index_1.ctrlWrapper)(addPassedQuiz),
+    getPassedQuiz: (0, index_1.ctrlWrapper)(getPassedQuiz)
 };
