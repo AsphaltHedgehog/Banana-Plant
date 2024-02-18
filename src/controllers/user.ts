@@ -5,6 +5,7 @@ import { HttpError } from '../helpers';
 import { ctrlWrapper } from '../decorators/index';
 import { cloudinary } from '../conf/envConfs';
 import fs from 'fs/promises';
+import { Quiz } from '../models/Quiz';
 
 const userInfo = async (req: Request, res: Response) => {
     const {
@@ -117,7 +118,6 @@ const updateAvatar = async (req: Request, res: Response) => {
 const addPassedQuiz = async (req: Request, res: Response) => {
     const { _id } = req.body.user;
     const { quizId, quantityQuestions, correctAnswers, rating } = req.body;
-    console.log(1);
 
     const user = await User.findById(_id);
 
@@ -169,10 +169,47 @@ const addPassedQuiz = async (req: Request, res: Response) => {
     res.json(result);
 };
 
+const getPassedQuiz = async (req: Request, res: Response): Promise<void> => {
+    let { page = 1, limit = 8 } = req.query;
+    const pageNumber = parseInt(page as string, 10);
+    const limitNumber = parseInt(limit as string, 10);
+    const skip = (pageNumber - 1) * limitNumber;
+    const options = { skip, limit: limitNumber };
+
+    const { _id } = req.body.user;
+    const user = await User.findById(_id);
+
+    if (!user) {
+        throw HttpError(400, 'User not found');
+    }
+
+    const passedQuizzesIds = user.passedQuizzes.map(item => item.quizId);
+
+    if (passedQuizzesIds.length === 0) {
+        res.json([]);
+        return;
+    }
+
+    const quizzes = await Quiz.find(
+        { _id: { $in: passedQuizzesIds } },
+        '',
+        options
+    )
+        .populate('category', '-_id categoryName')
+        .sort('-createdAt');
+
+    const totalPassed = await Quiz.find({
+        _id: { $in: passedQuizzesIds },
+    }).countDocuments();
+
+    res.json({ data: quizzes, totalPassed });
+};
+
 export const userController = {
     favorite: ctrlWrapper(favorite),
     userInfo: ctrlWrapper(userInfo),
     updateInfo: ctrlWrapper(updateInfo),
     updateAvatar: ctrlWrapper(updateAvatar),
     addPassedQuiz: ctrlWrapper(addPassedQuiz),
+    getPassedQuiz: ctrlWrapper(getPassedQuiz),
 };
