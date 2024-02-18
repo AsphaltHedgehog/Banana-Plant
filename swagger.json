@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "API documentation for project QuizMaster",
+        "title": "API documentation for team project QuizMaster",
         "description": "API documentation for QuizMaster backend [GitHub repository](https://github.com/AsphaltHedgehog/Banana-Plant)  \n\n\nThis application serves as a platform for creating and taking quizzes, offering an interactive space for users to assess their knowledge.\n\nThe project provides for the possibility of user registration, authentication and authorization. Users can create and pass and delete tests, filter them by category, view statistics and reviews.\n\nThe application has a friendly and clear user interface that allows you to conveniently and quickly perform all the necessary actions.\n\nThe project also ensures user security through password encryption and token-based identification.\n\n## Key Features:\n\n**User Registration and Authentication:** Securely manage user access and identification through registration and authentication processes.    \n**Quiz Management:** Create and delete quizzes  \n**Diverse Question Types:** Multiple Choice, True/False, etc.  \n**Quiz Taking:** Participants receive immediate scoring and have the option to leave feedback.  \n\n\n## Technology Stack:\n\n**Node.js:** JavaScript runtime environment on the server  \n**Express.js:** Framework for building web applications on Node.js  \n**MongoDB:** NoSQL database for storing quiz data  \n**Mongoose:** Library for interfacing with MongoDB in Node.js  \n**React.js:** Front-end library for creating user interfaces  \n**Redux:** State management library for React applications  ",
         "version": "1.0.1"
     },
@@ -41,7 +41,7 @@
                 "parameters": [],
                 "requestBody": {
                     "required": true,
-                    "description": "# Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "description": "### Description of request parameters:\n\n**name** - string, user name.\n\n**email** - string, user email. \n\n**password** - string, user password. \n",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -52,7 +52,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Successful registration. Returns the registered user's name and email.",
+                        "description": "Successful registration. Returns the registered user's name, email and avatarURL automatically generated using Gravatar",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -92,7 +92,7 @@
                 "parameters": [],
                 "requestBody": {
                     "required": true,
-                    "description": "# Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
+                    "description": "### Description of request parameters:\n\n**email** - string, user email. \n\n**password** - string, encrypted user password. \n",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -103,7 +103,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Created session for existing user. Returns an authentication token. Еoken is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.",
+                        "description": "Successful authentication and generation of authentication token. Returns an authentication token. Token is used to store the user's authorization state in the system, allowing users to make secure API requests. The token is a string of characters and is generated at each new user authorization.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -169,16 +169,6 @@
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "Account not found.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/errorNotFoundResponse"
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -241,7 +231,7 @@
             }
         },
         "/api/auth/newPassword/{token}": {
-            "post": {
+            "patch": {
                 "tags": ["Auth"],
                 "summary": "Set a new password for the user's account.",
                 "description": "Set a new password using the reset token received via email.",
@@ -1597,12 +1587,14 @@
                     },
                     "email": {
                         "type": "string",
+                        "description": "User email",
                         "format": "email",
                         "example": "alex@gmail.com"
                     },
                     "avatarURL": {
                         "type": "string",
-                        "description": "URL to user avatar"
+                        "description": "URL to user avatar",
+                        "example": "//www.gravatar.com/avatar/8ac60021f7a220624d9613d24631b62d"
                     }
                 }
             },
