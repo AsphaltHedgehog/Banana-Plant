@@ -339,22 +339,25 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
     if (quiz.owner.toString() !== user._id.toString()) {
         throw HttpError(401, 'Unauthorized');
     }
+    console.log(req.body);
+    
 
-    const { ...updatedData } = req.body;
+    const { theme, category, background, ageGroup } = req.body;
 
-    const existingQuiz = await Quiz.findByIdAndUpdate(
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
         id,
-        { updatedData },
+        { theme, category, background, ageGroup },
         {
             new: true,
         }
-    );
-    if (!existingQuiz) {
+    ); 
+
+    if (!updatedQuiz) {
         res.status(404).json({ error: 'Quiz not found' });
         return;
     }
 
-    res.status(200).json(existingQuiz);
+    res.status(200).json(updatedQuiz);
 };
 
 const deleteQuizById = async (req: Request, res: Response): Promise<void> => {
