@@ -608,7 +608,7 @@
         "/api/quiz": {
             "get": {
                 "tags": ["Quizzes"],
-                "summary": "Get all quizzes.",
+                "summary": "Get paginated list of quizzes.",
                 "description": "Retrieve a list of all quizzes with pagination.",
                 "parameters": [
                     {
@@ -627,7 +627,7 @@
                             "type": "integer",
                             "minimum": 1
                         },
-                        "description": "The number of items per page for pagination"
+                        "description": "The number of items per page for pagination."
                     }
                 ],
                 "responses": {
@@ -683,8 +683,7 @@
                                         "example": "none",
                                         "description": "Background information for the quiz."
                                     }
-                                },
-                                "required": ["theme", "ageGroup"]
+                                }
                             }
                         }
                     }
@@ -697,13 +696,17 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "_id": {
+                                            "type": "string",
+                                            "description": "The ID of the created quiz."
+                                        },
                                         "theme": {
                                             "type": "string",
                                             "description": "The theme of the quiz."
                                         },
                                         "ageGroup": {
                                             "type": "string",
-                                            "enum": ["adult", "children"],
+                                            "enum": ["adults", "children"],
                                             "description": "The age group for which the quiz is intended."
                                         },
                                         "category": {
@@ -784,7 +787,7 @@
                 "description": "Retrieve a list of all quiz categories",
                 "responses": {
                     "200": {
-                        "description": "Successful operation",
+                        "description": "Successful operation. List of quiz categories retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -857,6 +860,14 @@
                             "type": "string"
                         },
                         "description": "Array of favorite quiz IDs"
+                    },
+                    {
+                        "in": "query",
+                        "name": "inputText",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The input text for filtering quizzes based on theme."
                     }
                 ],
                 "responses": {
@@ -866,6 +877,92 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/QuizzesByCategoryResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/favorites": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get favorite quizzes",
+                "description": "Retrieve favorite quizzes of the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite quizzes retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FavoriteQuizzesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/myQuizes": {
+            "get": {
+                "tags": ["Quizzes"],
+                "summary": "Get user's quizzes",
+                "description": "Retrieve quizzes created by the authenticated user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The page number for pagination."
+                    },
+                    {
+                        "in": "query",
+                        "name": "pageSize",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The number of items per page for pagination."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User's quizzes retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MyQuizzesResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -892,11 +989,11 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A quiz object.",
+                        "description": "Quiz retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Quiz"
+                                    "$ref": "#/components/schemas/QuizResponse"
                                 }
                             }
                         }
@@ -1036,6 +1133,16 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/errorBadRequestResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1889,6 +1996,24 @@
                     "finished": 165
                 }
             },
+            "QuizResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/Quiz"
+                    }
+                }
+            },
             "QuizListResponse": {
                 "type": "object",
                 "properties": {
@@ -2038,8 +2163,61 @@
                             }
                         }
                     }
-                },
-                "required": ["status", "code", "data"]
+                }
+            },
+            "FavoriteQuizzesResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                },
+                                "description": "A list of favorite quizzes."
+                            }
+                        }
+                    }
+                }
+            },
+            "MyQuizzesResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                        "description": "Response status"
+                    },
+                    "code": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "Response code"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "result": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Quiz"
+                                },
+                                "description": "A list of quizzes created by the user."
+                            }
+                        }
+                    }
+                }
             },
             "AddQuizQuestionRequest": {
                 "type": "object",
