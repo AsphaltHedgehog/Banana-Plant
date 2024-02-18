@@ -154,10 +154,10 @@ const getPassedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const quizzes = yield Quiz_1.Quiz.find({ _id: { $in: passedQuizzesIds } }, '', options)
         .populate('category', '-_id categoryName')
         .sort('-createdAt');
-    const totalPassed = yield Quiz_1.Quiz.find({
+    const passedQuizzes = yield Quiz_1.Quiz.find({
         _id: { $in: passedQuizzesIds },
     }).countDocuments();
-    res.json({ data: quizzes, totalPassed });
+    res.json({ data: quizzes, passedQuizzes });
 });
 exports.userController = {
     favorite: (0, index_1.ctrlWrapper)(favorite),
