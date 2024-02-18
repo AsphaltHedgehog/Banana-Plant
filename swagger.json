@@ -1349,6 +1349,16 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found. Quiz question with the given ID not found.",
                         "content": {
@@ -1402,6 +1412,16 @@
                                 },
                                 "example": {
                                     "message": "Invalid quiz ID"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
                                 }
                             }
                         }
@@ -1504,7 +1524,7 @@
             },
             "delete": {
                 "tags": ["Questions"],
-                "summary": "Delete the image associated with a quiz question",
+                "summary": "Delete the image of a quiz question",
                 "description": "Delete the image associated with a quiz question by ID.",
                 "security": [
                     {
@@ -1540,6 +1560,16 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                                }
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Not Found. Quiz question or image not found.",
                         "content": {
@@ -1568,7 +1598,9 @@
                         "description": "The page number for pagination (default is 1).",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 1
                         }
                     },
                     {
@@ -1577,7 +1609,9 @@
                         "description": "The maximum number of reviews per page (default is 6).",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "minimum": 1,
+                            "default": 6
                         }
                     }
                 ],
@@ -1629,35 +1663,34 @@
                         "schema": {
                             "type": "string"
                         }
-                    },
-                    {
-                        "name": "userName",
-                        "in": "query",
-                        "description": "The name of the user",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "rating",
-                        "in": "query",
-                        "description": "The rating given in the review.",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "review",
-                        "in": "query",
-                        "description": "The content of the review.",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "description": "The name of the user."
+                                    },
+                                    "rating": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                        "maximum": 5,
+                                        "description": "The rating given by the user for the quiz."
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "description": "The text of the review."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "201": {
                         "description": "Review added successfully",
@@ -2409,14 +2442,29 @@
             "QuizQuestionImageResponse": {
                 "type": "object",
                 "properties": {
-                    "_id": {
+                    "status": {
                         "type": "string",
-                        "description": "The ID of the updated quiz question."
+                        "description": "Status of the response.",
+                        "example": "OK"
                     },
-                    "imageUrl": {
-                        "type": "string",
-                        "format": "uri",
-                        "description": "The URL of the updated image associated with the quiz question."
+                    "code": {
+                        "type": "integer",
+                        "description": "HTTP status code of the response.",
+                        "example": 201
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {
+                                "type": "string",
+                                "description": "The ID of the updated quiz question."
+                            },
+                            "imageUrl": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "The URL of the updated image associated with the quiz question."
+                            }
+                        }
                     }
                 }
             },
@@ -2425,11 +2473,13 @@
                 "properties": {
                     "status": {
                         "type": "string",
-                        "description": "Status of the response."
+                        "description": "Status of the response.",
+                        "example": "OK"
                     },
                     "code": {
                         "type": "integer",
-                        "description": "HTTP status code of the response."
+                        "description": "HTTP status code of the response.",
+                        "example": 200
                     },
                     "data": {
                         "type": "array",
