@@ -339,8 +339,6 @@ const updateQuizById = async (req: Request, res: Response): Promise<void> => {
     if (quiz.owner.toString() !== user._id.toString()) {
         throw HttpError(401, 'Unauthorized');
     }
-    console.log(req.body);
-    
 
     const { theme, category, background, ageGroup } = req.body;
 

@@ -310,7 +310,6 @@ const updateQuizById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     if (quiz.owner.toString() !== user._id.toString()) {
         throw (0, index_1.HttpError)(401, 'Unauthorized');
     }
-    console.log(req.body);
     const { theme, category, background, ageGroup } = req.body;
     const updatedQuiz = yield Quiz_1.Quiz.findByIdAndUpdate(id, { theme, category, background, ageGroup }, {
         new: true,

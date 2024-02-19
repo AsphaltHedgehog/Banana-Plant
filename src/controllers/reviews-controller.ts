@@ -25,6 +25,7 @@ const addReview = async (req: Request, res: Response): Promise<void> => {
 
     const quizId = req.params.id;
     const quiz = await Quiz.findById(quizId);
+
     if (!quiz) {
         res.status(404).json({ error: 'Quiz not found' });
         return;
@@ -32,7 +33,7 @@ const addReview = async (req: Request, res: Response): Promise<void> => {
 
     const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
     const newQuizRating =
-        ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+        ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + parseInt(rating)) /
         newRatingQuantity;
 
     await Quiz.findByIdAndUpdate(quizId, {

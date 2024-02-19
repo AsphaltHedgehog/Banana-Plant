@@ -39,7 +39,7 @@ const addReview = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return;
     }
     const newRatingQuantity = quiz.ratingQuantity ? quiz.ratingQuantity + 1 : 1;
-    const newQuizRating = ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + rating) /
+    const newQuizRating = ((quiz.rating || 0) * (quiz.ratingQuantity || 0) + parseInt(rating)) /
         newRatingQuantity;
     yield Quiz_1.Quiz.findByIdAndUpdate(quizId, {
         rating: newQuizRating,

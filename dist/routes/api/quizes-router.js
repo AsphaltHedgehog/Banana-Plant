@@ -7,8 +7,6 @@ const express_1 = __importDefault(require("express"));
 const quizes_controller_1 = __importDefault(require("../../controllers/quizes-controller"));
 const index_js_1 = require("../../middlewares/index.js");
 const authenticate_1 = __importDefault(require("../../middlewares/authenticate"));
-// import { validateBody } from "../../decorators/index.js";
-// import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
 const quizRouter = express_1.default.Router();
 quizRouter.get('/', quizes_controller_1.default.getAll);
 quizRouter.get('/category/all', quizes_controller_1.default.getCategory);

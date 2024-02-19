@@ -6,10 +6,6 @@ import { isEmptyBody } from '../../middlewares/index.js';
 
 import authenticate from '../../middlewares/authenticate';
 
-// import { validateBody } from "../../decorators/index.js";
-
-// import { quizAddSchema, quizUpdateSchema } from "../../models/Quizes.js";
-
 const quizRouter = express.Router();
 
 quizRouter.get('/', quizController.getAll);
