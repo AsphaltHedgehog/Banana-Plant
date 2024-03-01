@@ -392,6 +392,14 @@ const getCategory = async (
     res.status(200).json(result)
 };
 
+const getTotal= async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+    const totalQuizzesCount = await Quiz.countDocuments({});
+    res.json(totalQuizzesCount);
+}
+
 
 export default {
     getAll: ctrlWrapper(getAll),
@@ -405,4 +413,5 @@ export default {
     getFavoritesQuizes: ctrlWrapper(getFavoritesQuizes),
     getMyQuizes: ctrlWrapper(getMyQuizes),
     getCategory: ctrlWrapper(getCategory),
+    getTotal: ctrlWrapper(getTotal)
 };
