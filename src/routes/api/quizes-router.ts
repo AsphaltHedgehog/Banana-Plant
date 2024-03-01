@@ -16,6 +16,7 @@ quizRouter.get('/category', quizController.getQuizByCategory);
 quizRouter.get('/favorites', authenticate, quizController.getFavoritesQuizes);
 quizRouter.get('/myQuizes', authenticate, quizController.getMyQuizes);
 quizRouter.get('/:id', quizController.getQuizById);
+quizRouter.get('/getTotal', quizController.getTotal);
 
 quizRouter.post(
     '/',
