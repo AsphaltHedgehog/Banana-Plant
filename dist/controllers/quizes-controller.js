@@ -40,6 +40,18 @@ const index_1 = require("../helpers/index");
 const index_2 = require("../decorators/index");
 const mongoose_1 = __importStar(require("mongoose"));
 const QuizQuestion_1 = __importDefault(require("../models/QuizQuestion"));
+const getTotal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const totalPassedQuizzes = yield Quiz_1.Quiz.aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$finished" }
+            }
+        }
+    ]);
+    const totalPassedQuizzesCount = totalPassedQuizzes.length > 0 ? totalPassedQuizzes[0].total : 0;
+    res.json({ totalPassedQuizzes: totalPassedQuizzesCount });
+});
 const getAll = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, pageSize } = req.query;
     const currentPage = page ? parseInt(page.toString(), 10) : 1;
@@ -355,4 +367,5 @@ exports.default = {
     getFavoritesQuizes: (0, index_2.ctrlWrapper)(getFavoritesQuizes),
     getMyQuizes: (0, index_2.ctrlWrapper)(getMyQuizes),
     getCategory: (0, index_2.ctrlWrapper)(getCategory),
+    getTotal: (0, index_2.ctrlWrapper)(getTotal)
 };

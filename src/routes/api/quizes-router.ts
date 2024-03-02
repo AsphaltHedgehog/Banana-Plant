@@ -9,14 +9,14 @@ import authenticate from '../../middlewares/authenticate';
 const quizRouter = express.Router();
 
 quizRouter.get('/', quizController.getAll);
+quizRouter.get('/getTotal', quizController.getTotal);
 quizRouter.get('/category/all', quizController.getCategory);
 quizRouter.get('/rating', quizController.getAllByRating);
 quizRouter.get('/cat', quizController.getAllCategory);
-quizRouter.get('/category', quizController.getQuizByCategory);
 quizRouter.get('/favorites', authenticate, quizController.getFavoritesQuizes);
 quizRouter.get('/myQuizes', authenticate, quizController.getMyQuizes);
 quizRouter.get('/:id', quizController.getQuizById);
-quizRouter.get('/getTotal', quizController.getTotal);
+quizRouter.get('/category', quizController.getQuizByCategory);
 
 quizRouter.post(
     '/',

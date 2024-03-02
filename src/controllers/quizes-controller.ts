@@ -5,6 +5,22 @@ import { ctrlWrapper } from '../decorators/index';
 import mongoose, { Types } from 'mongoose';
 import QuizQuestion from '../models/QuizQuestion';
 
+const getTotal= async (
+    req: Request,
+    res: Response
+): Promise<void> => {
+const totalPassedQuizzes = await Quiz.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$finished" }
+                }
+            }
+        ]);
+        const totalPassedQuizzesCount = totalPassedQuizzes.length > 0 ? totalPassedQuizzes[0].total : 0;
+            res.json({ totalPassedQuizzes: totalPassedQuizzesCount });
+}
+
 const getAll = async (req: Request, res: Response): Promise<void> => {
     const { page, pageSize } = req.query;
 
@@ -392,13 +408,6 @@ const getCategory = async (
     res.status(200).json(result)
 };
 
-const getTotal= async (
-    req: Request,
-    res: Response
-): Promise<void> => {
-    const totalQuizzesCount = await Quiz.countDocuments({});
-    res.json(totalQuizzesCount);
-}
 
 
 export default {

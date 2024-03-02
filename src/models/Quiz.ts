@@ -25,7 +25,7 @@ const quizSchema = new Schema<Quiz & Document>(
         ratingQuantity: { type: Number, default: 0 },
         rating: { type: Number, default: 0 },
         finished: { type: Number, default: 0 },
-        owner: { type: Schema.Types.ObjectId, ref: 'users' }
+        owner: { type: Schema.Types.ObjectId, ref: 'users' },
     },
     { timestamps: true, versionKey: false }
 );
