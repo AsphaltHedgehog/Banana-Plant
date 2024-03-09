@@ -14,11 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userController = void 0;
 const util_1 = require("util");
+const promises_1 = __importDefault(require("fs/promises"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_1 = __importDefault(require("../models/User"));
 const helpers_1 = require("../helpers");
 const index_1 = require("../decorators/index");
 const envConfs_1 = require("../conf/envConfs");
-const promises_1 = __importDefault(require("fs/promises"));
 const Quiz_1 = require("../models/Quiz");
 const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id, name, avatarURL, email, favorite, passedQuizzes, average, totalAnswers, totalQuestions, } = req.body.user;
@@ -42,8 +43,19 @@ const userInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const updateInfo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { _id } = req.body.user;
-    const { name } = req.body;
-    yield User_1.default.findByIdAndUpdate(_id, { name }, { new: true });
+    const { name, email, password } = req.body;
+    const updateFields = {};
+    if (name) {
+        updateFields.name = name;
+    }
+    if (email) {
+        updateFields.email = email;
+    }
+    if (password) {
+        const hashPassword = yield bcrypt_1.default.hash(password, 10);
+        updateFields.password = hashPassword;
+    }
+    const user = yield User_1.default.findByIdAndUpdate(_id, updateFields);
     res.status(201).json({
         status: 'OK',
         code: 201,

@@ -1,10 +1,12 @@
 import { promisify } from 'util';
 import { Request, Response } from 'express';
+import fs from 'fs/promises';
+import bcrypt from 'bcrypt';
+
 import User from '../models/User';
 import { HttpError } from '../helpers';
 import { ctrlWrapper } from '../decorators/index';
 import { cloudinary } from '../conf/envConfs';
-import fs from 'fs/promises';
 import { Quiz } from '../models/Quiz';
 
 const userInfo = async (req: Request, res: Response) => {
@@ -40,9 +42,24 @@ const userInfo = async (req: Request, res: Response) => {
 
 const updateInfo = async (req: Request, res: Response) => {
     const { _id } = req.body.user;
-    const { name } = req.body;
+    const { name, email, password } = req.body;
+    const updateFields: { name?: string; email?: string; password?: string } =
+        {};
 
-    await User.findByIdAndUpdate(_id, { name }, { new: true });
+    if (name) {
+        updateFields.name = name;
+    }
+
+    if (email) {
+        updateFields.email = email;
+    }
+
+    if (password) {
+        const hashPassword = await bcrypt.hash(password, 10);
+        updateFields.password = hashPassword;
+    }
+
+    const user = await User.findByIdAndUpdate(_id, updateFields);
 
     res.status(201).json({
         status: 'OK',
