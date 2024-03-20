@@ -19,7 +19,7 @@ interface QuizCategory {
 const quizSchema = new Schema<Quiz & Document>(
     {
         theme: { type: String, required: true },
-        category: { type: Schema.Types.ObjectId, ref: 'categories' },
+        category: { type: Schema.Types.ObjectId, ref: 'categories', default: '65b9b72da71ecebe37211601'},
         background: { type: String, default: 'none' },
         ageGroup: { type: String, default: 'adults' },
         ratingQuantity: { type: Number, default: 0 },
